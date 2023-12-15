@@ -1,0 +1,43 @@
+name: Notification
+
+on:
+  push:
+    branches:
+      - main
+      - master
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+
+      - name: Build and lint
+        run: |
+          echo "Build and lint"
+
+      - name: Notification Failure
+        if: failure()
+        uses: hunghg255/action-notifications@master
+        with:
+          telegram_bot_token: ${{ secrets.TELEGRAM_BOT_TOKEN }}
+          telegram_chat_id: ${{ secrets.TELEGRAM_CHAT_ID }}
+          telegram_message_thread_id: 
+       
+         
+
+  notifification:
+    needs: deploy
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Notification Success
+        uses: hunghg255/action-notifications@master
+        if: always() 
+        with:
+          telegram_bot_token: ${{ secrets.TELEGRAM_BOT_TOKEN }}
+          telegram_chat_id: ${{ secrets.TELEGRAM_CHAT_ID }}
+          telegram_message_thread_id:  ${{ secrets.TELEGRAM_MESSAGE_THREAD_ID }}
+          
+         
