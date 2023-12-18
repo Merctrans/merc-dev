@@ -5,6 +5,7 @@ import re
 import pytz
 
 
+# uncomment and create a view for it
 class InternalUser(models.Model):
     """MercTrans Internal Users"""
     _inherit = ["res.users"]
