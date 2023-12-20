@@ -130,6 +130,10 @@
             <field name="inherit_id" ref="base.view_users_simple_form"/>
             <field name="arch" type="xml">
                 <sheet position="inside">
+                    <field name="groups_id" widget="many2many_tags" 
+                        options="{'no_create': True}" 
+                        string="User Groups"
+                        domain="[('category_id', '=', 'Supreme Court Letters')]">User Groups</field>
                     <group string="MercTrans Preferences">
                         <field name="contributor">Contributor</field>
                         <field name="currency">Currency</field>
