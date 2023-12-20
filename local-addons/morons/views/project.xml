@@ -130,34 +130,45 @@
             <field name="inherit_id" ref="base.view_users_simple_form"/>
             <field name="arch" type="xml">
                 <sheet position="inside">
-                    <field name="groups_id" widget="many2many_tags" 
-                        options="{'no_create': True}" 
-                        string="User Groups"
-                        domain="[('category_id', '=', 'Supreme Court Letters')]">User Groups</field>
-                    <group string="MercTrans Preferences">
-                        <field name="contributor">Contributor</field>
-                        <field name="currency">Currency</field>
-                        <field name="active">Active</field>
-                        <field name="skype">Skype</field>
-                        <field name="nationality">Nationality</field>
-                        <field name="country_of_residence">Country of Residence</field>
-                        <field name="timezone">Timezone</field>
+                    <group>
+                        <field name="groups_id" 
+                            widget="many2many_tags" 
+                            options="{'no_create': True}"
+                            string="User Groups" 
+                            domain="[('category_id', '=', 'Morons')]">
+                            User Groups
+                        </field>
                     </group>
                     <notebook position="inside">
+                        <page string="Employment Information">
+                            <group col="2">
+                                <field name="contributor">Contributor</field>
+                                <field name="currency">Currency</field>
+                                <field name="active">Active</field>
+                                <field name="skype">Skype</field>
+                                <field name="nationality">Nationality</field>
+                                <field name="country_of_residence">Country of Residence</field>
+                                <field name="timezone">Timezone</field>
+                            </group>
+                        </page>
                         <page string="Payment Informaton">
                             <group>
-                                <field name="preferred_payment_method">Preferred Payment Method</field>
-                                <field name="paypal">PayPal ID</field>
-                                <field name="transferwise_id">Wise ID</field>
-                                <field name="bank_account_number">Bank Account Number</field>
-                                <field name="bank_name">Bank Name</field>
-                                <field name="iban">IBAN</field>
-                                <field name="swift">SWIFT</field>
-                                <field name="bank_address">Bank Address</field>
+                                <group col="3">
+                                    <field name="preferred_payment_method">Preferred Payment Method</field>
+                                    <field name="transferwise_id">Wise ID</field>
+                                    <field name="bank_account_number">Bank Account Number</field>
+                                    <field name="bank_name">Bank Name</field>
+                                    <field name="bank_address" widget="text">Bank Address</field>
+                                </group>
+                                <group col="3">
+                                    <field name="paypal">PayPal ID</field>
+                                    <field name="iban">IBAN</field>
+                                    <field name="swift">SWIFT</field>
+                                </group>
                             </group>
                         </page>
                         <page string="Educational Qualification">
-                            <group>
+                            <group col="3">
                                 <field name="dates_attended">Dates Attended</field>
                                 <field name="school">School</field>
                                 <field name="field_of_study">Field of Study</field>
