@@ -138,5 +138,7 @@
                 action="action_open_res_users"
                 groups="base.group_system"
                 sequence="5"/>
+
+        <menuitem id="base.menu_management" name="Apps" groups="base.group_system"/>
     </data>
 </odoo>
