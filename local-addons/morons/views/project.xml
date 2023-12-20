@@ -139,6 +139,13 @@
                 groups="base.group_system"
                 sequence="5"/>
 
-        <menuitem id="base.menu_management" name="Apps" groups="base.group_system"/>
+        <menuitem id="project.menu_projects"
+                name="Projects"
+                parent="project.menu_main_pm"
+                groups="morons.group_pm"/>
+
+        <menuitem id="base.menu_management"
+                name="Apps"
+                groups="base.group_system"/>
     </data>
 </odoo>
