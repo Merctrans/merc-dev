@@ -123,11 +123,55 @@
             <field name="view_id" ref="project.view_project"/>
         </record>
 
+        <!-- INTERNAL USER FORM -->
+        <record id="view_res_users_form_custom" model="ir.ui.view">
+            <field name="name">res.users.form.custom</field>
+            <field name="model">res.users</field>
+            <field name="inherit_id" ref="base.view_users_simple_form"/>
+            <field name="arch" type="xml">
+                <sheet position="inside">
+                    <group string="MercTrans Preferences">
+                        <field name="contributor">Contributor</field>
+                        <field name="currency">Currency</field>
+                        <field name="active">Active</field>
+                        <field name="skype">Skype</field>
+                        <field name="nationality">Nationality</field>
+                        <field name="country_of_residence">Country of Residence</field>
+                        <field name="timezone">Timezone</field>
+                    </group>
+                    <notebook position="inside">
+                        <page string="Payment Informaton">
+                            <group>
+                                <field name="preferred_payment_method">Preferred Payment Method</field>
+                                <field name="paypal">PayPal ID</field>
+                                <field name="transferwise_id">Wise ID</field>
+                                <field name="bank_account_number">Bank Account Number</field>
+                                <field name="bank_name">Bank Name</field>
+                                <field name="iban">IBAN</field>
+                                <field name="swift">SWIFT</field>
+                                <field name="bank_address">Bank Address</field>
+                            </group>
+                        </page>
+                        <page string="Educational Qualification">
+                            <group>
+                                <field name="dates_attended">Dates Attended</field>
+                                <field name="school">School</field>
+                                <field name="field_of_study">Field of Study</field>
+                                <field name="year_obtained" widget="char">Year Obtained</field>
+                                <field name="certificate">Certificate</field>
+                            </group>
+                        </page>
+                    </notebook>
+                </sheet>
+            </field>
+        </record>
+
         <!-- INTERNAL USER VIEW -->
         <record id="action_open_res_users" model="ir.actions.act_window">
             <field name="name">Internal Users</field>
             <field name="res_model">res.users</field>
             <field name="view_mode">tree,form</field>
+            <field name="view_ids" eval="[(5, 0, 0), (0, 0, {'view_mode': 'tree', 'view_id': ref('base.view_users_tree')}), (0, 0, {'view_mode': 'form', 'view_id': ref('view_res_users_form_custom')})]"/>
             <field name="domain">[('share', '=', False)]</field>  <!-- Sets the domain to only show internal users -->
         </record>
 
