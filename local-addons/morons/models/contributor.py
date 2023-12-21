@@ -95,6 +95,7 @@ class InternalUser(models.Model):
     year_obtained = fields.Selection([(str(num), str(num)) for num in range(1900, datetime.datetime.now().year + 1)], 'Year')
     certificate = fields.Char('Certificate')
     
+    
     @api.constrains('login')
     def validate_login(self):
         if self.login:

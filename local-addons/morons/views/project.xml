@@ -141,7 +141,7 @@
                     </group>
                     <notebook position="inside">
                         <page string="Employment Information">
-                            <group col="2">
+                            <group>
                                 <field name="contributor">Contributor</field>
                                 <field name="currency">Currency</field>
                                 <field name="active">Active</field>
@@ -168,7 +168,7 @@
                             </group>
                         </page>
                         <page string="Educational Qualification">
-                            <group col="3">
+                            <group>
                                 <field name="dates_attended">Dates Attended</field>
                                 <field name="school">School</field>
                                 <field name="field_of_study">Field of Study</field>
