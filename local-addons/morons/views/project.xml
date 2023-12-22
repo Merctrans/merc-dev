@@ -195,27 +195,30 @@
             <field name="name">morons list</field>
             <field name="model">morons.invoice</field>
             <field name="arch" type="xml">
-                <tree>
-                    <field name="issue_date"/>
-                    <field name="due_date"/>
-                    <field name="sender"/>
-                    <!-- <field name="purchase_order_name"/> -->
-                    <field name="note"/>
-                    <field name="currency"/>
-                    <field name="work_unit"/>
-                    <field name="rate"/>
-                    <field name="sale_unit"/>
-                    <!-- <field name="payable"/>
-                    <field name="payable_usd"/> -->
-                </tree>
+                <form>
+                    <group>
+                        <field name="issue_date"/>
+                        <field name="due_date"/>
+                        <field name="sender"/>
+                        <field name="purchase_order"/>
+                        <field name="note"/>
+                        <field name="currency"/>
+                        <field name="work_unit"/>
+                        <field name="rate"/>
+                        <field name="sale_unit"/>
+                        <field name="payable"/>
+                        <field name="payable_usd"/>
+                        <field name="status"/>
+                    </group>
+                </form>
             </field>
         </record>
 
         <record id="action_open_invoice" model="ir.actions.act_window">
             <field name="name">Invoices</field>
             <field name="res_model">morons.invoice</field>
-            <field name="view_mode">tree</field>
-            <!-- <field name="view_ids" eval="[(5, 0, 0), (0, 0, {'view_mode': 'tree', 'view_id': ref('morons_invoice_view')})]"/> -->
+            <field name="view_mode">tree,form</field>
+            <field name="view_ids" eval="[(5, 0, 0), (0, 0, {'view_mode': 'form', 'view_id': ref('morons_invoice_view')})]"/>
         </record> 
         
         <menuitem name="Projects" id="project.menu_main_pm"/>
