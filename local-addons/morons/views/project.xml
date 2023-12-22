@@ -186,16 +186,63 @@
             <field name="name">Internal Users</field>
             <field name="res_model">res.users</field>
             <field name="view_mode">tree,form</field>
-            <field name="view_ids" eval="[(5, 0, 0), (0, 0, {'view_mode': 'tree', 'view_id': ref('base.view_users_tree')}), (0, 0, {'view_mode': 'form', 'view_id': ref('view_res_users_form_custom')})]"/>
-            <field name="domain">[('share', '=', False)]</field>  <!-- Sets the domain to only show internal users -->
+            <field name="view_ids" eval="[(5, 0, 0), (0, 0, {'view_mode': 'tree', 'view_id': ref('base.view_users_tree')}), 
+                                            (0, 0, {'view_mode': 'form', 'view_id': ref('view_res_users_form_custom')})]"/>
+            <field name="domain">[('share', '=', False)]</field>
         </record>
+
+        <record id="morons.morons_invoice_view" model="ir.ui.view">
+            <field name="name">morons list</field>
+            <field name="model">morons.invoice</field>
+            <field name="arch" type="xml">
+                <tree>
+                    <field name="issue_date"/>
+                    <field name="due_date"/>
+                    <field name="sender"/>
+                    <!-- <field name="purchase_order_name"/> -->
+                    <field name="note"/>
+                    <field name="currency"/>
+                    <field name="work_unit"/>
+                    <field name="rate"/>
+                    <field name="sale_unit"/>
+                    <!-- <field name="payable"/>
+                    <field name="payable_usd"/> -->
+                </tree>
+            </field>
+        </record>
+
+        <record id="action_open_invoice" model="ir.actions.act_window">
+            <field name="name">Invoices</field>
+            <field name="res_model">morons.invoice</field>
+            <field name="view_mode">tree</field>
+            <!-- <field name="view_ids" eval="[(5, 0, 0), (0, 0, {'view_mode': 'tree', 'view_id': ref('morons_invoice_view')})]"/> -->
+        </record> 
+        
+        <menuitem name="Projects" id="project.menu_main_pm"/>
+
+        <menuitem id="menu_morons_invoice"
+                name="Invoices"
+                parent="project.menu_main_pm"
+                action="action_open_invoice"
+                groups="base.group_system"/>
+
 
         <!-- CREATION OF INTERNAL USER NAVBAR OPTION -->
         <menuitem id="menu_res_users"
                 name="Internal Users"
                 parent="project.menu_main_pm"
                 action="action_open_res_users"
-                groups="base.group_system"
-                sequence="5"/>
+                groups="base.group_system"/>
+
+        
+
+        <!-- INVOICE VIEW -->
+
+        <!-- CREATION OF INTERNAL USER NAVBAR OPTION -->
+        <!-- <menuitem id="menu_res_invoice"
+                name="Invoices"
+                parent="project.menu_main_pm"
+                action="action_open_invoice"
+                groups="base.group_system"/> -->
     </data>
 </odoo>
