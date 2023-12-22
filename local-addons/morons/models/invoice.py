@@ -64,8 +64,8 @@ class Invoice(models.Model):
     due_date = fields.Date(string='Due Date')
     sender = fields.Char(string='Issued By') 
 
-    purchase_order = fields.Many2one('project.project', string='Purchase Order') 
-    purchase_order_name = fields.Char(string="Purchase Order Name", related='purchase_order.name', readonly=True)
+    # purchase_order = fields.Many2one('project.project', string='Purchase Order') 
+    # purchase_order_name = fields.Char(string="Purchase Order Name", related='purchase_order.name', readonly=True)
 
     note = fields.Text(string='Note')
 
