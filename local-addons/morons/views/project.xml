@@ -205,8 +205,8 @@
                     <field name="work_unit"/>
                     <field name="rate"/>
                     <field name="sale_unit"/>
-                    <!-- <field name="payable"/>
-                    <field name="payable_usd"/> -->
+                    <field name="payable"/>
+                    <field name="payable_usd"/>
                 </tree>
             </field>
         </record>
@@ -215,7 +215,7 @@
             <field name="name">Invoices</field>
             <field name="res_model">morons.invoice</field>
             <field name="view_mode">tree</field>
-            <!-- <field name="view_ids" eval="[(5, 0, 0), (0, 0, {'view_mode': 'tree', 'view_id': ref('morons_invoice_view')})]"/> -->
+            <field name="view_ids" eval="[(5, 0, 0), (0, 0, {'view_mode': 'tree', 'view_id': ref('morons_invoice_view')})]"/>
         </record> 
         
         <menuitem name="Projects" id="project.menu_main_pm"/>
