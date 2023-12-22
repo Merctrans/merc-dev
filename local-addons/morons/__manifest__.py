@@ -24,10 +24,10 @@
     # always loaded
     'data': [
         # 'security/ir.model.access.csv',
-        'views/project.xml',
-        'views/user.xml',
         "security/ir.model.access.csv",
         "security/security.xml",
+        'views/project.xml',
+        'views/user.xml',
         'data/languages.xml',
         'data/currencies.xml',
         'data/email_template.xml',
