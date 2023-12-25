@@ -26,14 +26,14 @@
         # 'security/ir.model.access.csv',
         'views/project.xml',
         'views/user.xml',
-        "security/ir.model.access.csv",
-        "security/security.xml",
         'data/languages.xml',
         'data/currencies.xml',
         'data/email_template.xml',
         'data/company_data.xml',
         'data/services.xml',
         'data/tags.xml',
+        "security/ir.model.access.csv",
+        "security/security.xml",
     ],
     # only loaded in demonstration mode
     'demo': [

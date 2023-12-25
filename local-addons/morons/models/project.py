@@ -28,7 +28,7 @@ class MercTransServices(models.Model):
     """
 
     _name = "merctrans.services"
-    _rec_name = "name"
+    _rec_name = "name" 
     _description = "Services offered by MercTrans"
 
     department_list = [
