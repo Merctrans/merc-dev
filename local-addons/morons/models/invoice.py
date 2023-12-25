@@ -59,10 +59,19 @@ class Invoice(models.Model):
         ("invoiced", "Invoiced"),
         ("paid", "Paid"),
     ]
+
+    invoice_id = fields.Char(string='Invoice ID', required=True, copy=False, readonly=True, index=True, default=lambda self: 'New')
+
+    @api.model
+    def create(self, vals):
+        if vals.get('invoice_id', 'New') == 'New':
+            vals['invoice_id'] = self.env['ir.sequence'].next_by_code('morons.invoice') or 'New'
+        result = super(Invoice, self).create(vals)
+        return result
     
     issue_date = fields.Date(string='Issue Date')
     due_date = fields.Date(string='Due Date')
-    sender = fields.Char(string='Issued By') 
+    sender = fields.Many2one('res.user',string='Issued By') 
 
     purchase_order = fields.Many2one('project.task', string='Purchase Order') 
 
