@@ -95,7 +95,7 @@ class InternalUser(models.Model):
     year_obtained = fields.Selection([(str(num), str(num)) for num in range(1900, datetime.datetime.now().year + 1)], 'Year')
     certificate = fields.Char('Certificate')
     
-    assigned_records_count = fields.Integer(string='Assigned Records Count', compute='_compute_assigned_records_count')
+    assigned_records_count = fields.Integer(string=' Assigned Tasks', compute='_compute_assigned_records_count')
 
     def _compute_assigned_records_count(self):
         for record in self:

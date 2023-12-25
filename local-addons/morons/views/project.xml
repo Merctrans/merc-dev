@@ -174,6 +174,7 @@
                                 <field name="field_of_study">Field of Study</field>
                                 <field name="year_obtained" widget="char">Year Obtained</field>
                                 <field name="certificate">Certificate</field>
+                                <field name="assigned_records_count" widget="statinfo"/>
                             </group>
                         </page>
                     </notebook>
@@ -191,7 +192,7 @@
             <field name="domain">[('share', '=', False)]</field>
         </record>
 
-        <record id="morons.morons_invoice_view" model="ir.ui.view">
+        <record id="morons.morons_invoice_form" model="ir.ui.view">
             <field name="name">morons list</field>
             <field name="model">morons.invoice</field>
             <field name="arch" type="xml">
@@ -218,7 +219,7 @@
             <field name="name">Invoices</field>
             <field name="res_model">morons.invoice</field>
             <field name="view_mode">tree,form</field>
-            <field name="view_ids" eval="[(5, 0, 0), (0, 0, {'view_mode': 'form', 'view_id': ref('morons_invoice_view')})]"/>
+            <field name="view_ids" eval="[(5, 0, 0), (0, 0, {'view_mode': 'form', 'view_id': ref('morons_invoice_form')})]"/>
         </record> 
         
         <menuitem name="Projects" id="project.menu_main_pm"/>
