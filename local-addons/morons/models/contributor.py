@@ -8,46 +8,45 @@ import pytz
 # uncomment and create a view for it
 class InternalUser(models.Model):
     """
-    A model for managing internal users at MercTrans.
+    Model for managing internal users at MercTrans.
 
-    This class extends the 'res.users' model from Odoo, specifically tailored for 
-    the needs of MercTrans. It includes additional fields to store information 
-    about the users' roles, contact details, nationality, payment methods, and 
-    educational background. This class is crucial for managing internal users' 
-    data, from basic identification details to more specific information like 
-    payment methods and educational qualifications.
+    This class extends 'res.users' in Odoo, tailored for MercTrans needs.
+    It stores user roles, contact info, nationality, payment methods, and education.
 
     Attributes:
         General:
-            _inherit (str): Inherited model name in the Odoo framework.
-            contributor (fields.Boolean): Field to indicate if the user is a contributor.
-            active (fields.Boolean): Field to indicate if the user account is active.
-            currency (fields.Many2one): Relation to 'res.currency' to set the user's preferred currency.
-            skype (fields.Char): Field for the user's Skype ID.
-            nationality (fields.Many2many): Relation to 'res.lang' to represent the user's nationality.
-            country_of_residence (fields.Many2one): Relation to 'res.country' for the user's country of residence.
-            timezone (fields.Selection): Selection field for the user's timezone.
+            _inherit (str): Inherited res.users.
+            contributor (fields.Boolean): User's contributor status.
+            active (fields.Boolean): User account status.
+            currency (fields.Many2one): User's preferred currency.
+            skype (fields.Char): User's Skype ID.
+            nationality (fields.Many2many): User's nationality.
+            country_of_residence (fields.Many2one): User's country of residence.
+            timezone (fields.Selection): User's timezone.
 
         Payment Methods:
-            paypal (fields.Char): Field for the user's PayPal ID.
-            transferwise_id (fields.Char): Field for the user's Wise ID.
-            bank_account_number (fields.Char): Field for the user's bank account number.
-            bank_name (fields.Char): Field for the name of the user's bank.
-            iban (fields.Char): Field for the user's IBAN.
-            swift (fields.Char): Field for the user's SWIFT code.
-            bank_address (fields.Char): Field for the user's bank address.
-            preferred_payment_method (fields.Selection): Selection field for the user's preferred payment method.
+            paypal (fields.Char): User's PayPal ID.
+            transferwise_id (fields.Char): User's Wise ID.
+            bank_account_number (fields.Char): User's bank account number.
+            bank_name (fields.Char): User's bank name.
+            iban (fields.Char): User's IBAN.
+            swift (fields.Char): User's SWIFT code.
+            bank_address (fields.Char): User's bank address.
+            preferred_payment_method (fields.Selection): User's preferred payment method.
 
         Education and Experience:
-            dates_attended (fields.Date): Field for the dates the user attended educational institutions.
-            school (fields.Char): Field for the name of the school the user attended.
-            field_of_study (fields.Char): Field for the user's field of study.
-            year_obtained (fields.Selection): Selection field for the year the user obtained their degree.
-            certificate (fields.Char): Field for the name of any certificate obtained by the user.
+            dates_attended (fields.Date): Dates attended educational institutions.
+            school (fields.Char): School name.
+            field_of_study (fields.Char): User's field of study.
+            year_obtained (fields.Selection): Year user obtained their degree.
+            certificate (fields.Char): Certificate name.
+
+        Other Field:
+            assigned_records_count (fields.Integer): Number of assigned tasks computed for the user.
 
     Methods:
-        _tz_get(): Returns a list of all timezones for the timezone selection field.
-        validate_email(): Validates the format of the user's email for PayPal and login.
+        _tz_get(): Returns all timezones for the timezone selection field.
+        validate_email(): Validates email format for PayPal and login.
     """
 
     _inherit = ["res.users"]

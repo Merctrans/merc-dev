@@ -60,7 +60,12 @@ class Invoice(models.Model):
         ("paid", "Paid"),
     ]
 
-    invoice_id = fields.Char(string='Invoice ID', required=True, copy=False, readonly=True, index=True, default=lambda self: 'New')
+    invoice_id = fields.Char(string='Invoice ID', 
+                             required=True, 
+                             copy=False, 
+                             readonly=True, 
+                             index=True, 
+                             default=lambda self: 'New')
 
     @api.model
     def create(self, vals):
@@ -70,25 +75,47 @@ class Invoice(models.Model):
         return result
     
     issue_date = fields.Date(string='Issue Date')
-    due_date = fields.Date(string='Due Date')
-    sender = fields.Many2one('res.user',string='Issued By') 
+    due_date = fields.Date(string='Due Date', required=True)
+    sender = fields.Char(string='Issued By') 
 
     purchase_order = fields.Many2one('project.task', string='Purchase Order') 
 
     note = fields.Text(string='Note')
 
-    currency = fields.Many2one('res.currency', string='Currency')
-    work_unit = fields.Selection(string='Work Unit', selection=work_unit_list, default='word') 
-    rate = fields.Float(string="Rate", digits=(16, 2))
-    sale_unit = fields.Integer(string='Sale Unit')
-    payable = fields.Monetary(string='Payable', currency_field='currency', compute='_compute_payable_amount', store=True, readonly=True)
-    usd_currency_id = fields.Many2one('res.currency', string='USD Currency', default=lambda self: self.env.ref('base.USD'))
-    payable_usd = fields.Monetary(string='Payable(USD)', currency_field='usd_currency_id', compute='_compute_amount_usd')
+    currency = fields.Many2one(
+        'res.currency', 
+        string='Currency', 
+        default=lambda self: self.env.ref('base.USD'),
+        required=True
+    )
 
-    @api.depends('rate', 'sale_unit')
+    work_unit = fields.Selection(string='Work Unit', 
+                                 selection=work_unit_list, 
+                                 default='word') 
+    
+    sale_rate = fields.Float(string="Sale Rate", 
+                        digits=(16, 2))
+    
+    task_volume = fields.Integer(string='Task Volume')
+
+    payable = fields.Monetary(string='Payable', 
+                              currency_field='currency', 
+                              compute='_compute_payable_amount', 
+                              store=True, 
+                              readonly=True) 
+    
+    usd_currency_id = fields.Many2one('res.currency', 
+                                      string='USD Currency', 
+                                      default=lambda self: self.env.ref('base.USD'))
+    
+    payable_usd = fields.Monetary(string='Payable(USD)', 
+                                  currency_field='usd_currency_id', 
+                                  compute='_compute_amount_usd')
+
+    @api.depends('sale_rate', 'task_volume', 'currency')
     def _compute_payable_amount(self):
         for record in self:
-            record.payable = record.rate * record.sale_unit
+            record.payable = record.sale_rate * record.task_volume
 
     @api.depends('payable')
     def _compute_amount_usd(self):
@@ -104,13 +131,12 @@ class Invoice(models.Model):
             else:
                 record.payable_usd = record.payable
 
-    # @api.depends('payable', 'currency')
-    # def _compute_payable_usd(self):
-    #     for record in self:
-    #         USD = self.env['res.currency'].search([('name', '=', 'USD')])
-    #         curr = self.env['res.currency'].search([('name', '=', 'VND')])
-    #         record.payable_usd = USD.compute(record.payable, curr)
 
-    status = fields.Selection(string='Status', selection=invoice_status_list, default='draft')
-    payment_status = fields.Selection(string='Payment Status', selection=payment_status_list, default='unpaid')
+    status = fields.Selection(string='Status', 
+                              selection=invoice_status_list, 
+                              default='draft')
+    
+    payment_status = fields.Selection(string='Payment Status', 
+                                      selection=payment_status_list, 
+                                      default='unpaid')
 
