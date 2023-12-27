@@ -268,9 +268,7 @@
         <menuitem id="menu_morons_invoice"
                 name="Invoices"
                 parent="project.menu_main_pm"
-                action="action_open_invoice"
-                groups="base.group_system"/>
-
+                action="action_open_invoice"/>
 
         <!-- CREATION OF INTERNAL USER NAVBAR OPTION -->
         <menuitem id="menu_res_users"

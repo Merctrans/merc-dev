@@ -73,22 +73,7 @@ class Invoice(models.Model):
     due_date = fields.Date(string='Due Date')
     sender = fields.Many2one('res.user',string='Issued By') 
 
-    purchase_order = fields.Many2one('project.task',
-                    string='Purchase Order',
-                    domain=lambda self: self._get_purchase_order_domain())
-
-    def _get_purchase_order_domain(self):
-        if self.env.user.has_group('base.group_system') or self.env.user.has_group('morons.group_bod') or self.env.user.has_group('morons.group_accountants'):
-            return []
-        elif self.env.user.has_group('morons.group_pm'):
-            accountant_users = self.env['res.users'].search([('groups_id', '=', self.env.ref('morons.group_accountants').id)])
-            accountant_user_ids = accountant_users.mapped('id')
-            return [('user_ids', 'not in', accountant_user_ids)]
-        else:
-            return [('user_ids', '=', self.env.uid)]
-
-    # purchase_order_name = fields.Char(string="Purchase Order Name", related='purchase_order.name', readonly=True)
-
+    purchase_order = fields.Many2one('project.task', string='Purchase Order') 
 
     note = fields.Text(string='Note')
 

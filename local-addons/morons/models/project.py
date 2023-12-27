@@ -225,20 +225,6 @@ class MerctransProject(models.Model):
             else:
                 project.receivable = 0
 
-    @api.model
-    def search(self, args, **kwargs):
-        if self.env.context.get('custom_search'):
-            return super(MerctransProject, self).search(args, **kwargs)
-        
-        if self.env.user.has_group('morons.group_pm'):
-            custom_domain = self._get_dynamic_domain()
-            args = [('id', 'in', self.with_context(custom_search=True).search(custom_domain).ids)] + args
-        return super(MerctransProject, self).search(args, **kwargs)
-
-    def _get_dynamic_domain(self):
-        accountant_group = self.env.ref('morons.group_accountants')
-        accountant_user_ids = accountant_group.users.ids
-        return [('create_uid', 'not in', accountant_user_ids)]
 
 class MerctransTask(models.Model):
     """
