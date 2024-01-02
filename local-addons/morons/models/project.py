@@ -275,18 +275,6 @@ class MerctransTask(models.Model):
     """
     _inherit = "project.task"
 
-    def write(self, vals):
-        result = super(MerctransTask, self.with_context(skip_update=True)).write(vals)
-        
-        if 'payment_status' in vals and not self.env.context.get('skip_invoice_update'):
-            for task in self:
-                # Search for related invoices in the custom invoice model
-                related_invoices = self.env['morons.invoice'].search([('purchase_order', '=', task.id)])
-                for invoice in related_invoices:
-                    # Update payment status of the related invoices
-                    invoice.with_context(skip_task_update=True).write({'payment_status': vals['payment_status']})
-        return result
-
     po_status_list = [
         ("in progress", "In Progress"),
         ("completed", "Completed"),
@@ -326,9 +314,34 @@ class MerctransTask(models.Model):
     payment_status = fields.Selection(
         string="Payment Status*",
         selection=payment_status_list,
-        required=True,
-        default="unpaid",
+        required=True
     )
+
+    def write(self, vals):
+        result = super(MerctransTask, self.with_context(skip_update=True)).write(vals)
+        
+        if 'payment_status' in vals and not self.env.context.get('skip_invoice_update'):
+            for task in self:
+                self._update_related_invoices(task, vals['payment_status'])
+                self._update_related_client_invoices(task, vals['payment_status'])
+        return result
+
+    def _update_related_invoices(self, task, payment_status):
+        """
+        Update payment status of related invoices in 'morons.invoice' model.
+        """
+        related_invoices = self.env['morons.invoice'].search([('purchase_order', '=', task.id)])
+        for invoice in related_invoices:
+            invoice.with_context(skip_task_update=True).write({'payment_status': payment_status})
+
+    def _update_related_client_invoices(self, task, payment_status):
+        """
+        Update payment status of related client invoices in 'morons.client_invoice' model.
+        """
+        related_client_invoices = self.env['morons.client_invoice'].search([('purchase_order', '=', task.id)])
+        for client_invoice in related_client_invoices:
+            # Assuming 'payment_status' field exists in 'morons.client_invoice' model
+            client_invoice.with_context(skip_task_update=True).write({'payment_status': payment_status})
 
     currency = fields.Char('Currency', compute='_compute_currency_id')
 

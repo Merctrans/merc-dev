@@ -350,23 +350,6 @@
         <menuitem id="menu_morons_invoice"
                 name="Invoices"
                 parent="project.menu_main_pm"/>
-
-        <menuitem id="menu_contributor_invoice"
-                name="Contributor Invoices"
-                parent="menu_morons_invoice"
-                sequence = "1"
-                action="action_open_invoice"/>
-
-        <menuitem id="menu_client_invoice"
-                name="Client Invoices"
-                parent="menu_morons_invoice"
-                sequence = "2"/>
-        
-
-        <!-- <menuitem id="project.menu_projects"
-                name="Projects"
-                parent="project.menu_main_pm"
-                groups="morons.group_pm"/>
  
         <!-- First Submenu Item -->
         <menuitem id="menu_morons_client_invoice"
@@ -379,7 +362,7 @@
                   name="Contributor Invoices"
                   parent="menu_morons_invoice"
                   action="action_open_invoice"
-                  groups="morons.group_pm"/>
+                  groups="base.group_system,morons.group_pm,morons.group_bod,morons.group_accountants,morons.group_contributors"/>
 
         <menuitem id="base.menu_management"
                 name="Apps"
