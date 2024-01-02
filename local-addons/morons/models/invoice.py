@@ -395,8 +395,17 @@ class ClientInvoice(models.Model):
                               default='draft')
     
     payment_status = fields.Selection(
-        string='Payment Status', 
-        selection=payment_status_list,
-        compute='_compute_payment_status',
-        store=True
-    )
+                    string='Payment Status', 
+                    selection=payment_status_list,
+                    store=True
+                )
+
+    paid_on_date = fields.Date(string='Paid On Date', compute='_compute_paid_on_date', store=True)
+
+    @api.depends('payment_status')
+    def _compute_paid_on_date(self):
+        for record in self:
+            if record.payment_status == 'paid':
+                record.paid_on_date = fields.Date.today()
+            else:
+                record.paid_on_date = None

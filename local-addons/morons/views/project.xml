@@ -208,7 +208,8 @@
             <field name="arch" type="xml">
                 <form>
                     <sheet>
-                        <group>
+                        <div class="oe_title"><h1><field name="invoice_id"/></h1></div>
+                        <group string="Invoice Details">
                             <group col="3">
                                 <field name="invoice_id" readonly="1"/>
                                 <field name="issue_date"/>
@@ -296,6 +297,8 @@
                                 <field name="payable"/>
                                 <field name="payable_usd"/>
                                 <field name="payment_status"/>
+                                <field name="paid_on_date" 
+                                   attrs="{'required': [('payment_status', '=', 'paid')]}"/>
                             </group>
                         </group>
                     </sheet>
