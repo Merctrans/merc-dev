@@ -213,19 +213,22 @@
                                 <field name="invoice_id" readonly="1"/>
                                 <field name="issue_date"/>
                                 <field name="due_date"/>
-                                <field name="sender"/>
+                                <field name="sender" domain="[('share', '=', False)]"/>
                                 <field name="purchase_order"/>
+                                <field name="issued_to"/>
                                 <field name="note"/>
                             </group>
                             <group col="3">
-                                <field name="currency"/>
+                                <field name="usd_currency_id" invisible="1"/>
                                 <field name="work_unit"/>
-                                <field name="rate"/>
-                                <field name="sale_unit"/>
+                                <field name="sale_rate"/>
+                                <field name="task_volume"/>
+                                <field name="currency" readonly="0"/>
                                 <field name="payable"/>
                                 <field name="payable_usd"/>
                                 <field name="payment_status"/>
                                 <field name="status" groups="base.group_system,morons.group_pm,morons.group_bod,morons.group_accountants"/>
+                                <field name="payment_status"/>
                             </group>
                         </group>
                     </sheet>
@@ -243,11 +246,70 @@
                     <field name="issue_date"/>
                     <field name="due_date"/>
                     <field name="sender"/>
-                    <field name="note"/>
-                    <field name="currency"/>
                     <field name="work_unit"/>
-                    <field name="rate"/>
-                    <field name="sale_unit"/>
+                    <field name="sale_rate"/>
+                    <field name="task_volume"/>
+                    <field name="currency"/>
+                    <field name="payable"/>
+                    <field name="payable_usd"/>
+                    <field name="status"/>
+                    <field name="note"/>
+                </tree>
+            </field>
+        </record>
+
+        <!-- CLIENT INVOICE FORM VIEW -->
+        <record id="morons.morons_client_invoice_form" model="ir.ui.view">
+            <field name="name">morons list</field>
+            <field name="model">morons.client_invoice</field>
+            <field name="arch" type="xml">
+                <form>
+                    <sheet>
+                        <group>
+                            <group col="3">
+                                <field name="invoice_id" readonly="1"/>
+                                <field name="issue_date"/>
+                                <field name="due_date"/>
+                                <field name="client"/>
+                                <field name ="customer_reference"/>
+                                <field name="address"/>
+                                <field name="email"/>
+                                <field name="purchase_order"/>
+                                <field name="issued_to"/>
+                            </group>
+                            <group col="3">
+                                <field name="usd_currency_id" invisible="1"/>
+                                <field name="work_unit"/>
+                                <field name="sale_rate"/>
+                                <field name="task_volume"/>
+                                <field name="currency" readonly="0"/>
+                                <field name="line_total"/>
+                                <field name="payable"/>
+                                <field name="payable_usd"/>
+                                <field name="status" groups="base.group_system,morons.group_pm,morons.group_bod,morons.group_accountants"/>
+                                <field name="payment_status"/>
+                            </group>
+                        </group>
+                    </sheet>
+                </form>
+            </field>
+        </record>
+
+        <!-- VIEW ALL CLIENT INVOICES LIST -->
+        <record id="morons.morons_client_invoice_tree" model="ir.ui.view">
+            <field name="name">morons list</field>
+            <field name="model">morons.client_invoice</field>
+            <field name="arch" type="xml">
+                <tree>
+                    <field name="invoice_id" readonly="1"/>
+                    <field name="issue_date"/>
+                    <field name="due_date"/>
+                    <field name="client"/>
+                    <field name="work_unit"/>
+                    <field name="sale_rate"/>
+                    <field name="task_volume"/>
+                    <field name="line_total"/>
+                    <field name="currency"/>
                     <field name="payable"/>
                     <field name="payable_usd"/>
                     <field name="status"/>
@@ -257,14 +319,26 @@
 
         <!-- IR.ACTION TO OPEN INVOICE LIST VIEW -->
         <record id="action_open_invoice" model="ir.actions.act_window">
-            <field name="name">Invoices</field>
+            <field name="name">Contributor Invoices</field>
             <field name="res_model">morons.invoice</field>
             <field name="view_mode">tree,form</field>
             <field name="view_ids" eval="[(5, 0, 0), (0, 0, {'view_mode': 'tree', 'view_id': ref('morons.morons_invoice_tree')}), 
                                             (0, 0, {'view_mode': 'form', 'view_id': ref('morons.morons_invoice_form')})]"/>
         </record> 
+
+        <record id="action_open_client_invoice" model="ir.actions.act_window">
+            <field name="name">Client Invoices</field>
+            <field name="res_model">morons.client_invoice</field>
+            <field name="view_mode">tree,form</field>
+            <field name="view_ids" eval="[(5, 0, 0), (0, 0, {'view_mode': 'tree', 'view_id': ref('morons.morons_client_invoice_tree')}), 
+                                            (0, 0, {'view_mode': 'form', 'view_id': ref('morons.morons_client_invoice_form')})]"/>
+        </record>
         
         <menuitem name="Projects" id="project.menu_main_pm"/>
+
+        <menuitem id="menu_morons_invoice"
+                  name="Invoices"
+                  parent="project.menu_main_pm"/>
 
         <!-- CREATION OF INTERNAL USER NAVBAR OPTION -->
         <menuitem id="menu_res_users"
@@ -292,7 +366,20 @@
         <!-- <menuitem id="project.menu_projects"
                 name="Projects"
                 parent="project.menu_main_pm"
-                groups="base.group_system,morons.group_pm,morons.group_bod,morons.group_accountants"/> -->
+                groups="morons.group_pm"/>
+ 
+        <!-- First Submenu Item -->
+        <menuitem id="menu_morons_client_invoice"
+                  name="Client Invoices"
+                  parent="menu_morons_invoice"
+                  action="action_open_client_invoice"/>
+
+        <!-- Second Submenu Item -->
+        <menuitem id="menu_morons_contri_invoice"
+                  name="Contributor Invoices"
+                  parent="menu_morons_invoice"
+                  action="action_open_invoice"
+                  groups="morons.group_pm"/>
 
         <menuitem id="base.menu_management"
                 name="Apps"
