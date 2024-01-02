@@ -245,7 +245,7 @@ class ClientInvoice(models.Model):
     @api.model
     def create(self, vals):
         if vals.get('invoice_id', 'New') == 'New':
-            client_name = vals.get('client') 
+            client_name = vals.get('client') and self.env['res.company'].browse(vals['client']).name or ''
             date = fields.Date.today()
             year_month = date.strftime('%Y-%m')
 
@@ -267,9 +267,9 @@ class ClientInvoice(models.Model):
     issue_date = fields.Date(string='Issue Date')
     due_date = fields.Date(string='Due Date', required=True)
 
-    client = fields.Many2one('res.company', string='Client', required=True)
+    client = fields.Many2one('res.company', default=lambda self: self.env.user.company_id, string='Client', required=True)
     customer_reference = fields.Char(string='Customer Reference', required=True)
-    address = fields.Char(string='Address')
+    address = fields.Text(string='Address')
     email = fields.Char(string='Email')
     sales_order = fields.Many2one('project.task', string='Sales Order')
 
@@ -325,11 +325,10 @@ class ClientInvoice(models.Model):
                                     store=True,
                                     readonly=True)
     
-    @api.depends('sale_rate', 'task_volume', 'currency')
+    @api.depends('sale_rate', 'task_volume')
     def _compute_line_total(self):
         for record in self:
             record.line_total = record.sale_rate * record.task_volume
-
 
     discount = fields.Float(string='Discount')
 
@@ -342,17 +341,31 @@ class ClientInvoice(models.Model):
         for record in self:
             if record.discount > record.payable:
                 raise ValidationError("Discount cannot be greater than the total.")
+            
+    subtotal = fields.Monetary(string='Subtotal',
+                                    currency_field='currency',
+                                    compute='_compute_subtotal',
+                                    store=True,
+                                    readonly=True)
+    
+    @api.depends('line_total', 'discount')
+    def _compute_subtotal(self):
+        for record in self:
+            record.subtotal = record.line_total - record.discount
+            
+    VAT = fields.Float(string='VAT', default=0.1) 
 
     payable = fields.Monetary(string='Payable', 
                               currency_field='currency', 
                               compute='_compute_payable_amount', 
                               store=True, 
-                              readonly=True) 
+                              readonly=True)
     
-    @api.depends('sale_rate', 'task_volume', 'currency')
+    @api.depends('subtotal', 'VAT')
     def _compute_payable_amount(self):
         for record in self:
-            record.payable = record.line_total - record.discount
+            record.payable = record.subtotal * (1 + record.VAT)
+
     
     usd_currency_id = fields.Many2one('res.currency', 
                                       string='USD Currency', 
@@ -362,7 +375,7 @@ class ClientInvoice(models.Model):
                                   currency_field='usd_currency_id', 
                                   compute='_compute_amount_usd')
 
-    @api.depends('payable')
+    @api.depends('subtotal', 'VAT')
     def _compute_amount_usd(self):
         """
         For now, it is hardcoded to convert from VND to USD and EUR to USD.

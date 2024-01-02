@@ -216,7 +216,7 @@
                                 <field name="sender" domain="[('share', '=', False)]"/>
                                 <field name="purchase_order"/>
                                 <field name="issued_to"/>
-                                <field name="note"/>
+                                <field name="note" widget="HTML"/>
                             </group>
                             <group col="3">
                                 <field name="usd_currency_id" invisible="1"/>
@@ -240,7 +240,7 @@
             <field name="name">morons list</field>
             <field name="model">morons.invoice</field>
             <field name="arch" type="xml">
-                <tree>
+                <tree decoration-danger="due_date &lt; current_date and status != 'completed'" decoration-success="status == 'completed'">
                     <field name="invoice_id" readonly="1"/>
                     <field name="issue_date"/>
                     <field name="due_date"/>
@@ -264,28 +264,37 @@
             <field name="arch" type="xml">
                 <form>
                     <sheet>
-                        <group>
+                        <div class="oe_title"><h1><field name="invoice_id"/></h1></div>
+                        <group string="Project Details">
                             <group col="3">
                                 <field name="invoice_id" readonly="1"/>
                                 <field name="issue_date"/>
                                 <field name="due_date"/>
+                                <field name="purchase_order"/>
+                                <field name="status" groups="base.group_system,morons.group_pm,morons.group_bod,morons.group_accountants"/>
+                            </group>
+                            <group col="3">
                                 <field name="client"/>
                                 <field name ="customer_reference"/>
-                                <field name="address"/>
                                 <field name="email"/>
-                                <field name="purchase_order"/>
-                                <field name="issued_to"/>
+                                <field name="address" widget="HTML"/>
                             </group>
+                        </group>
+                        <group string="Cost">
                             <group col="3">
                                 <field name="usd_currency_id" invisible="1"/>
                                 <field name="work_unit"/>
                                 <field name="sale_rate"/>
                                 <field name="task_volume"/>
                                 <field name="currency" readonly="0"/>
+                                <field name="discount"/>
+                            </group>
+                            <group>
                                 <field name="line_total"/>
+                                <field name="subtotal"/>
+                                <field name="VAT" widget="percentage" readonly="1"/>
                                 <field name="payable"/>
                                 <field name="payable_usd"/>
-                                <field name="status" groups="base.group_system,morons.group_pm,morons.group_bod,morons.group_accountants"/>
                                 <field name="payment_status"/>
                             </group>
                         </group>
@@ -299,7 +308,7 @@
             <field name="name">morons list</field>
             <field name="model">morons.client_invoice</field>
             <field name="arch" type="xml">
-                <tree>
+                <tree decoration-danger="due_date &lt; current_date and status != 'completed'" decoration-success="status == 'completed'">
                     <field name="invoice_id" readonly="1"/>
                     <field name="issue_date"/>
                     <field name="due_date"/>
