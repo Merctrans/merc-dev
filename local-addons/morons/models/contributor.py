@@ -53,10 +53,10 @@ class InternalUser(models.Model):
 
     contributor = fields.Boolean(string='Contributor', default=False)
     active = fields.Boolean(string='Active', default=True)
-    currency = fields.Many2one('res.currency', string='Currency')
+    currency = fields.Many2one('res.currency', string='Currency', required=True)
     skype = fields.Char(string='Skype')
     nationality = fields.Many2many('res.lang', required=True)
-    country_of_residence = fields.Many2one('res.country', required=True)
+    country_of_residence = fields.Many2one('res.country')
     timezone = fields.Selection('_tz_get',
                                 string='Timezone',
                                 required=True,
