@@ -227,6 +227,7 @@
                                 <field name="currency" readonly="0"/>
                                 <field name="payable"/>
                                 <field name="payable_usd"/>
+                                <field name="payment_status"/>
                                 <field name="status" groups="base.group_system,morons.group_pm,morons.group_bod,morons.group_accountants"/>
                                 <field name="payment_status"/>
                             </group>
@@ -357,11 +358,10 @@
                 parent="project.menu_main_pm"
                 action="action_open_res_users"
                 groups="base.group_system"/>
-
-        <menuitem id="project.menu_projects"
-                name="Projects"
-                parent="project.menu_main_pm"
-                groups="morons.group_pm"/>
+        
+        <menuitem id="menu_morons_invoice"
+                name="Invoices"
+                parent="project.menu_main_pm"/>
  
         <!-- First Submenu Item -->
         <menuitem id="menu_morons_client_invoice"
@@ -374,7 +374,7 @@
                   name="Contributor Invoices"
                   parent="menu_morons_invoice"
                   action="action_open_invoice"
-                  groups="morons.group_pm"/>
+                  groups="base.group_system,morons.group_pm,morons.group_bod,morons.group_accountants,morons.group_contributors"/>
 
         <menuitem id="base.menu_management"
                 name="Apps"

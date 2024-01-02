@@ -82,11 +82,50 @@ class Invoice(models.Model):
         result = super(Invoice, self).create(vals)
         return result
     
-    issue_date = fields.Date(string='Issue Date')
-    due_date = fields.Date(string='Due Date', required=True)
+    issue_date = fields.Date(string='Issue Date', default=fields.Date.context_today)
+    due_date = fields.Date(string='Due Date', compute='_compute_due_date', inverse='_inverse_due_date',)
+
+    @api.depends('issue_date')
+    def _compute_due_date(self):
+        for record in self:
+            if record.issue_date:
+                record.due_date = self.add_business_days(record.issue_date, 45)
+            else:
+                record.due_date = False
+            
+    def _inverse_due_date(self):
+        pass
+
+    def add_business_days(self, from_date, num_days):
+        current_date = from_date
+        while num_days > 0:
+            current_date += timedelta(days=1)
+            if current_date.weekday() < 5:
+                num_days -= 1
+        return current_date
+    
     sender = fields.Many2one('res.users', string='Issued By', default=lambda self: self.env.user)
 
-    purchase_order = fields.Many2one('project.task', string='Purchase Order') 
+    purchase_order = fields.Many2one('project.task',
+                    string='Purchase Order',
+                    domain=lambda self: self._get_purchase_order_domain())
+    def _get_purchase_order_domain(self):
+        if self.env.user.has_group('base.group_system') or self.env.user.has_group('morons.group_bod') or self.env.user.has_group('morons.group_accountants'):
+            return []
+        elif self.env.user.has_group('morons.group_pm'):
+            accountant_users = self.env['res.users'].search([('groups_id', '=', self.env.ref('morons.group_accountants').id)])
+            accountant_user_ids = accountant_users.mapped('id')
+            return [('user_ids', 'not in', accountant_user_ids)]
+        else:
+            return [('user_ids', '=', self.env.uid)]
+
+    def write(self, vals):
+        if 'payment_status' in vals and not self.env.context.get('skip_task_update'):
+            for invoice in self:
+                if invoice.purchase_order:
+                    invoice.purchase_order.with_context(skip_invoice_update=True).write({'payment_status': vals['payment_status']})
+        return super(Invoice, self).write(vals)
+    
     issued_to = fields.Many2one('res.users', string='Issued To', compute='_compute_issued_to', store=True)
 
     note = fields.Text(string='Note')
@@ -215,6 +254,13 @@ class ClientInvoice(models.Model):
     _description = ''
     _rec_name = 'invoice_id'
 
+    def write(self, vals):
+        if 'payment_status' in vals and not self.env.context.get('skip_task_update'):
+            for clientInvoice in self:
+                if clientInvoice.purchase_order:
+                    clientInvoice.purchase_order.with_context(skip_invoice_update=True).write({'payment_status': vals['payment_status']})
+        return super(ClientInvoice, self).write(vals)
+
     invoice_status_list = [
         ("in progress", "In Progress"),
         ("completed", "Completed"),
@@ -263,9 +309,28 @@ class ClientInvoice(models.Model):
 
         result = super(ClientInvoice, self).create(vals)
         return result
-    
-    issue_date = fields.Date(string='Issue Date')
-    due_date = fields.Date(string='Due Date', required=True)
+
+    issue_date = fields.Date(string='Issue Date', default=fields.Date.context_today)
+    due_date = fields.Date(string='Due Date', compute='_compute_due_date', inverse='_inverse_due_date',)
+
+    @api.depends('issue_date')
+    def _compute_due_date(self):
+        for record in self:
+            if record.issue_date:
+                record.due_date = self.add_business_days(record.issue_date, 45)
+            else:
+                record.due_date = False
+            
+    def _inverse_due_date(self):
+        pass
+
+    def add_business_days(self, from_date, num_days):
+        current_date = from_date
+        while num_days > 0:
+            current_date += timedelta(days=1)
+            if current_date.weekday() < 5:
+                num_days -= 1
+        return current_date
 
     client = fields.Many2one('res.company', default=lambda self: self.env.user.company_id, string='Client', required=True)
     customer_reference = fields.Char(string='Customer Reference', required=True)
@@ -284,6 +349,32 @@ class ClientInvoice(models.Model):
                     raise ValidationError('Not a valid email')
 
     purchase_order = fields.Many2one('project.task', string='Purchase Order', required=True)
+
+    def search(self, args, offset=0, limit=None, order=None, count=False):
+        user = self.env.user
+        # Get the 'morons' category
+        morons_category = self.env.ref('morons.module_category_morons')
+        user_in_morons_category = any(group.category_id == morons_category for group in user.groups_id)
+
+        if not user_in_morons_category:
+            args += [('client', '=', user.company_id.id)]
+
+        return super(ClientInvoice, self).search(args, offset, limit, order, count)
+
+    def fields_get(self, allfields=None, attributes=None):
+        res = super(ClientInvoice, self).fields_get(allfields, attributes)
+
+        # Check if the user is in the 'morons' category
+        morons_category = self.env.ref('morons.module_category_morons')
+        user_in_morons_category = any(group.category_id == morons_category for group in self.env.user.groups_id)
+
+        if not user_in_morons_category and 'purchase_order' in res:
+            # Modify the domain for the 'purchase_order' field
+            company_id = self.env.user.company_id.id
+            res['purchase_order']['domain'] = [('user_ids.company_id', '=', company_id)]
+
+        return res
+
     issued_to = fields.Many2one('res.users', string='Issued To', compute='_compute_issued_to', store=True)
 
     note = fields.Text(string='Note')
@@ -409,3 +500,7 @@ class ClientInvoice(models.Model):
                 record.paid_on_date = fields.Date.today()
             else:
                 record.paid_on_date = None
+
+    status = fields.Selection(string='Status', selection=invoice_status_list, default='draft') 
+    payment_status = fields.Selection(string='Payment Status', selection=payment_status_list, default='unpaid')           
+
