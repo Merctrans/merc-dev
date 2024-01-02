@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 
 from odoo import models, fields, api
+from datetime import timedelta
 
 class Invoice(models.Model):
     """
@@ -69,11 +70,49 @@ class Invoice(models.Model):
         result = super(Invoice, self).create(vals)
         return result
     
-    issue_date = fields.Date(string='Issue Date')
-    due_date = fields.Date(string='Due Date')
-    sender = fields.Many2one('res.user',string='Issued By') 
+    issue_date = fields.Date(string='Issue Date', default=fields.Date.context_today)
+    due_date = fields.Date(string='Due Date', compute='_compute_due_date', inverse='_inverse_due_date',)
 
-    purchase_order = fields.Many2one('project.task', string='Purchase Order') 
+    @api.depends('issue_date')
+    def _compute_due_date(self):
+        for record in self:
+            if record.issue_date:
+                record.due_date = self.add_business_days(record.issue_date, 45)
+            else:
+                record.due_date = False
+            
+    def _inverse_due_date(self):
+        pass
+
+    def add_business_days(self, from_date, num_days):
+        current_date = from_date
+        while num_days > 0:
+            current_date += timedelta(days=1)
+            if current_date.weekday() < 5:
+                num_days -= 1
+        return current_date
+    
+    sender = fields.Char(string='Issued By') 
+
+    purchase_order = fields.Many2one('project.task',
+                    string='Purchase Order',
+                    domain=lambda self: self._get_purchase_order_domain())
+    def _get_purchase_order_domain(self):
+        if self.env.user.has_group('base.group_system') or self.env.user.has_group('morons.group_bod') or self.env.user.has_group('morons.group_accountants'):
+            return []
+        elif self.env.user.has_group('morons.group_pm'):
+            accountant_users = self.env['res.users'].search([('groups_id', '=', self.env.ref('morons.group_accountants').id)])
+            accountant_user_ids = accountant_users.mapped('id')
+            return [('user_ids', 'not in', accountant_user_ids)]
+        else:
+            return [('user_ids', '=', self.env.uid)]
+
+    def write(self, vals):
+        if 'payment_status' in vals and not self.env.context.get('skip_task_update'):
+            for invoice in self:
+                if invoice.purchase_order:
+                    invoice.purchase_order.with_context(skip_invoice_update=True).write({'payment_status': vals['payment_status']})
+        return super(Invoice, self).write(vals)
 
     note = fields.Text(string='Note')
 
@@ -113,4 +152,19 @@ class Invoice(models.Model):
 
     status = fields.Selection(string='Status', selection=invoice_status_list, default='draft')
     payment_status = fields.Selection(string='Payment Status', selection=payment_status_list, default='unpaid')
+
+    @api.model
+    def search(self, args, **kwargs):
+        if self.env.context.get('custom_search'):
+            return super(Invoice, self).search(args, **kwargs)
+        
+        if self.env.user.has_group('morons.group_pm'):
+            custom_domain = self._get_dynamic_domain()
+            args = [('id', 'in', self.with_context(custom_search=True).search(custom_domain).ids)] + args
+        return super(Invoice, self).search(args, **kwargs)
+    
+    def _get_dynamic_domain(self):
+        accountant_group = self.env.ref('morons.group_accountants')
+        accountant_user_ids = accountant_group.users.ids
+        return [('create_uid', 'not in', accountant_user_ids)]
 

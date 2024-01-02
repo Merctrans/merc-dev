@@ -224,6 +224,21 @@ class MerctransProject(models.Model):
                 project.receivable = project.job_value - project.po_value
             else:
                 project.receivable = 0
+    
+    @api.model
+    def search(self, args, **kwargs):
+        if self.env.context.get('custom_search'):
+            return super(MerctransProject, self).search(args, **kwargs)
+        
+        if self.env.user.has_group('morons.group_pm'):
+            custom_domain = self._get_dynamic_domain()
+            args = [('id', 'in', self.with_context(custom_search=True).search(custom_domain).ids)] + args
+        return super(MerctransProject, self).search(args, **kwargs)
+    
+    def _get_dynamic_domain(self):
+        accountant_group = self.env.ref('morons.group_accountants')
+        accountant_user_ids = accountant_group.users.ids
+        return [('create_uid', 'not in', accountant_user_ids)]
 
 
 class MerctransTask(models.Model):
@@ -259,6 +274,18 @@ class MerctransTask(models.Model):
         _compute_currency_id(): Computes the currency used in the task based on the users assigned to it.
     """
     _inherit = "project.task"
+
+    def write(self, vals):
+        result = super(MerctransTask, self.with_context(skip_update=True)).write(vals)
+        
+        if 'payment_status' in vals and not self.env.context.get('skip_invoice_update'):
+            for task in self:
+                # Search for related invoices in the custom invoice model
+                related_invoices = self.env['morons.invoice'].search([('purchase_order', '=', task.id)])
+                for invoice in related_invoices:
+                    # Update payment status of the related invoices
+                    invoice.with_context(skip_task_update=True).write({'payment_status': vals['payment_status']})
+        return result
 
     po_status_list = [
         ("in progress", "In Progress"),
@@ -328,5 +355,3 @@ class MerctransTask(models.Model):
         for record in self:
             if record.user_ids:
                 record.currency = record.user_ids.currency.name
-
-    

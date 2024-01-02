@@ -206,8 +206,8 @@
             <field name="name">morons list</field>
             <field name="model">morons.invoice</field>
             <field name="arch" type="xml">
-                <sheet>
-                    <form>
+                <form>
+                    <sheet>
                         <group>
                             <group col="3">
                                 <field name="invoice_id" readonly="1"/>
@@ -224,11 +224,12 @@
                                 <field name="sale_unit"/>
                                 <field name="payable"/>
                                 <field name="payable_usd"/>
+                                <field name="payment_status"/>
                                 <field name="status" groups="base.group_system,morons.group_pm,morons.group_bod,morons.group_accountants"/>
                             </group>
                         </group>
-                    </form>
-                </sheet>
+                    </sheet>
+                </form>
             </field>
         </record>
 
@@ -265,22 +266,33 @@
         
         <menuitem name="Projects" id="project.menu_main_pm"/>
 
-        <menuitem id="menu_morons_invoice"
-                name="Invoices"
-                parent="project.menu_main_pm"
-                action="action_open_invoice"/>
-
         <!-- CREATION OF INTERNAL USER NAVBAR OPTION -->
         <menuitem id="menu_res_users"
                 name="Internal Users"
                 parent="project.menu_main_pm"
                 action="action_open_res_users"
                 groups="base.group_system"/>
+        
+        <menuitem id="menu_morons_invoice"
+                name="Invoices"
+                parent="project.menu_main_pm"/>
 
-        <menuitem id="project.menu_projects"
+        <menuitem id="menu_contributor_invoice"
+                name="Contributor Invoices"
+                parent="menu_morons_invoice"
+                sequence = "1"
+                action="action_open_invoice"/>
+
+        <menuitem id="menu_client_invoice"
+                name="Client Invoices"
+                parent="menu_morons_invoice"
+                sequence = "2"/>
+        
+
+        <!-- <menuitem id="project.menu_projects"
                 name="Projects"
                 parent="project.menu_main_pm"
-                groups="morons.group_pm"/>
+                groups="base.group_system,morons.group_pm,morons.group_bod,morons.group_accountants"/> -->
 
         <menuitem id="base.menu_management"
                 name="Apps"
