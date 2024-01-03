@@ -299,7 +299,8 @@
                                 <field name="payable_usd"/>
                                 <field name="payment_status"/>
                                 <field name="paid_on_date" 
-                                   attrs="{'required': [('payment_status', '=', 'paid')]}"/>
+                                   attrs="{'required': [('payment_status', '=', 'paid')]}"
+                                   readonly="0"/>
                             </group>
                         </group>
                     </sheet>
@@ -312,7 +313,7 @@
             <field name="name">morons list</field>
             <field name="model">morons.client_invoice</field>
             <field name="arch" type="xml">
-                <tree decoration-danger="due_date &lt; current_date and status != 'completed'" decoration-success="status == 'completed'">
+                <tree decoration-danger="due_date &lt; current_date and payment_status != 'paid'" decoration-success="payment_status == 'paid'">
                     <field name="invoice_id" readonly="1"/>
                     <field name="issue_date"/>
                     <field name="due_date"/>
@@ -325,6 +326,7 @@
                     <field name="payable"/>
                     <field name="payable_usd"/>
                     <field name="status"/>
+                    <field name="payment_status"/>
                 </tree>
             </field>
         </record>
