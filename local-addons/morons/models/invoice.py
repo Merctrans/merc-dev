@@ -231,15 +231,10 @@ class ClientInvoice(models.Model):
         invoice_status_list (list of tuples): Predefined list of possible invoice statuses.
         work_unit_list (list of tuples): Predefined list of work units applicable to an invoice.
         payment_status_list (list of tuples): Predefined list of payment statuses for tracking invoice payments.
-        invoice_id (fields.Char): Unique identifier for the invoice.
         issue_date (fields.Date): Field for the issue date of the invoice.
-        due_date (fields.Date): Field for the due date of the invoice, computed based on issue date.
-        client (fields.Many2one): Reference to the client company.
-        customer_reference (fields.Char): Reference provided by the customer.
-        address (fields.Text): Address of the client.
-        email (fields.Char): Email address associated with the invoice.
-        sales_order (fields.Many2many): Reference to sales orders related to the invoice.
-        purchase_order (fields.Many2many): Reference to purchase orders related to the invoice.
+        due_date (fields.Date): Field for the due date of the invoice.
+        sender (fields.Char): Field for the sender of the invoice.
+        purchase_order (fields.Many2one): Relationship to the 'project.project' model for associated purchase order.
         note (fields.Text): Field for additional notes or comments on the invoice.
         currency (fields.Many2one): Field for specifying the invoice currency.
         work_unit (fields.Selection): Field for selecting a work unit from work_unit_list.
@@ -249,32 +244,12 @@ class ClientInvoice(models.Model):
         payable_usd (fields.Monetary): Computed field for the total payable amount in USD.
         status (fields.Selection): Field for the current status of the invoice.
         payment_status (fields.Selection): Field for the current payment status of the invoice.
-        issued_to (fields.Many2one): Field for the user to whom the invoice is issued.
-        line_total (fields.Monetary): Computed field for the total of each line item.
-        discount (fields.Float): Field for any discount applied to the invoice.
-        subtotal (fields.Monetary): Computed field for the invoice subtotal.
-        VAT (fields.Float): Field for the Value Added Tax (VAT) applicable.
-        usd_currency_id (fields.Many2one): Field for storing the USD currency record.
-        paid_on_date (fields.Date): Field for the date on which the invoice was paid.
 
     Methods:
         create(vals): Creates a new invoice record.
         write(vals): Writes to an existing invoice record.
         _compute_payable_amount(): Computes the total payable amount.
         _compute_amount_usd(): Converts the payable amount into USD.
-        _compute_due_date(): Computes the due date based on the issue date.
-        _inverse_due_date(): Inverse method for due_date computation.
-        add_business_days(from_date, num_days): Adds business days to a given date.
-        validate_email(): Validates the email field of the invoice.
-        search(args, offset=0, limit=None, order=None, count=False): Searches for invoices.
-        fields_get(allfields=None, attributes=None): Gets the fields of the model.
-        _compute_issued_to(): Computes the issued_to field based on the purchase order.
-        _compute_currency(): Computes the currency based on the issued_to field.
-        _compute_line_total(): Computes the line total for the invoice.
-        _get_default_discount(): Gets the default discount value.
-        _check_discount(): Checks if the discount is valid.
-        _compute_subtotal(): Computes the invoice's subtotal.
-        _compute_paid_on_date(): Computes the paid_on_date based on payment status.
     """
 
     _name = 'morons.client_invoice'
@@ -363,7 +338,7 @@ class ClientInvoice(models.Model):
     customer_reference = fields.Char(string='Customer Reference', required=True)
     address = fields.Text(string='Address')
     email = fields.Char(string='Email')
-    sales_order = fields.Many2many('project.project', string='Sales Order')
+    sales_order = fields.Many2many('merctrans.sale', string='Sales Order')
 
     @api.constrains('email')
     def validate_email(self):

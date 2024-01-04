@@ -272,7 +272,7 @@
                                 <field name="invoice_id" readonly="1"/>
                                 <field name="issue_date"/>
                                 <field name="due_date"/>
-                                <field name="purchase_order"/>
+                                <field name="sales_order"/>
                                 <field name="status" groups="base.group_system,morons.group_pm,morons.group_bod,morons.group_accountants"/>
                             </group>
                             <group col="3">
