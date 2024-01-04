@@ -272,7 +272,7 @@
                                 <field name="invoice_id" readonly="1"/>
                                 <field name="issue_date"/>
                                 <field name="due_date"/>
-                                <field name="purchase_order"/>
+                                <field name="sales_order"/>
                                 <field name="status" groups="base.group_system,morons.group_pm,morons.group_bod,morons.group_accountants"/>
                             </group>
                             <group col="3">
@@ -294,7 +294,7 @@
                             <group>
                                 <field name="line_total"/>
                                 <field name="subtotal"/>
-                                <field name="VAT" widget="percentage" readonly="1"/>
+                                <field name="VAT" widget="percentage" readonly="0"/>
                                 <field name="payable"/>
                                 <field name="payable_usd"/>
                                 <field name="payment_status"/>
