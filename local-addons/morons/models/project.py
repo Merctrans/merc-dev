@@ -224,7 +224,7 @@ class MerctransProject(models.Model):
                 project.receivable = project.job_value - project.po_value
             else:
                 project.receivable = 0
-
+    
     @api.model
     def search(self, args, **kwargs):
         if self.env.context.get('custom_search'):
@@ -234,11 +234,12 @@ class MerctransProject(models.Model):
             custom_domain = self._get_dynamic_domain()
             args = [('id', 'in', self.with_context(custom_search=True).search(custom_domain).ids)] + args
         return super(MerctransProject, self).search(args, **kwargs)
-
+    
     def _get_dynamic_domain(self):
         accountant_group = self.env.ref('morons.group_accountants')
         accountant_user_ids = accountant_group.users.ids
         return [('create_uid', 'not in', accountant_user_ids)]
+
 
 class MerctransTask(models.Model):
     """
@@ -313,8 +314,7 @@ class MerctransTask(models.Model):
     payment_status = fields.Selection(
         string="Payment Status*",
         selection=payment_status_list,
-        required=True,
-        default="unpaid",
+        required=True
     )
 
     currency = fields.Char('Currency', compute='_compute_currency_id')
@@ -342,5 +342,3 @@ class MerctransTask(models.Model):
         for record in self:
             if record.user_ids:
                 record.currency = record.user_ids.currency.name
-
-    

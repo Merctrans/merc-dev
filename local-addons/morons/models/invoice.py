@@ -1,6 +1,12 @@
 # -*- coding: utf-8 -*-
 
+from datetime import timedelta
+import datetime
 from odoo import models, fields, api
+from odoo.exceptions import ValidationError
+import re
+import pytz
+
 
 class Invoice(models.Model):
     """
@@ -39,6 +45,8 @@ class Invoice(models.Model):
     """
 
     _name = 'morons.invoice'
+    _description = ''
+    _rec_name = 'invoice_id'
 
     invoice_status_list = [
         ("in progress", "In Progress"),
@@ -60,7 +68,12 @@ class Invoice(models.Model):
         ("paid", "Paid"),
     ]
 
-    invoice_id = fields.Char(string='Invoice ID', required=True, copy=False, readonly=True, index=True, default=lambda self: 'New')
+    invoice_id = fields.Char(string='Invoice ID', 
+                             required=True, 
+                             copy=False, 
+                             readonly=True, 
+                             index=True, 
+                             default=lambda self: 'New')
 
     @api.model
     def create(self, vals):
@@ -69,14 +82,33 @@ class Invoice(models.Model):
         result = super(Invoice, self).create(vals)
         return result
     
-    issue_date = fields.Date(string='Issue Date')
-    due_date = fields.Date(string='Due Date')
-    sender = fields.Many2one('res.user',string='Issued By') 
+    issue_date = fields.Date(string='Issue Date', default=fields.Date.context_today)
+    due_date = fields.Date(string='Due Date', compute='_compute_due_date', inverse='_inverse_due_date',)
+
+    @api.depends('issue_date')
+    def _compute_due_date(self):
+        for record in self:
+            if record.issue_date:
+                record.due_date = self.add_business_days(record.issue_date, 45)
+            else:
+                record.due_date = False
+            
+    def _inverse_due_date(self):
+        pass
+
+    def add_business_days(self, from_date, num_days):
+        current_date = from_date
+        while num_days > 0:
+            current_date += timedelta(days=1)
+            if current_date.weekday() < 5:
+                num_days -= 1
+        return current_date
+    
+    sender = fields.Many2one('res.users', string='Issued By', default=lambda self: self.env.user)
 
     purchase_order = fields.Many2one('project.task',
                     string='Purchase Order',
                     domain=lambda self: self._get_purchase_order_domain())
-
     def _get_purchase_order_domain(self):
         if self.env.user.has_group('base.group_system') or self.env.user.has_group('morons.group_bod') or self.env.user.has_group('morons.group_accountants'):
             return []
@@ -87,23 +119,66 @@ class Invoice(models.Model):
         else:
             return [('user_ids', '=', self.env.uid)]
 
-    # purchase_order_name = fields.Char(string="Purchase Order Name", related='purchase_order.name', readonly=True)
-
+    def write(self, vals):
+        if 'payment_status' in vals and not self.env.context.get('skip_task_update'):
+            for invoice in self:
+                if invoice.purchase_order:
+                    invoice.purchase_order.with_context(skip_invoice_update=True).write({'payment_status': vals['payment_status']})
+        return super(Invoice, self).write(vals)
+    
+    issued_to = fields.Many2one('res.users', string='Issued To', compute='_compute_issued_to', store=True)
 
     note = fields.Text(string='Note')
 
-    currency = fields.Many2one('res.currency', string='Currency')
-    work_unit = fields.Selection(string='Work Unit', selection=work_unit_list, default='word') 
-    rate = fields.Float(string="Rate", digits=(16, 2))
-    sale_unit = fields.Integer(string='Sale Unit')
-    payable = fields.Monetary(string='Payable', currency_field='currency', compute='_compute_payable_amount', store=True, readonly=True)
-    usd_currency_id = fields.Many2one('res.currency', string='USD Currency', default=lambda self: self.env.ref('base.USD'))
-    payable_usd = fields.Monetary(string='Payable(USD)', currency_field='usd_currency_id', compute='_compute_amount_usd')
+    currency = fields.Many2one(
+        'res.currency', 
+        string='Currency', 
+        compute='_compute_currency',
+        required=True,
+        store=True
+    )
 
-    @api.depends('rate', 'sale_unit')
+    @api.depends('purchase_order')
+    def _compute_issued_to(self):
+        for record in self:
+            if record.purchase_order and record.purchase_order.user_ids:
+                record.issued_to = record.purchase_order.user_ids[0].id
+            else:
+                record.issued_to = False
+
+    @api.depends('purchase_order')
+    def _compute_currency(self):
+        for record in self:
+            if record:
+                record.currency = record.issued_to.currency
+
+    work_unit = fields.Selection(string='Work Unit', 
+                                 selection=work_unit_list, 
+                                 default='word') 
+    
+    sale_rate = fields.Float(string="Sale Rate", 
+                        digits=(16, 2))
+    
+    task_volume = fields.Integer(string='Task Volume')
+
+    payable = fields.Monetary(string='Payable', 
+                              currency_field='currency', 
+                              compute='_compute_payable_amount', 
+                              store=True, 
+                              readonly=True) 
+    
+    usd_currency_id = fields.Many2one('res.currency', 
+                                      string='USD Currency', 
+                                      default=lambda self: self.env.ref('base.USD'))
+    
+    payable_usd = fields.Monetary(string='Payable(USD)', 
+                                  currency_field='usd_currency_id', 
+                                  compute='_compute_amount_usd')
+
+    @api.depends('sale_rate', 'task_volume', 'currency')
     def _compute_payable_amount(self):
         for record in self:
-            record.payable = record.rate * record.sale_unit
+            record.payable = record.sale_rate * record.task_volume
 
     @api.depends('payable')
     def _compute_amount_usd(self):
@@ -119,13 +194,23 @@ class Invoice(models.Model):
             else:
                 record.payable_usd = record.payable
 
-    # @api.depends('payable', 'currency')
-    # def _compute_payable_usd(self):
-    #     for record in self:
-    #         USD = self.env['res.currency'].search([('name', '=', 'USD')])
-    #         curr = self.env['res.currency'].search([('name', '=', 'VND')])
-    #         record.payable_usd = USD.compute(record.payable, curr)
 
-    status = fields.Selection(string='Status', selection=invoice_status_list, default='draft')
-    payment_status = fields.Selection(string='Payment Status', selection=payment_status_list, default='unpaid')
+    status = fields.Selection(string='Status', 
+                              selection=invoice_status_list, 
+                              default='draft')
+    
+    payment_status = fields.Many2one(
+        'merctrans.sale',
+        string='Payment Status', 
+        compute='_compute_payment_status',
+        store=True
+    )
+
+    @api.depends('purchase_order')
+    def _compute_payment_status(self):
+        for record in self:
+            if record.purchase_order:
+                record.payment_status = record.purchase_order.payment_status
+            else:
+                record.payment_status = None
 
