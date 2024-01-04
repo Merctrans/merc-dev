@@ -294,7 +294,7 @@
                             <group>
                                 <field name="line_total"/>
                                 <field name="subtotal"/>
-                                <field name="VAT" widget="percentage" readonly="1"/>
+                                <field name="VAT" widget="percentage" readonly="0"/>
                                 <field name="payable"/>
                                 <field name="payable_usd"/>
                                 <field name="payment_status"/>

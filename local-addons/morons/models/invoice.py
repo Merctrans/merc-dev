@@ -216,38 +216,65 @@ class Invoice(models.Model):
 
 class ClientInvoice(models.Model):
     """
-    A model representing client invoices in the MercTrans system.
+    Represents client invoices in the MercTrans system, extending Odoo's invoicing system.
 
-    This class extends the basic functionality of Odoo's invoicing system 
-    to meet the specific requirements of MercTrans. It includes features 
-    like a variety of work units, different statuses for invoices and payments, 
-    and the capability to handle different currencies with automatic conversion 
-    to USD. It also manages the link with purchase orders from projects and 
-    calculates payable amounts based on dynamic rates and units.
+    Features:
+    - Supports various work units and statuses for invoices and payments.
+    - Handles different currencies with automatic conversion to USD.
+    - Links with purchase orders from projects.
+    - Calculates payable amounts based on dynamic rates and units.
 
     Attributes:
         _name (str): Identifier for the Odoo model.
-        invoice_status_list (list of tuples): A predefined list of possible statuses for an invoice.
-        work_unit_list (list of tuples): A predefined list of work units applicable to an invoice.
-        payment_status_list (list of tuples): A predefined list of payment statuses for tracking invoice payments.
-        issue_date (fields.Date): Field for the date when the invoice is issued.
-        due_date (fields.Date): Field for the date when the invoice payment is due.
-        sender (fields.Char): Field for the name of the sender of the invoice.
-        purchase_order (fields.Many2one): Relationship to the 'project.project' model, representing the associated purchase order.
-        purchase_order_name (fields.Char): Field for displaying the name of the related purchase order, derived from 'purchase_order'.
-        note (fields.Text): Field for any additional notes or comments on the invoice.
-        currency (fields.Many2one): Field linking to the 'res.currency' model for specifying the currency used in the invoice.
-        work_unit (fields.Selection): Field for selecting a work unit from the work_unit_list.
-        rate (fields.Float): Field for the rate applied in the invoice, dependent on the chosen work unit.
-        sale_unit (fields.Integer): Field for the number of work units being billed in the invoice.
-        payable (fields.Monetary): Computed field for the total payable amount in the invoice's currency.
-        payable_usd (fields.Monetary): Computed field for the total payable amount converted to USD.
-        status (fields.Selection): Field for the current status of the invoice, selected from invoice_status_list.
-        payment_status (fields.Selection): Field for the current payment status of the invoice, selected from payment_status_list.
+        _description (str): Description of the model.
+        _rec_name (str): Record name used in the model.
+        invoice_status_list (list of tuples): Predefined list of possible invoice statuses.
+        work_unit_list (list of tuples): Predefined list of work units applicable to an invoice.
+        payment_status_list (list of tuples): Predefined list of payment statuses for tracking invoice payments.
+        invoice_id (fields.Char): Unique identifier for the invoice.
+        issue_date (fields.Date): Field for the issue date of the invoice.
+        due_date (fields.Date): Field for the due date of the invoice, computed based on issue date.
+        client (fields.Many2one): Reference to the client company.
+        customer_reference (fields.Char): Reference provided by the customer.
+        address (fields.Text): Address of the client.
+        email (fields.Char): Email address associated with the invoice.
+        sales_order (fields.Many2many): Reference to sales orders related to the invoice.
+        purchase_order (fields.Many2many): Reference to purchase orders related to the invoice.
+        note (fields.Text): Field for additional notes or comments on the invoice.
+        currency (fields.Many2one): Field for specifying the invoice currency.
+        work_unit (fields.Selection): Field for selecting a work unit from work_unit_list.
+        rate (fields.Float): Field for the rate applied in the invoice.
+        sale_unit (fields.Integer): Field for the number of work units billed.
+        payable (fields.Monetary): Computed field for the total payable amount in invoice's currency.
+        payable_usd (fields.Monetary): Computed field for the total payable amount in USD.
+        status (fields.Selection): Field for the current status of the invoice.
+        payment_status (fields.Selection): Field for the current payment status of the invoice.
+        issued_to (fields.Many2one): Field for the user to whom the invoice is issued.
+        line_total (fields.Monetary): Computed field for the total of each line item.
+        discount (fields.Float): Field for any discount applied to the invoice.
+        subtotal (fields.Monetary): Computed field for the invoice subtotal.
+        VAT (fields.Float): Field for the Value Added Tax (VAT) applicable.
+        usd_currency_id (fields.Many2one): Field for storing the USD currency record.
+        paid_on_date (fields.Date): Field for the date on which the invoice was paid.
 
     Methods:
-        _compute_payable_amount(self): Computes the total payable amount based on the rate and sale unit.
-        _compute_amount_usd(self): Converts the payable amount into USD based on the current exchange rate and invoice date.
+        create(vals): Creates a new invoice record.
+        write(vals): Writes to an existing invoice record.
+        _compute_payable_amount(): Computes the total payable amount.
+        _compute_amount_usd(): Converts the payable amount into USD.
+        _compute_due_date(): Computes the due date based on the issue date.
+        _inverse_due_date(): Inverse method for due_date computation.
+        add_business_days(from_date, num_days): Adds business days to a given date.
+        validate_email(): Validates the email field of the invoice.
+        search(args, offset=0, limit=None, order=None, count=False): Searches for invoices.
+        fields_get(allfields=None, attributes=None): Gets the fields of the model.
+        _compute_issued_to(): Computes the issued_to field based on the purchase order.
+        _compute_currency(): Computes the currency based on the issued_to field.
+        _compute_line_total(): Computes the line total for the invoice.
+        _get_default_discount(): Gets the default discount value.
+        _check_discount(): Checks if the discount is valid.
+        _compute_subtotal(): Computes the invoice's subtotal.
+        _compute_paid_on_date(): Computes the paid_on_date based on payment status.
     """
 
     _name = 'morons.client_invoice'
@@ -336,7 +363,7 @@ class ClientInvoice(models.Model):
     customer_reference = fields.Char(string='Customer Reference', required=True)
     address = fields.Text(string='Address')
     email = fields.Char(string='Email')
-    sales_order = fields.Many2one('project.task', string='Sales Order')
+    sales_order = fields.Many2many('project.project', string='Sales Order')
 
     @api.constrains('email')
     def validate_email(self):
@@ -348,7 +375,7 @@ class ClientInvoice(models.Model):
                 if match is None:
                     raise ValidationError('Not a valid email')
 
-    purchase_order = fields.Many2one('project.task', string='Purchase Order', required=True)
+    purchase_order = fields.Many2many('project.task', string='Purchase Order', required=True)
 
     def search(self, args, offset=0, limit=None, order=None, count=False):
         user = self.env.user
