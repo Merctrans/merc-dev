@@ -317,32 +317,6 @@ class MerctransTask(models.Model):
         required=True
     )
 
-    def write(self, vals):
-        result = super(MerctransTask, self.with_context(skip_update=True)).write(vals)
-        
-        if 'payment_status' in vals and not self.env.context.get('skip_invoice_update'):
-            for task in self:
-                self._update_related_invoices(task, vals['payment_status'])
-                self._update_related_client_invoices(task, vals['payment_status'])
-        return result
-
-    def _update_related_invoices(self, task, payment_status):
-        """
-        Update payment status of related invoices in 'morons.invoice' model.
-        """
-        related_invoices = self.env['morons.invoice'].search([('purchase_order', '=', task.id)])
-        for invoice in related_invoices:
-            invoice.with_context(skip_task_update=True).write({'payment_status': payment_status})
-
-    def _update_related_client_invoices(self, task, payment_status):
-        """
-        Update payment status of related client invoices in 'morons.client_invoice' model.
-        """
-        related_client_invoices = self.env['morons.client_invoice'].search([('purchase_order', '=', task.id)])
-        for client_invoice in related_client_invoices:
-            # Assuming 'payment_status' field exists in 'morons.client_invoice' model
-            client_invoice.with_context(skip_task_update=True).write({'payment_status': payment_status})
-
     currency = fields.Char('Currency', compute='_compute_currency_id')
 
     def _invert_get_source_lang(self):
