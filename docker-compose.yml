@@ -2,6 +2,9 @@ version: "3.1"
 services:
   web:
     image: odoo:16
+    build: 
+      context: .
+      dockerfile: Dockerfile-odoo
     container_name: web-odoo-morons
     depends_on:
       - db
