@@ -1,6 +1,9 @@
 # -*- coding: utf-8 -*-
 
 from odoo import models, fields, api
+import requests
+
+YOUR_API_KEY = 'fdb0f4d94e1ba8d6d9e3bb01e4dd6472'
 
 class Invoice(models.Model):
     """
@@ -105,19 +108,33 @@ class Invoice(models.Model):
         for record in self:
             record.payable = record.rate * record.sale_unit
 
-    @api.depends('payable')
+    @api.depends('payable', 'currency')
     def _compute_amount_usd(self):
         """
-        For now, it is hardcoded to convert from VND to USD and EUR to USD.
-        (TODO) Auto compute regardless of currency.
+        Converts the payable amount into USD based on the current exchange rate.
         """
         for record in self:
-            if record.currency.name == 'VND':
-                record.payable_usd = record.payable * 0.000041
-            elif record.currency.name == 'EUR':
-                record.payable_usd = record.payable * 1.10
-            else:
+            if record.currency.name == 'USD':
                 record.payable_usd = record.payable
+            else:
+                # Construct the API URL
+                api_url = f"https://api.exchangeratesapi.io/v1/latest?access_key={YOUR_API_KEY}&base={record.currency.name}&symbols=USD"
+                
+                try:
+                    response = requests.get(api_url)
+                    response.raise_for_status()  # Raises a HTTPError if the response status code is 4XX/5XX
+                    data = response.json()
+                    
+                    # Check if the request was successful and USD rate is available
+                    if data.get('success') and 'rates' in data and 'USD' in data['rates']:
+                        usd_rate = data['rates']['USD']
+                        record.payable_usd = record.payable * usd_rate
+                    else:
+                        record.payable_usd = 0  # Consider how you want to handle errors or missing rates
+                except requests.RequestException as e:
+                    record.payable_usd = 0
+                    raise e
+
 
     # @api.depends('payable', 'currency')
     # def _compute_payable_usd(self):
