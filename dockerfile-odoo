@@ -1,0 +1,10 @@
+FROM odoo:16
+
+USER root
+
+CMD ["odoo", "-i", "base"]
+
+RUN pip install requests 
+
+USER odoo
+
