@@ -32,7 +32,6 @@
         'data/company_data.xml',
         'data/services.xml',
         'data/tags.xml',
-        "security/ir.model.access.csv",
         "security/security.xml",
     ],
     # only loaded in demonstration mode
