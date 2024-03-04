@@ -1,7 +1,18 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
     <data>
-    <!-- create 2 groups: PM, contributor - assign different rights  (he will give sample) -->
+
+        <!-- Add access rule for Services offered by MercTrans to all system users -->
+        <record id="merctrans_services_access_all_users" model="ir.model.access">
+            <field name="name">merctrans.services access for all users</field>
+            <field name="model_id" ref="morons.model_project_project" />
+            <field name="group_id" ref="base.group_system" />
+            <field name="perm_read" eval="True" />
+            <field name="perm_write" eval="True" />
+            <field name="perm_create" eval="True" />
+            <field name="perm_unlink" eval="True" />
+        </record>
+        <!-- create 2 groups: PM, contributor - assign different rights  (he will give sample) -->
         <record model="ir.module.category" id="module_category_morons">
             <field name="name">Morons</field>
         </record>
@@ -9,143 +20,143 @@
         <!-- Update the group to use this category -->
         <record id="group_contributors" model="res.groups">
             <field name="name">Contributors</field>
-            <field name="category_id" ref="module_category_morons"/>
+            <field name="category_id" ref="module_category_morons" />
         </record>
 
         <record id="group_pm" model="res.groups">
             <field name="name">PM</field>
-            <field name="category_id" ref="module_category_morons"/>
+            <field name="category_id" ref="module_category_morons" />
         </record>
 
         <record id="group_bod" model="res.groups">
             <field name="name">BOD</field>
-            <field name="category_id" ref="module_category_morons"/>
+            <field name="category_id" ref="module_category_morons" />
         </record>
         <record id="group_accountants" model="res.groups">
             <field name="name">Accountants</field>
-            <field name="category_id" ref="module_category_morons"/>
+            <field name="category_id" ref="module_category_morons" />
         </record>
 
         <!-- Create CRUD rights -->
         <record id="module_category_contributor_access" model="ir.model.access">
             <field name="name">Contributor access</field>
-            <field name="model_id" ref="morons.model_project_project"/>
-            <field name="group_id" ref="morons.group_contributors"/>
-            <field name="perm_read" eval="1"/>
-            <field name="perm_write" eval="0"/>
-            <field name="perm_create" eval="0"/>
-            <field name="perm_unlink" eval="0"/>
+            <field name="model_id" ref="morons.model_project_project" />
+            <field name="group_id" ref="morons.group_contributors" />
+            <field name="perm_read" eval="1" />
+            <field name="perm_write" eval="0" />
+            <field name="perm_create" eval="0" />
+            <field name="perm_unlink" eval="0" />
         </record>
 
         <record id="module_category_pm_access" model="ir.model.access">
             <field name="name">PM access</field>
-            <field name="model_id" ref="morons.model_project_project"/>
-            <field name="group_id" ref="morons.group_pm"/>
-            <field name="perm_read" eval="1"/>
-            <field name="perm_write" eval="1"/>
-            <field name="perm_create" eval="1"/>
-            <field name="perm_unlink" eval="1"/>
+            <field name="model_id" ref="morons.model_project_project" />
+            <field name="group_id" ref="morons.group_pm" />
+            <field name="perm_read" eval="1" />
+            <field name="perm_write" eval="1" />
+            <field name="perm_create" eval="1" />
+            <field name="perm_unlink" eval="1" />
         </record>
 
         <record id="module_category_bod_access" model="ir.model.access">
             <field name="name">BOD access</field>
-            <field name="model_id" ref="morons.model_project_project"/>
-            <field name="group_id" ref="morons.group_bod"/>
-            <field name="perm_read" eval="1"/>
-            <field name="perm_write" eval="1"/>
-            <field name="perm_create" eval="1"/>
-            <field name="perm_unlink" eval="1"/>
+            <field name="model_id" ref="morons.model_project_project" />
+            <field name="group_id" ref="morons.group_bod" />
+            <field name="perm_read" eval="1" />
+            <field name="perm_write" eval="1" />
+            <field name="perm_create" eval="1" />
+            <field name="perm_unlink" eval="1" />
         </record>
 
         <record id="module_category_accountant_access" model="ir.model.access">
             <field name="name">Accountant access</field>
-            <field name="model_id" ref="morons.model_project_project"/>
-            <field name="group_id" ref="morons.group_accountants"/>
-            <field name="perm_read" eval="1"/>
-            <field name="perm_write" eval="1"/>
-            <field name="perm_create" eval="1"/>
-            <field name="perm_unlink" eval="1"/>
+            <field name="model_id" ref="morons.model_project_project" />
+            <field name="group_id" ref="morons.group_accountants" />
+            <field name="perm_read" eval="1" />
+            <field name="perm_write" eval="1" />
+            <field name="perm_create" eval="1" />
+            <field name="perm_unlink" eval="1" />
         </record>
 
         <record id="res_company_category_pm_access" model="ir.model.access">
             <field name="name">PM access</field>
-            <field name="model_id" ref="base.model_res_company"/>
-            <field name="group_id" ref="morons.group_pm"/>
-            <field name="perm_read" eval="1"/>
-            <field name="perm_write" eval="1"/>
-            <field name="perm_create" eval="1"/>
-            <field name="perm_unlink" eval="1"/>
+            <field name="model_id" ref="base.model_res_company" />
+            <field name="group_id" ref="morons.group_pm" />
+            <field name="perm_read" eval="1" />
+            <field name="perm_write" eval="1" />
+            <field name="perm_create" eval="1" />
+            <field name="perm_unlink" eval="1" />
         </record>
 
         <record id="res_company_category_bod_access" model="ir.model.access">
             <field name="name">BOD access</field>
-            <field name="model_id" ref="base.model_res_company"/>
-            <field name="group_id" ref="morons.group_bod"/>
-            <field name="perm_read" eval="1"/>
-            <field name="perm_write" eval="1"/>
-            <field name="perm_create" eval="1"/>
-            <field name="perm_unlink" eval="1"/>
+            <field name="model_id" ref="base.model_res_company" />
+            <field name="group_id" ref="morons.group_bod" />
+            <field name="perm_read" eval="1" />
+            <field name="perm_write" eval="1" />
+            <field name="perm_create" eval="1" />
+            <field name="perm_unlink" eval="1" />
         </record>
 
         <record id="res_company_category_accountant_access" model="ir.model.access">
             <field name="name">Accountant access</field>
-            <field name="model_id" ref="base.model_res_company"/>
-            <field name="group_id" ref="morons.group_accountants"/>
-            <field name="perm_read" eval="1"/>
-            <field name="perm_write" eval="1"/>
-            <field name="perm_create" eval="1"/>
-            <field name="perm_unlink" eval="1"/>
+            <field name="model_id" ref="base.model_res_company" />
+            <field name="group_id" ref="morons.group_accountants" />
+            <field name="perm_read" eval="1" />
+            <field name="perm_write" eval="1" />
+            <field name="perm_create" eval="1" />
+            <field name="perm_unlink" eval="1" />
         </record>
 
         <record id="module_category_pm_access_invoice" model="ir.model.access">
             <field name="name">Contributor access to invoice</field>
-            <field name="model_id" ref="morons.model_morons_invoice"/>
-            <field name="group_id" ref="morons.group_contributors"/>
-            <field name="perm_read" eval="1"/>
-            <field name="perm_write" eval="1"/>
-            <field name="perm_create" eval="1"/>
-            <field name="perm_unlink" eval="1"/>
+            <field name="model_id" ref="morons.model_morons_invoice" />
+            <field name="group_id" ref="morons.group_contributors" />
+            <field name="perm_read" eval="1" />
+            <field name="perm_write" eval="1" />
+            <field name="perm_create" eval="1" />
+            <field name="perm_unlink" eval="1" />
         </record>
-        
+
 
         <record id="module_category_contributor_access_invoice" model="ir.model.access">
             <field name="name">PM access to invoice</field>
-            <field name="model_id" ref="morons.model_morons_invoice"/>
-            <field name="group_id" ref="morons.group_pm"/>
-            <field name="perm_read" eval="1"/>
-            <field name="perm_write" eval="1"/>
-            <field name="perm_create" eval="1"/>
-            <field name="perm_unlink" eval="1"/>
+            <field name="model_id" ref="morons.model_morons_invoice" />
+            <field name="group_id" ref="morons.group_pm" />
+            <field name="perm_read" eval="1" />
+            <field name="perm_write" eval="1" />
+            <field name="perm_create" eval="1" />
+            <field name="perm_unlink" eval="1" />
         </record>
 
         <record id="module_category_bod_access_invoice" model="ir.model.access">
             <field name="name">BOD access to invoice</field>
-            <field name="model_id" ref="morons.model_morons_invoice"/>
-            <field name="group_id" ref="morons.group_bod"/>
-            <field name="perm_read" eval="1"/>
-            <field name="perm_write" eval="1"/>
-            <field name="perm_create" eval="1"/>
-            <field name="perm_unlink" eval="1"/>
+            <field name="model_id" ref="morons.model_morons_invoice" />
+            <field name="group_id" ref="morons.group_bod" />
+            <field name="perm_read" eval="1" />
+            <field name="perm_write" eval="1" />
+            <field name="perm_create" eval="1" />
+            <field name="perm_unlink" eval="1" />
         </record>
 
         <record id="module_category_accountant_access_invoice" model="ir.model.access">
             <field name="name">Accountant access to invoice</field>
-            <field name="model_id" ref="morons.model_morons_invoice"/>
-            <field name="group_id" ref="morons.group_accountants"/>
-            <field name="perm_read" eval="1"/>
-            <field name="perm_write" eval="1"/>
-            <field name="perm_create" eval="1"/>
-            <field name="perm_unlink" eval="1"/>
+            <field name="model_id" ref="morons.model_morons_invoice" />
+            <field name="group_id" ref="morons.group_accountants" />
+            <field name="perm_read" eval="1" />
+            <field name="perm_write" eval="1" />
+            <field name="perm_create" eval="1" />
+            <field name="perm_unlink" eval="1" />
         </record>
-        
+
         <record id="module_category_admin_access_invoice" model="ir.model.access">
             <field name="name">Admin access to invoice</field>
-            <field name="model_id" ref="morons.model_morons_invoice"/>
-            <field name="group_id" ref="base.group_system"/>
-            <field name="perm_read" eval="1"/>
-            <field name="perm_write" eval="1"/>
-            <field name="perm_create" eval="1"/>
-            <field name="perm_unlink" eval="1"/>
+            <field name="model_id" ref="morons.model_morons_invoice" />
+            <field name="group_id" ref="base.group_system" />
+            <field name="perm_read" eval="1" />
+            <field name="perm_write" eval="1" />
+            <field name="perm_create" eval="1" />
+            <field name="perm_unlink" eval="1" />
         </record>
 
         <!-- <record model="ir.rule" id="rule_po_contributor_access">
