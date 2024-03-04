@@ -23,7 +23,7 @@ jobs:
         with:
           telegram_bot_token: ${{ secrets.TELEGRAM_BOT_TOKEN }}
           telegram_chat_id: ${{ secrets.TELEGRAM_CHAT_ID }}
-          telegram_message_thread_id: 
+
        
          
 
@@ -38,6 +38,6 @@ jobs:
         with:
           telegram_bot_token: ${{ secrets.TELEGRAM_BOT_TOKEN }}
           telegram_chat_id: ${{ secrets.TELEGRAM_CHAT_ID }}
-          telegram_message_thread_id:  ${{ secrets.TELEGRAM_MESSAGE_THREAD_ID }}
+
           
          
