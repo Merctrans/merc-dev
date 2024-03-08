@@ -129,11 +129,7 @@
         <!-- MODIFY INHTERIT ACTION done-->
         <!-- <record id="project.open_view_project_all" model="ir.actions.act_window">
             <field name="view_id" ref="project.view_project" />
-            <field name="arch" type="xml">
-                <xpath expr="//menuitem[@id='menu_project_config']" position="attributes">
-                    <attribute name="sequence">0</attribute>
-                </xpath>
-            </field>
+            
         </record> -->
         <record id="project.open_view_project_all" model="ir.actions.act_window">
             <field name="view_id" ref="project.view_project"/>
