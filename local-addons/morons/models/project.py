@@ -98,7 +98,7 @@ class MerctransProject(models.Model):
     ]
 
     job_id = fields.Char(
-        "Project Id",
+        "Project Id*",
         default=lambda self: "New",
         readonly=True,
         index=True,
@@ -293,7 +293,7 @@ class MerctransTask(models.Model):
         ("paid", "Paid"),
     ]
 
-    rate = fields.Float(string="Rate", required=True, default=0)
+    rate = fields.Float(string="Rate*", required=True, default=0)
     service = fields.Many2many("merctrans.services")
     source_language = fields.Many2one(
         "res.lang",
@@ -305,7 +305,7 @@ class MerctransTask(models.Model):
         "res.lang",
         string="Target Language",
     )
-    work_unit = fields.Selection(string="Work Unit", selection=work_unit_list, required=True)
+    work_unit = fields.Selection(string="Work Unit*", selection=work_unit_list, required=True)
     volume = fields.Integer(string="Volume*", required=True, default=0)
     po_value = fields.Float(
         "PO Value", compute="_compute_po_value", store=True, readonly=True, default=0
@@ -316,9 +316,23 @@ class MerctransTask(models.Model):
         required=True,
         default="unpaid",
     )
+    
+    
+    
+    
+    currency = fields.Many2one("res.currency", 
+                            compute='_compute_currency',
+                            )
+    
+    @api.depends('user_ids')
+    def _compute_currency(self):
+        for record in self: 
+            self.currency = self.user_ids.currency
+            
 
-    currency = fields.Char('Currency', compute='_compute_currency_id')
+    
 
+        
     def _invert_get_source_lang(self):
         pass
 

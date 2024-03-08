@@ -28,6 +28,7 @@
                     <field name="job_id" />
                     <field name="service" widget="many2many_tags" options="{'no_create': True}" />
                     <field name="currency_id" />
+                    
                     <field name="source_language" options="{'no_create': True}" />
                     <field name="target_language" options="{'no_create': True}"
                         widget="many2many_tags" />
@@ -45,6 +46,7 @@
                 <xpath expr="//field[@name='tag_ids']" position="attributes">
                     <attribute name="options">{'no_quick_create': True, 'no_create_edit': True}</attribute>
                 </xpath>
+                
                 <notebook position="inside">
                     <page string="Purchase Order" name="tasks">
                         <field name="tasks">
@@ -66,7 +68,7 @@
                 </notebook>
             </field>
         </record>
-
+<!-- dashboard project -->
         <record id="merctrans_project_view_tree" model="ir.ui.view">
             <field name="name">merctrans.project.tree.view.inherit</field>
             <field name="model">project.project</field>
@@ -88,6 +90,7 @@
                     <field name="job_value" />
                     <field name="payment_status" />
                 </xpath>
+                
             </field>
         </record>
 
@@ -120,11 +123,29 @@
                 <xpath expr="//field[@name='tag_ids']" position="attributes">
                     <attribute name="invisible">True</attribute>
                 </xpath>
+                
             </field>
         </record>
-        <!-- MODIFY INHTERIT ACTION -->
-        <record id="project.open_view_project_all" model="ir.actions.act_window">
+        <!-- MODIFY INHTERIT ACTION done-->
+        <!-- <record id="project.open_view_project_all" model="ir.actions.act_window">
             <field name="view_id" ref="project.view_project" />
+            <field name="arch" type="xml">
+                <xpath expr="//menuitem[@id='menu_project_config']" position="attributes">
+                    <attribute name="sequence">0</attribute>
+                </xpath>
+            </field>
+        </record> -->
+        <record id="project.open_view_project_all" model="ir.actions.act_window">
+            <field name="view_id" ref="project.view_project"/>
+            <!-- <field name="context">{'search_default_group_project_id': 1}</field>
+            <field name="domain">[('group_id', 'in', [1,2])]</field> -->
+        </record>
+        <record id="project.menu_projects_config" model="ir.ui.menu">
+            <field name="sequence" eval="0"/>
+        </record>
+        <record id="project.menu_project_config" model="ir.ui.menu">
+        
+            <field name="sequence" eval="0"/>
         </record>
 
         <!-- INTERNAL USER FORM -->
@@ -188,7 +209,7 @@
         <record id="action_open_res_users" model="ir.actions.act_window">
             <field name="name">Internal Users</field>
             <field name="res_model">res.users</field>
-            <field name="view_mode">tree,form</field>
+            <field name="view_mode">tree,form,kanban</field>
             <field name="view_ids"
                 eval="[(5, 0, 0), (0, 0, {'view_mode': 'tree', 'view_id': ref('base.view_users_tree')}), 
                                             (0, 0, {'view_mode': 'form', 'view_id': ref('view_res_users_form_custom')})]" />
@@ -267,6 +288,9 @@
                                             (0, 0, {'view_mode': 'form', 'view_id': ref('morons.morons_invoice_form')})]" />
         </record>
 
+        
+        
+
         <menuitem name="Projects" id="project.menu_main_pm" />
 
         <menuitem id="menu_morons_invoice" name="Invoices" parent="project.menu_main_pm"
@@ -281,5 +305,8 @@
             
 
         <menuitem id="base.menu_management" name="Apps" groups="base.group_system" />
+
+        
+
     </data>
 </odoo>
