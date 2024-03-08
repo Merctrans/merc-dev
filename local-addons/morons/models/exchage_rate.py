@@ -7,4 +7,3 @@ class ExchangeRate(models.TransientModel):
     base_currency = fields.Many2one('res.currency', string='Base Currency', required=True)
     target_currency = fields.Many2one('res.currency', string='Target Currency', required=True)
     exchange_rate = fields.Float(string='Exchange Rate', required=True)
-
