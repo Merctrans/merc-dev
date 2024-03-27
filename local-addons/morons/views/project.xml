@@ -58,7 +58,7 @@
                                 <field name="volume" options="{'no_create': True}" />
                                 <field name="rate" options="{'no_create': True}" />
                                 <field name="date_deadline" />
-                                <field name="stage_id" />
+                                <field name="stages_id"  />
                                 <field name="payment_status" />
                             </tree>
                         </field>
@@ -77,6 +77,9 @@
                 </xpath>
                 <xpath expr="(//field[@name='company_id'])[1 ]" position="attributes">
                     <attribute name="invisible">True</attribute>
+                </xpath>
+                <xpath expr="(//field[@name='last_update_status'])" position="attributes">
+                    <attribute name="invisible">True</attribute>   
                 </xpath>
                 <xpath expr="//field[@name='partner_id']" position="after">
                     <field name="service" widget="many2many_tags" />
@@ -101,18 +104,23 @@
                 <xpath expr="//field[@name='project_id']" position="attributes">
                     <attribute name="invisible">True</attribute>
                 </xpath>
+                <xpath expr="//field[@name='stage_id']" position="attributes">
+                    <attribute name="invisible">1</attribute>
+                </xpath>
                 <xpath expr="//field[@name='user_ids']" position="after">
                     <field name="rate" />
                     <field name="service" widget="many2many_tags" />
                     <field name="source_language" />
                     <field name="target_language" widget="many2many_tags" />
                     <field name="work_unit" />
+                    <field name="stages_id"  />
                 </xpath>
                 <xpath expr="//field[@name='partner_id']" position="after">
                     <field name="volume" />
                     <field name="po_value" />
                     <field name="currency" />
                     <field name="payment_status" />
+                    
                 </xpath>
                 <xpath expr="//field[@name='partner_id']" position="attributes">
                     <attribute name="invisible">True</attribute>
@@ -126,7 +134,12 @@
         <record id="project.open_view_project_all" model="ir.actions.act_window">
             <field name="view_id" ref="project.view_project" />
         </record>
-
+        <record id="project.menu_projects_config" model="ir.ui.menu">
+            <field name="sequence" eval="0"/>
+        </record>
+        <record id="project.menu_project_config" model="ir.ui.menu">     
+            <field name="sequence" eval="0"/>
+        </record>
         <!-- INTERNAL USER FORM -->
         <record id="view_res_users_form_custom" model="ir.ui.view">
             <field name="name">res.users.form.custom</field>

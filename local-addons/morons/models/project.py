@@ -117,11 +117,11 @@ class MerctransProject(models.Model):
     # fixed job
 
     work_unit = fields.Selection(string="Work Unit", selection=work_unit_list)
-    volume = fields.Integer("Project Volume")
+    volume = fields.Float("Project Volume")
     currency_id = fields.Many2one(
         "res.currency", string="Currency*", required=True, readonly=False
     )
-    sale_rate = fields.Float("Sale Rate")
+    sale_rate = fields.Float("Sale Rate", digits=(16, 3))
     job_value = fields.Monetary(
         "Project Value",
         compute="_compute_job_value",
@@ -224,22 +224,31 @@ class MerctransProject(models.Model):
                 project.receivable = project.job_value - project.po_value
             else:
                 project.receivable = 0
-
+    #hàm cũ
+    # @api.model
+    # def search(self, args, **kwargs):
+    #     if self.env.context.get('custom_search'):
+    #         return super(MerctransProject, self).search(args, **kwargs)
+        
+    #     if self.env.user.has_group('morons.group_pm'):
+    #         custom_domain = self._get_dynamic_domain()
+    #         args = [('id', 'in', self.with_context(custom_search=True).search(custom_domain).ids)] + args
+    #     return super(MerctransProject, self).search(args, **kwargs)
+    
+    #hàm quan trị xem all
     @api.model
     def search(self, args, **kwargs):
-        if self.env.context.get('custom_search'):
-            return super(MerctransProject, self).search(args, **kwargs)
-        
-        if self.env.user.has_group('morons.group_pm'):
-            custom_domain = self._get_dynamic_domain()
-            args = [('id', 'in', self.with_context(custom_search=True).search(custom_domain).ids)] + args
-        return super(MerctransProject, self).search(args, **kwargs)
+        if not self.env.user.has_group('base.group_system'):
+            # Lọc dự án dựa trên người tạo ra
+            args += [('user_id', '=', self.env.user.id)]
 
+        return super(MerctransProject, self).search(args, **kwargs)
+    
     def _get_dynamic_domain(self):
         accountant_group = self.env.ref('morons.group_accountants')
         accountant_user_ids = accountant_group.users.ids
         return [('create_uid', 'not in', accountant_user_ids)]
-
+    
 class MerctransTask(models.Model):
     """
     A model representing tasks within Merctrans projects.
@@ -273,7 +282,9 @@ class MerctransTask(models.Model):
         _compute_currency_id(): Computes the currency used in the task based on the users assigned to it.
     """
     _inherit = "project.task"
-
+    user_ids = fields.Many2many('res.users', relation='custom_project_task_user_rel', column1='task_id', column2='user_id',
+         string='Assignees*', context={'active_test': False}, tracking=True, domain="[('share', '=', False), ('active', '=', True)]",required = True)
+    
     po_status_list = [
         ("in progress", "In Progress"),
         ("completed", "Completed"),
@@ -292,8 +303,11 @@ class MerctransTask(models.Model):
         ("invoiced", "Invoiced"),
         ("paid", "Paid"),
     ]
-
-    rate = fields.Float(string="Rate", required=True, default=0)
+    stages_id = fields.Selection(string="Stage*", selection=po_status_list)
+    #stages_id = fields.Char(string="Stage*", compute='_get_stage_id')
+    #rate_id=fields.Many2one("project.project")
+    rate = fields.Float(string="Rate*", compute='_compute_rate_id', digits=(16, 3))
+    #rate = fields.Float(string="Rate", required=True, default=0)
     service = fields.Many2many("merctrans.services")
     source_language = fields.Many2one(
         "res.lang",
@@ -305,8 +319,8 @@ class MerctransTask(models.Model):
         "res.lang",
         string="Target Language",
     )
-    work_unit = fields.Selection(string="Work Unit", selection=work_unit_list, required=True)
-    volume = fields.Integer(string="Volume*", required=True, default=0)
+    work_unit = fields.Selection(string="Work Unit*", selection=work_unit_list, required=True)
+    volume = fields.Float(string="Volume*", required=True, default=0)
     po_value = fields.Float(
         "PO Value", compute="_compute_po_value", store=True, readonly=True, default=0
     )
@@ -316,9 +330,8 @@ class MerctransTask(models.Model):
         required=True,
         default="unpaid",
     )
-
     currency = fields.Char('Currency', compute='_compute_currency_id')
-
+    name =fields.Char( compute='_compute_name',readonly =False)
     def _invert_get_source_lang(self):
         pass
 
@@ -336,11 +349,22 @@ class MerctransTask(models.Model):
         for task in self:
             if self.project_id:
                 self.source_language = self.project_id.source_language
+               
+                 
+    @api.onchange("project_id")
+    def _compute_rate_id(self):
+        for task in self:
+            if self.project_id:
+                self.rate = self.project_id.sale_rate
+    
+    @api.onchange("project_id")
+    def _compute_name(self):
+        for task in self:
+            if self.project_id:
+                self.name = self.project_id.display_name         
 
     @api.onchange("user_ids")
     def _compute_currency_id(self):
         for record in self:
             if record.user_ids:
                 record.currency = record.user_ids.currency.name
-
-    
