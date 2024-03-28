@@ -223,18 +223,7 @@ class MerctransProject(models.Model):
             if project.po_value and project.job_value:
                 project.receivable = project.job_value - project.po_value
             else:
-                project.receivable = 0
-    #hàm cũ
-    # @api.model
-    # def search(self, args, **kwargs):
-    #     if self.env.context.get('custom_search'):
-    #         return super(MerctransProject, self).search(args, **kwargs)
-        
-    #     if self.env.user.has_group('morons.group_pm'):
-    #         custom_domain = self._get_dynamic_domain()
-    #         args = [('id', 'in', self.with_context(custom_search=True).search(custom_domain).ids)] + args
-    #     return super(MerctransProject, self).search(args, **kwargs)
-    
+                project.receivable = 0  
     #hàm quan trị xem all
     @api.model
     def search(self, args, **kwargs):
@@ -304,10 +293,7 @@ class MerctransTask(models.Model):
         ("paid", "Paid"),
     ]
     stages_id = fields.Selection(string="Stage*", selection=po_status_list)
-    #stages_id = fields.Char(string="Stage*", compute='_get_stage_id')
-    #rate_id=fields.Many2one("project.project")
-    rate = fields.Float(string="Rate*", compute='_compute_rate_id', digits=(16, 3))
-    #rate = fields.Float(string="Rate", required=True, default=0)
+    rate = fields.Float(string="Rate*", digits=(16, 3))
     service = fields.Many2many("merctrans.services")
     source_language = fields.Many2one(
         "res.lang",
@@ -349,13 +335,6 @@ class MerctransTask(models.Model):
         for task in self:
             if self.project_id:
                 self.source_language = self.project_id.source_language
-               
-                 
-    @api.onchange("project_id")
-    def _compute_rate_id(self):
-        for task in self:
-            if self.project_id:
-                self.rate = self.project_id.sale_rate
     
     @api.onchange("project_id")
     def _compute_name(self):

@@ -104,9 +104,6 @@
                 <xpath expr="//field[@name='project_id']" position="attributes">
                     <attribute name="invisible">True</attribute>
                 </xpath>
-                <xpath expr="//field[@name='stage_id']" position="attributes">
-                    <attribute name="invisible">1</attribute>
-                </xpath>
                 <xpath expr="//field[@name='user_ids']" position="after">
                     <field name="rate" />
                     <field name="service" widget="many2many_tags" />
