@@ -14,8 +14,8 @@ class MercTransServices(models.Model):
     """
     A model representing the different services offered by MercTrans.
 
-    This class encapsulates the various services that MercTrans provides, 
-    categorized into different departments. It serves as a way to manage 
+    This class encapsulates the various services that MercTrans provides,
+    categorized into different departments. It serves as a way to manage
     and access the services information in an organized manner.
 
     Attributes:
@@ -28,7 +28,7 @@ class MercTransServices(models.Model):
     """
 
     _name = "merctrans.services"
-    _rec_name = "name" 
+    _rec_name = "name"
     _description = "Services offered by MercTrans"
 
     department_list = [
@@ -44,10 +44,10 @@ class MerctransProject(models.Model):
     """
     A model representing projects managed by MercTrans.
 
-    This class extends the functionality of the 'project.project' model 
-    to cater specifically to the needs of MercTrans projects. It includes 
-    features such as different work units, payment statuses, and calculation 
-    of project values and margins. It also handles the creation of unique 
+    This class extends the functionality of the 'project.project' model
+    to cater specifically to the needs of MercTrans projects. It includes
+    features such as different work units, payment statuses, and calculation
+    of project values and margins. It also handles the creation of unique
     project IDs and the computation of various financial metrics.
 
     Attributes:
@@ -131,14 +131,19 @@ class MerctransProject(models.Model):
     )
     # project_status = fields.Selection(string='Project Status',
     #                                   selection=project_status_list)
-    payment_status = fields.Selection(string='Payment Status',
-                                      selection=payment_status_list)
-    po_value = fields.Monetary("PO Value",
-                               compute="_compute_po_value",
-                               currency_field='currency_id',
-                               store=True,
-                               readonly=True)
-    margin = fields.Float("Project Margin", compute="_compute_margin", store=True, readonly=True)
+    payment_status = fields.Selection(
+        string="Payment Status", selection=payment_status_list
+    )
+    po_value = fields.Monetary(
+        "PO Value",
+        compute="_compute_po_value",
+        currency_field="currency_id",
+        store=True,
+        readonly=True,
+    )
+    margin = fields.Float(
+        "Project Margin", compute="_compute_margin", store=True, readonly=True
+    )
     # receivable = fields.Monetary("Receivable", compute="_compute_receivable")
     # receivable_in_USD = fields.Monte
 
@@ -146,14 +151,14 @@ class MerctransProject(models.Model):
     def create(self, vals):
         """Creates a new project.
 
-            This method creates a new project and assigns it a unique project ID. 
-            It is automatically triggered when a new project is created.
+        This method creates a new project and assigns it a unique project ID.
+        It is automatically triggered when a new project is created.
 
-            Parameters:
-                vals: A dictionary containing the values of the fields on the project.
+        Parameters:
+            vals: A dictionary containing the values of the fields on the project.
 
-            Returns:
-                project: The newly created project.
+        Returns:
+            project: The newly created project.
         """
         if vals.get("job_id", "New") == "New":
             vals["job_id"] = self.env["ir.sequence"].next_by_code(
@@ -166,86 +171,90 @@ class MerctransProject(models.Model):
     def _compute_job_value(self):
         """Computes the job value of the project.
 
-            Parameters:
-                volume: The volume of the project.
-                sale_rate: The sale rate of the project.
-                discount: The discount of the project (if any).
+        Parameters:
+            volume: The volume of the project.
+            sale_rate: The sale rate of the project.
+            discount: The discount of the project (if any).
 
-            Returns:
-                None: Updates the 'job_value' field of each project record with the calculated job value.
+        Returns:
+            None: Updates the 'job_value' field of each project record with the calculated job value.
         """
         for project in self:
             project.job_value = (
-                    (100 - project.discount) / 100 * project.volume * project.sale_rate
+                (100 - project.discount) / 100 * project.volume * project.sale_rate
             )
 
-    @api.depends('tasks')
+    @api.depends("tasks")
     def _compute_po_value(self):
         """Computes the total Purchase Order (PO) value of the project.
 
-            Parameters:
-                tasks: The tasks associated with the project.
+        Parameters:
+            tasks: The tasks associated with the project.
 
-            Returns:
-                None: Updates the 'po_value' field of each project record with the calculated sum.
+        Returns:
+            None: Updates the 'po_value' field of each project record with the calculated sum.
         """
         for project in self:
             if project.tasks:
                 project.po_value = sum(po.po_value for po in project.tasks)
 
-    @api.depends('po_value', 'job_value')
+    @api.depends("po_value", "job_value")
     def _compute_margin(self):
         """Computes the margin of the project.
 
-            Parameters:
-                po_value: The total PO value of the project.
-                job_value: The total job value of the project.
+        Parameters:
+            po_value: The total PO value of the project.
+            job_value: The total job value of the project.
 
-            Returns:
-                None: Updates the 'margin' field of each project record with the calculated margin.
+        Returns:
+            None: Updates the 'margin' field of each project record with the calculated margin.
         """
         for project in self:
             if project.job_value and project.po_value:
-                project.margin = (project.job_value - project.po_value) / project.job_value
+                project.margin = (
+                    project.job_value - project.po_value
+                ) / project.job_value
 
-    @api.depends('po_value', 'job_value')
+    @api.depends("po_value", "job_value")
     def _compute_receivable(self):
         """Computes the receivable of the project.
 
-            Parameters:
-                po_value: The total PO value of the project.
-                job_value: The total job value of the project.
+        Parameters:
+            po_value: The total PO value of the project.
+            job_value: The total job value of the project.
 
-            Returns:
-                None: Updates the 'receivable' field of each project record with the calculated receivable.
+        Returns:
+            None: Updates the 'receivable' field of each project record with the calculated receivable.
         """
         for project in self:
             if project.po_value and project.job_value:
                 project.receivable = project.job_value - project.po_value
             else:
-                project.receivable = 0  
-    #hàm quan trị xem all
+                project.receivable = 0
+
+    # hàm quan trị xem all
     @api.model
     def search(self, args, **kwargs):
-        if not self.env.user.has_group('base.group_system'):
+        if not self.env.user.has_group("base.group_system"):
             # Lọc dự án dựa trên người tạo ra
-            args += [('user_id', '=', self.env.user.id)]
+            args += [("user_id", "=", self.env.user.id)]
 
         return super(MerctransProject, self).search(args, **kwargs)
-    
+
     def _get_dynamic_domain(self):
-        accountant_group = self.env.ref('morons.group_accountants')
+        accountant_group = self.env.ref("morons.group_accountants")
         accountant_user_ids = accountant_group.users.ids
-        return [('create_uid', 'not in', accountant_user_ids)]
-    
+        return [("create_uid", "not in", accountant_user_ids)]
+
+
 class MerctransTask(models.Model):
     """
     A model representing tasks within Merctrans projects.
 
-    This class extends the 'project.task' model of Odoo, tailored for the specific needs of 
-    Merctrans projects. It includes functionality for managing purchase order statuses, work units, 
-    payment statuses, and various other task-related details. Key features include the ability to 
-    compute the value of tasks based on volume and rate, and handling the source and target languages 
+    This class extends the 'project.task' model of Odoo, tailored for the specific needs of
+    Merctrans projects. It includes functionality for managing purchase order statuses, work units,
+    payment statuses, and various other task-related details. Key features include the ability to
+    compute the value of tasks based on volume and rate, and handling the source and target languages
     for tasks in translation projects.
 
     Attributes:
@@ -270,10 +279,20 @@ class MerctransTask(models.Model):
         _get_source_lang(): Computes the source language of the task based on its associated project.
         _compute_currency_id(): Computes the currency used in the task based on the users assigned to it.
     """
+
     _inherit = "project.task"
-    user_ids = fields.Many2many('res.users', relation='custom_project_task_user_rel', column1='task_id', column2='user_id',
-         string='Assignees*', context={'active_test': False}, tracking=True, domain="[('share', '=', False), ('active', '=', True)]",required = True)
-    
+    user_ids = fields.Many2many(
+        "res.users",
+        relation="custom_project_task_user_rel",
+        column1="task_id",
+        column2="user_id",
+        string="Assignees*",
+        context={"active_test": False},
+        tracking=True,
+        domain="[('share', '=', False), ('active', '=', True)]",
+        required=True,
+    )
+
     po_status_list = [
         ("in progress", "In Progress"),
         ("completed", "Completed"),
@@ -305,7 +324,9 @@ class MerctransTask(models.Model):
         "res.lang",
         string="Target Language",
     )
-    work_unit = fields.Selection(string="Work Unit*", selection=work_unit_list, required=True)
+    work_unit = fields.Selection(
+        string="Work Unit*", selection=work_unit_list, required=True
+    )
     volume = fields.Float(string="Volume*", required=True, default=0)
     po_value = fields.Float(
         "PO Value", compute="_compute_po_value", store=True, readonly=True, default=0
@@ -316,8 +337,9 @@ class MerctransTask(models.Model):
         required=True,
         default="unpaid",
     )
-    currency = fields.Char('Currency', compute='_compute_currency_id')
-    name =fields.Char( compute='_compute_name',readonly =False)
+    currency = fields.Char("Currency", compute="_compute_currency_id")
+    name = fields.Char(compute="_compute_name", readonly=False)
+
     def _invert_get_source_lang(self):
         pass
 
@@ -335,12 +357,12 @@ class MerctransTask(models.Model):
         for task in self:
             if self.project_id:
                 self.source_language = self.project_id.source_language
-    
+
     @api.onchange("project_id")
     def _compute_name(self):
         for task in self:
             if self.project_id:
-                self.name = self.project_id.display_name         
+                self.name = self.project_id.display_name
 
     @api.onchange("user_ids")
     def _compute_currency_id(self):
