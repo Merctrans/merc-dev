@@ -19,12 +19,12 @@
     'version': '0.1',
 
     # any module necessary for this one to work correctly
-    'depends': ['base', 'project', 'account'],
+    'depends': ['base', 'project', 'account','mail'],
 
     # always loaded
     'data': [
+        'security/security.xml',
         'security/ir.model.access.csv',
-        "security/security.xml",
         'views/project.xml',
         'views/user.xml',
         'data/languages.xml',
@@ -39,4 +39,6 @@
     'demo': [
         'demo/demo.xml',
     ],
+    'installable': True,
+    'auto_install': False,
 }

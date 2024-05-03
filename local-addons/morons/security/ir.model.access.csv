@@ -1,9 +1,17 @@
 id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
-access_merctrans_services,access_merctrans_services,model_merctrans_services,base.group_user,1,1,1,1
+access_merctrans_services,access_merctrans_services,model_merctrans_services,base.group_user,1,0,0,0
 access_merctrans_services_system,access_merctrans_services,model_merctrans_services,base.group_system,1,1,1,1
 access_project_project_system,access_project_project_system,model_project_project,base.group_system,1,1,1,1
-access_project_project_user,access_project_project_user,model_project_project,base.group_user,1,1,1,1
-access_project_users,Project Users,morons.model_project_project,base.group_user,1,1,1,1
+access_project_project_user,access_project_project_user,model_project_project,base.group_user,1,0,0,0
+access_project_users,Project Users,morons.model_project_project,base.group_user,1,0,0,0
 access_project_manager,Project Managers,morons.model_project_project,project.group_project_manager,1,1,1,1
 access_merctrans_services_system,access_merctrans_services_system,model_merctrans_services,project.group_project_manager,1,1,1,1
-access_project_user,Project Manager,morons.model_project_project,project.group_project_user,1,1,1,1
+access_project_contributors,Project Contributors,morons.model_project_project,morons.group_contributors,1,0,0,0
+access_project_mans,Project Managers,morons.model_project_project,morons.group_pm,1,1,1,1
+access_project_accountants,Project Accountants,morons.model_project_project,morons.group_accountants,1,1,1,1
+access_project_bod,Project Accountants,morons.model_project_project,morons.group_bod,1,1,1,1
+
+access_project_manager_group_contributors,access_project_manager_group_contributors,morons.model_project_task,morons.group_contributors,1,1,1,1
+access_project_manager_group_pm,access_project_manager_group_pm,morons.model_project_task,morons.group_pm,1,1,1,1
+access_project_manager_group_bod,access_project_manager_group_bod,morons.model_project_task,morons.group_bod,1,1,1,1
+access_project_manager_group_accountants,access_project_manager_group_accountants,morons.model_project_task,morons.group_accountants,1,0,0,0

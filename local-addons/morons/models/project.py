@@ -1,6 +1,10 @@
 # -*- coding: utf-8 -*-
 
 from odoo import models, fields, api
+from odoo.exceptions import AccessError
+import logging
+
+logger = logging.getLogger(__name__)
 
 """"TODO
 - Inherit to project.project
@@ -104,35 +108,39 @@ class MerctransProject(models.Model):
         index=True,
         required=True,
         copy=False,
+        tracking=True,
     )
 
     # services contain tags
 
-    service = fields.Many2many("merctrans.services", string="Services")
-    source_language = fields.Many2one("res.lang", string="Source Language")
-    target_language = fields.Many2many("res.lang", string="Target Language")
-    discount = fields.Integer("Discount (%)")
+    service = fields.Many2many("merctrans.services", string="Services", tracking=True)
+    source_language = fields.Many2one(
+        "res.lang", string="Source Language", tracking=True
+    )
+    target_language = fields.Many2many(
+        "res.lang", string="Target Language", tracking=True
+    )
+    discount = fields.Integer("Discount (%)", tracking=True)
 
     # add discount field
     # fixed job
 
-    work_unit = fields.Selection(string="Work Unit", selection=work_unit_list)
-    volume = fields.Float("Project Volume")
-    currency_id = fields.Many2one(
-        "res.currency", string="Currency*", required=True, readonly=False
-    )
-    sale_rate = fields.Float("Sale Rate", digits=(16, 3))
+    work_unit = fields.Selection(string="Work Unit", selection=work_unit_list, tracking=True)
+    volume = fields.Float("Project Volume", tracking=True)
+    currency_id = fields.Many2one("res.currency", string="Currency*", required=True, readonly=False, tracking=True)
+    sale_rate = fields.Float("Sale Rate", digits=(16, 3), tracking=True)
     job_value = fields.Monetary(
         "Project Value",
         compute="_compute_job_value",
         currency_field="currency_id",
         store=True,
         readonly=True,
+        tracking=True,
     )
     # project_status = fields.Selection(string='Project Status',
     #                                   selection=project_status_list)
     payment_status = fields.Selection(
-        string="Payment Status", selection=payment_status_list
+        string="Payment Status", selection=payment_status_list, tracking=True
     )
     po_value = fields.Monetary(
         "PO Value",
@@ -140,9 +148,14 @@ class MerctransProject(models.Model):
         currency_field="currency_id",
         store=True,
         readonly=True,
+        tracking=True,
     )
     margin = fields.Float(
-        "Project Margin", compute="_compute_margin", store=True, readonly=True
+        "Project Margin",
+        compute="_compute_margin",
+        store=True,
+        readonly=True,
+        tracking=True,
     )
     # receivable = fields.Monetary("Receivable", compute="_compute_receivable")
     # receivable_in_USD = fields.Monte
@@ -160,12 +173,81 @@ class MerctransProject(models.Model):
         Returns:
             project: The newly created project.
         """
+        if self.env.user.has_group("morons.group_contributors"):
+            # Nếu người dùng không thuộc nhóm quản trị, không cho phép tạo dự án
+            raise AccessError("You do not have permission to create projects.")
+
         if vals.get("job_id", "New") == "New":
             vals["job_id"] = self.env["ir.sequence"].next_by_code(
                 "increment_project_id"
             )
 
         return super(MerctransProject, self).create(vals)
+
+    # @api.model
+    # def write(self, vals):
+    #     if self.env.user.has_group("morons.group_contributors"):
+    #         # Nếu người dùng không thuộc nhóm quản trị, không cho phép tạo dự án
+    #         raise AccessError("You do not have permission to write projects.")
+    def unlink(self):
+
+        if self.env.user.has_group("morons.group_contributors"):
+            # Nếu người dùng không thuộc nhóm quản trị, không cho phép xóa dự án
+            raise AccessError("You do not have permission to delete projects.")
+
+        return super(MerctransProject, self).unlink()
+
+    def write(self, vals):
+        old_services = self.mapped("service")
+        old_target_language = self.mapped("target_language")
+        old_tag_ids = self.mapped("tag_ids")
+
+        res = super(MerctransProject, self).write(vals)
+
+        new_services = self.mapped("service")
+        new_target_language = self.mapped("target_language")
+        new_tag_ids = self.mapped("tag_ids")
+
+        if new_services != old_services:
+            for project in self:
+                added_services = new_services - old_services
+                removed_services = old_services - new_services
+
+                for added_service in added_services:
+                    project.message_post(body="Added service: %s" % added_service.name)
+
+                for removed_service in removed_services:
+                    project.message_post(
+                        body="Removed service: %s" % removed_service.name
+                    )
+
+        if new_target_language != old_target_language:
+            for project in self:
+                added_languages = new_target_language - old_target_language
+                removed_languages = old_target_language - new_target_language
+
+                for added_language in added_languages:
+                    project.message_post(
+                        body="Added target language: %s" % added_language.name
+                    )
+
+                for removed_language in removed_languages:
+                    project.message_post(
+                        body="Removed target language: %s" % removed_language.name
+                    )
+
+        if new_tag_ids != old_tag_ids:
+            for project in self:
+                added_ids = new_tag_ids - old_tag_ids
+                removed_ids = old_tag_ids - new_tag_ids
+
+                for added_id in added_ids:
+                    project.message_post(body="Added tag: %s" % added_id.name)
+
+                for removed_id in removed_ids:
+                    project.message_post(body="Removed tag: %s" % removed_id.name)
+
+        return res
 
     @api.depends("volume", "sale_rate", "discount")
     def _compute_job_value(self):
@@ -235,10 +317,9 @@ class MerctransProject(models.Model):
     # hàm quan trị xem all
     @api.model
     def search(self, args, **kwargs):
-        if not self.env.user.has_group("base.group_system"):
-            # Lọc dự án dựa trên người tạo ra
-            args += [("user_id", "=", self.env.user.id)]
-
+        # if not self.env.user.has_group("base.group_system"):
+        #     # Lọc dự án dựa trên người tạo ra
+        #     args += [("user_id", "=", self.env.user.id)]
         return super(MerctransProject, self).search(args, **kwargs)
 
     def _get_dynamic_domain(self):
