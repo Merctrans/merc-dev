@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 
 from odoo import models, fields, api
-from odoo.exceptions import AccessError
+from odoo.exceptions import AccessError, RedirectWarning
 import logging
 
 logger = logging.getLogger(__name__)
@@ -125,9 +125,19 @@ class MerctransProject(models.Model):
     # add discount field
     # fixed job
 
-    work_unit = fields.Selection(string="Work Unit", selection=work_unit_list, tracking=True)
+    work_unit = fields.Selection(
+        string="Work Unit", selection=work_unit_list, tracking=True
+    )
     volume = fields.Float("Project Volume", tracking=True)
-    currency_id = fields.Many2one("res.currency", string="Currency*", required=True, readonly=False, tracking=True)
+    # currency_id = fields.Many2one("res.currency", string="Currency*", required=True, readonly=False, tracking=True)
+    currency_selection = [
+        ("USD", "USD"),
+        ("VND", "VND"),
+        ("EUR", "EUR"),
+    ]
+    currency = fields.Selection(
+        currency_selection, string="Currency*", required=True, tracking=True
+    )
     sale_rate = fields.Float("Sale Rate", digits=(16, 3), tracking=True)
     job_value = fields.Monetary(
         "Project Value",
@@ -190,14 +200,48 @@ class MerctransProject(models.Model):
     #         # Nếu người dùng không thuộc nhóm quản trị, không cho phép tạo dự án
     #         raise AccessError("You do not have permission to write projects.")
     def unlink(self):
-
         if self.env.user.has_group("morons.group_contributors"):
-            # Nếu người dùng không thuộc nhóm quản trị, không cho phép xóa dự án
+            # If the user is not in the admin group, raise an access error
             raise AccessError("You do not have permission to delete projects.")
+        
 
-        return super(MerctransProject, self).unlink()
+        res = super(MerctransProject, self).unlink()
+        
 
+        return res 
+       
+        
+    def action_test(self):
+        return{
+             'name':"Projects",
+            "type": "ir.actions.act_window",
+            "res_model": "project.project",
+            "views": [[False, "tree"]],
+            "res_id": False,
+            "target": "main",
+            
+            }
+        
     def write(self, vals):
+        if self.env.user.has_group("morons.group_contributors") and any(
+            field_name in vals
+            for field_name in [
+                "source_language",
+                "payment_status",
+                "sale_rate",
+                "currency",
+                "volume",
+                "work_unit",
+                "discount",
+                "target_language",
+                "service",
+                'tag_ids',
+                'partner_id',
+                'date_start',
+                'user_id'
+            ]
+        ):
+            raise AccessError("You do not have permission to edit projects.")
         old_services = self.mapped("service")
         old_target_language = self.mapped("target_language")
         old_tag_ids = self.mapped("tag_ids")
@@ -392,7 +436,9 @@ class MerctransTask(models.Model):
         ("invoiced", "Invoiced"),
         ("paid", "Paid"),
     ]
-    stages_id = fields.Selection(string="Stage*", selection=po_status_list)
+    stages_id = fields.Selection(
+        string="Stage*", selection=po_status_list, required=True
+    )
     rate = fields.Float(string="Rate*", digits=(16, 3))
     service = fields.Many2many("merctrans.services")
     source_language = fields.Many2one(
@@ -439,14 +485,44 @@ class MerctransTask(models.Model):
             if self.project_id:
                 self.source_language = self.project_id.source_language
 
-    @api.onchange("project_id")
+
+    @api.depends("project_id")
     def _compute_name(self):
         for task in self:
-            if self.project_id:
-                self.name = self.project_id.display_name
+            if len(task.project_id) == 1:
+                task.name = task.project_id.display_name
+            else:
+                task.name = ", ".join(
+                    project.display_name for project in task.project_id
+                )
 
     @api.onchange("user_ids")
     def _compute_currency_id(self):
         for record in self:
             if record.user_ids:
                 record.currency = record.user_ids.currency.name
+
+    @api.model
+    def write(self, vals):
+        if self.env.user.has_group("morons.group_contributors"):
+            created_tasks = self.filtered(lambda task: task.create_uid == self.env.user)
+            if not created_tasks:
+                raise AccessError(
+                    "You do not have permission to edit tasks you did not create."
+                )
+        return super(MerctransTask, self).write(vals)
+
+    def unlink(self):
+        if not self.env.user.has_group("base.group_system"):
+            for task in self:
+                if task.create_uid != self.env.user:
+                    raise AccessError("You do not have permission to delete this task.")
+        return super(MerctransTask, self).unlink()
+    def action_test(self):
+        return{
+            "type": "ir.actions.act_window",
+            "res_model": "project.project",
+            "views": [[False, "tree"]],
+            "res_id": 'project.open_view_project_all',
+            "target": "new",
+            }
