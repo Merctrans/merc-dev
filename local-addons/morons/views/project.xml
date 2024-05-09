@@ -15,11 +15,13 @@
             <field name="model">project.project</field>
             <field name="inherit_id" ref="project.edit_project" />
             <field name="arch" type="xml">
+                
                 <xpath expr="//field[@name='label_tasks']" position="attributes">
                     <attribute name="placeholder">Task</attribute>
                     <attribute name="readonly">True</attribute>
                     <attribute name="invisible">True</attribute>
                 </xpath>
+                
                 <xpath expr="(//field[@name='company_id'])[2]" position="attributes">
                     <attribute name="required">False</attribute>
                     <attribute name="invisible">True</attribute>
@@ -27,7 +29,7 @@
                 <xpath expr="//field[@name='label_tasks']" position="after">
                     <field name="job_id" />
                     <field name="service" widget="many2many_tags" options="{'no_create': True}" />
-                    <field name="currency_id" />
+                    <field name="currency"/>
                     <field name="source_language" options="{'no_create': True}" />
                     <field name="target_language" options="{'no_create': True}"
                         widget="many2many_tags" />
@@ -44,10 +46,10 @@
                 </xpath>
                 <xpath expr="//field[@name='tag_ids']" position="attributes">
                     <attribute name="options">{'no_quick_create': True, 'no_create_edit': True}</attribute>
-                </xpath>
+                </xpath>                
                 <notebook position="inside">
                     <page string="Purchase Order" name="tasks">
-                        <field name="tasks">
+                        <field name="tasks" >                           
                             <tree>
                                 <field name="user_ids" optional="show"
                                     widget="many2many_avatar_user"
@@ -59,7 +61,7 @@
                                 <field name="rate" options="{'no_create': True}" />
                                 <field name="date_deadline" />
                                 <field name="stages_id"  />
-                                <field name="payment_status" />
+                                <field name="payment_status" />                                   
                             </tree>
                         </field>
                     </page>
@@ -72,6 +74,12 @@
             <field name="model">project.project</field>
             <field name="inherit_id" ref="project.view_project" />
             <field name="arch" type="xml">
+                <data>
+                    <xpath expr="//tree" position="attributes">
+                        <attribute name="default_order">job_id desc</attribute>
+                    </xpath>
+                </data>
+                
                 <xpath expr="//field[@name='display_name']" position="after">
                     <field name="job_id" />
                 </xpath>
@@ -84,7 +92,7 @@
                 <xpath expr="//field[@name='partner_id']" position="after">
                     <field name="service" widget="many2many_tags" />
                     <field name="work_unit" />
-                    <field name="currency_id" />
+                    <field name="currency" />
                     <field name="sale_rate" />
                     <field name="volume" />
                     <field name="discount" />
@@ -100,7 +108,7 @@
             <field name="name">merctrans.task.form.view.inherit</field>
             <field name="model">project.task</field>
             <field name="inherit_id" ref="project.view_task_form2" />
-            <field name="arch" type="xml">
+            <field name="arch" type="xml">                
                 <xpath expr="//field[@name='project_id']" position="attributes">
                     <attribute name="invisible">True</attribute>
                 </xpath>
@@ -110,7 +118,7 @@
                     <field name="source_language" />
                     <field name="target_language" widget="many2many_tags" />
                     <field name="work_unit" />
-                    <field name="stages_id"  />
+                    <field name="stages_id"  />                   
                 </xpath>
                 <xpath expr="//field[@name='partner_id']" position="after">
                     <field name="volume" />

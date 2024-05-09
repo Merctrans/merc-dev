@@ -35,6 +35,15 @@
         'data/tags.xml',
 
     ],
+    "assets": {
+        "web.assets_backend": [
+            
+            "morons/static/src/components/*.js",
+            "morons/static/src/components/*.xml",
+            "morons/static/src/components/*.scss",
+        ],
+        
+    },
     # only loaded in demonstration mode
     'demo': [
         'demo/demo.xml',
