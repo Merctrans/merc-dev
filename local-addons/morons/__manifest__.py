@@ -38,9 +38,9 @@
     "assets": {
         "web.assets_backend": [
             
-            "morons/static/src/components/*.js",
-            "morons/static/src/components/*.xml",
-            "morons/static/src/components/*.scss",
+            "morons/static/src/components/*/*.js",
+            "morons/static/src/components/*/*.xml",
+            "morons/static/src/components/*/*.scss",
         ],
         
     },

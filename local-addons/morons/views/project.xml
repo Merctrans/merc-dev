@@ -21,14 +21,16 @@
                     <attribute name="readonly">True</attribute>
                     <attribute name="invisible">True</attribute>
                 </xpath>
-                
+                <xpath expr="//button[@name='277']" position="after">
+                    <button name="button_delete" string="Delete Direct Project" type="object" class="oe_highlight" />
+                </xpath>
                 <xpath expr="(//field[@name='company_id'])[2]" position="attributes">
                     <attribute name="required">False</attribute>
                     <attribute name="invisible">True</attribute>
                 </xpath>
                 <xpath expr="//field[@name='label_tasks']" position="after">
-                    <field name="job_id" />
-                    <field name="service" widget="many2many_tags" options="{'no_create': True}" />
+                    <field name="job_id"/>
+                    <field name="service" widget="many2many_tags" options="{'no_create': True}"/>
                     <field name="currency"/>
                     <field name="source_language" options="{'no_create': True}" />
                     <field name="target_language" options="{'no_create': True}"
@@ -36,17 +38,17 @@
                 </xpath>
                 <xpath expr="//field[@name='user_id']" position="after">
                     <field name="work_unit" />
-                    <field name="volume" widget="char" />
-                    <field name="sale_rate" widget="char" />
-                    <field name="discount" />
-                    <field name="job_value" />
-                    <field name="po_value" />
-                    <field name="margin" widget="percentage" />
-                    <field name="payment_status" />
+                    <field name="volume" widget="char"/>
+                    <field name="sale_rate" widget="char"/>
+                    <field name="discount"/>
+                    <field name="job_value"/>
+                    <field name="po_value"/>
+                    <field name="margin" widget="percentage"/>
+                    <field name="payment_status"/>
                 </xpath>
                 <xpath expr="//field[@name='tag_ids']" position="attributes">
                     <attribute name="options">{'no_quick_create': True, 'no_create_edit': True}</attribute>
-                </xpath>                
+                </xpath>               
                 <notebook position="inside">
                     <page string="Purchase Order" name="tasks">
                         <field name="tasks" >                           
@@ -108,7 +110,7 @@
             <field name="name">merctrans.task.form.view.inherit</field>
             <field name="model">project.task</field>
             <field name="inherit_id" ref="project.view_task_form2" />
-            <field name="arch" type="xml">                
+            <field name="arch" type="xml">            
                 <xpath expr="//field[@name='project_id']" position="attributes">
                     <attribute name="invisible">True</attribute>
                 </xpath>
@@ -150,7 +152,9 @@
             <field name="name">res.users.form.custom</field>
             <field name="model">res.users</field>
             <field name="inherit_id" ref="base.view_users_form" />
+            
             <field name="arch" type="xml">
+                
                 <sheet position="inside">
                     <group>
                         <field name="groups_id" widget="many2many_tags"
