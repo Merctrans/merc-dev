@@ -3,7 +3,7 @@
 from odoo import models, fields, api
 from odoo.exceptions import AccessError, RedirectWarning
 import logging
-
+from odoo.exceptions import ValidationError
 logger = logging.getLogger(__name__)
 
 """"TODO
@@ -159,6 +159,7 @@ class MerctransProject(models.Model):
         store=True,
         readonly=True,
         tracking=True,
+        digits=(16, 3)
     )
     margin = fields.Float(
         "Project Margin",
@@ -166,6 +167,7 @@ class MerctransProject(models.Model):
         store=True,
         readonly=True,
         tracking=True,
+        digits=(16, 3)
     )
     # receivable = fields.Monetary("Receivable", compute="_compute_receivable")
     # receivable_in_USD = fields.Monte
@@ -184,7 +186,6 @@ class MerctransProject(models.Model):
             project: The newly created project.
         """
         if self.env.user.has_group("morons.group_contributors"):
-            # Nếu người dùng không thuộc nhóm quản trị, không cho phép tạo dự án
             raise AccessError("You do not have permission to create projects.")
 
         if vals.get("job_id", "New") == "New":
@@ -194,32 +195,24 @@ class MerctransProject(models.Model):
 
         return super(MerctransProject, self).create(vals)
 
-    # @api.model
-    # def write(self, vals):
-    #     if self.env.user.has_group("morons.group_contributors"):
-    #         # Nếu người dùng không thuộc nhóm quản trị, không cho phép tạo dự án
-    #         raise AccessError("You do not have permission to write projects.")
     def unlink(self):
         if self.env.user.has_group("morons.group_contributors"):
-            # If the user is not in the admin group, raise an access error
             raise AccessError("You do not have permission to delete projects.")
         
-
         res = super(MerctransProject, self).unlink()
-        
-
-        return res 
-       
-        
-    def action_test(self):
-        return{
-             'name':"Projects",
-            "type": "ir.actions.act_window",
-            "res_model": "project.project",
-            "views": [[False, "tree"]],
-            "res_id": False,
-            "target": "main",
             
+        return res 
+    
+    def button_delete(self):
+        
+        if self.env.user.has_group("morons.group_contributors"):
+            raise AccessError("You do not have permission to delete projects.")
+        res = super(MerctransProject, self).unlink()
+        if res:
+            return {
+            'type': 'ir.actions.act_url',
+            'url': 'https://moron.merctrans.vn/web#action=337&model=project.project&view_type=list&cids=1&menu_id=195',
+            'target': 'self',  
             }
         
     def write(self, vals):
@@ -251,7 +244,7 @@ class MerctransProject(models.Model):
         new_services = self.mapped("service")
         new_target_language = self.mapped("target_language")
         new_tag_ids = self.mapped("tag_ids")
-
+        # Activities logs
         if new_services != old_services:
             for project in self:
                 added_services = new_services - old_services
@@ -358,20 +351,29 @@ class MerctransProject(models.Model):
             else:
                 project.receivable = 0
 
-    # hàm quan trị xem all
+
     @api.model
     def search(self, args, **kwargs):
-        # if not self.env.user.has_group("base.group_system"):
-        #     # Lọc dự án dựa trên người tạo ra
-        #     args += [("user_id", "=", self.env.user.id)]
+        if self.env.user.has_group("base.group_system") or self.env.user.has_group("morons.group_pm") :
+            pass
+        else:
+            args += [("user_id", "=", self.env.user.id)] 
         return super(MerctransProject, self).search(args, **kwargs)
-
     def _get_dynamic_domain(self):
         accountant_group = self.env.ref("morons.group_accountants")
         accountant_user_ids = accountant_group.users.ids
         return [("create_uid", "not in", accountant_user_ids)]
-
-
+    # Alert negative
+    @api.constrains("volume", "sale_rate", "discount")
+    def _check_positive_values(self):
+        for task in self:
+            if task.volume < 0:
+                raise ValidationError("Project volume cannot be negative.")
+            if task.sale_rate < 0:
+                raise ValidationError("Project sale rate cannot be negative.")
+            if task.discount < 0:
+                raise ValidationError("Project discount cannot be negative.")
+    
 class MerctransTask(models.Model):
     """
     A model representing tasks within Merctrans projects.
@@ -437,35 +439,40 @@ class MerctransTask(models.Model):
         ("paid", "Paid"),
     ]
     stages_id = fields.Selection(
-        string="Stage*", selection=po_status_list, required=True
+        string="Stage*", selection=po_status_list, required=True,tracking= True
     )
-    rate = fields.Float(string="Rate*", digits=(16, 3))
-    service = fields.Many2many("merctrans.services")
+    rate = fields.Float(string="Rate*", digits=(16, 3),tracking= True)
+    service = fields.Many2many("merctrans.services",tracking= True)
     source_language = fields.Many2one(
         "res.lang",
         string="Source Language",
         compute="_get_source_lang",
         inverse="_invert_get_source_lang",
+        tracking= True,
+        
     )
     target_language = fields.Many2many(
         "res.lang",
         string="Target Language",
+        tracking= True
     )
+    
     work_unit = fields.Selection(
-        string="Work Unit*", selection=work_unit_list, required=True
+        string="Work Unit*", selection=work_unit_list, required=True,tracking= True
     )
-    volume = fields.Float(string="Volume*", required=True, default=0)
+    volume = fields.Float(string="Volume*", required=True, default=0,tracking= True)
     po_value = fields.Float(
-        "PO Value", compute="_compute_po_value", store=True, readonly=True, default=0
+        "PO Value", compute="_compute_po_value", store=True, readonly=True, default=0,tracking= True
     )
     payment_status = fields.Selection(
         string="Payment Status*",
         selection=payment_status_list,
         required=True,
         default="unpaid",
+        tracking= True
     )
-    currency = fields.Char("Currency", compute="_compute_currency_id")
-    name = fields.Char(compute="_compute_name", readonly=False)
+    currency = fields.Char("Currency", compute="_compute_currency_id",tracking= True)
+    name = fields.Char(compute="_compute_name", readonly=False,tracking= True)
 
     def _invert_get_source_lang(self):
         pass
@@ -485,7 +492,6 @@ class MerctransTask(models.Model):
             if self.project_id:
                 self.source_language = self.project_id.source_language
 
-
     @api.depends("project_id")
     def _compute_name(self):
         for task in self:
@@ -501,23 +507,25 @@ class MerctransTask(models.Model):
         for record in self:
             if record.user_ids:
                 record.currency = record.user_ids.currency.name
-
+          
     @api.model
     def write(self, vals):
         if self.env.user.has_group("morons.group_contributors"):
-            created_tasks = self.filtered(lambda task: task.create_uid == self.env.user)
-            if not created_tasks:
-                raise AccessError(
-                    "You do not have permission to edit tasks you did not create."
-                )
-        return super(MerctransTask, self).write(vals)
-
-    def unlink(self):
-        if not self.env.user.has_group("base.group_system"):
             for task in self:
-                if task.create_uid != self.env.user:
-                    raise AccessError("You do not have permission to delete this task.")
+                for user in task.user_ids:
+                    if not user.has_group("morons.group_contributors"):
+                        raise AccessError(
+                            "Only users belonging to the 'contributors' group can edit this task."
+                        )
+        return super(MerctransTask, self).write(vals)
+    def unlink(self):
+        if self.env.user.has_group("morons.group_contributors"):
+            for task in self:
+                if task.create_uid.has_group("morons.group_contributors"):
+                    if task.create_uid != self.env.user:
+                        raise AccessError("You do not have permission to delete this task.")
         return super(MerctransTask, self).unlink()
+    
     def action_test(self):
         return{
             "type": "ir.actions.act_window",
@@ -526,3 +534,11 @@ class MerctransTask(models.Model):
             "res_id": 'project.open_view_project_all',
             "target": "new",
             }
+    #Alert negative   
+    @api.constrains("volume","rate")
+    def _check_positive_values(self):
+        for task in self:
+            if task.volume < 0:
+                raise ValidationError("Project Volume cannot be negative.")
+            if task.rate < 0:
+                raise ValidationError("Project Rate cannot be negative.")

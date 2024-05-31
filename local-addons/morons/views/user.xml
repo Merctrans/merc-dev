@@ -10,6 +10,9 @@
 <!--                    <field name="contributor"/>-->
 <!--                    <field name="currency"/>-->
 <!--                </xpath>-->
+                    <xpath expr="//field[@name='login']" position="attributes">
+                        <attribute name="placeholder">e.g. email@domain.com</attribute>
+                    </xpath>
                     <xpath expr="//field[@name='login']" position="after">
                         <label for="phone" string="Phone"/>
                         <field name="phone" string='Phone'>Phone</field>   
