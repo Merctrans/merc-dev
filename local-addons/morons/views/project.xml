@@ -21,7 +21,7 @@
                     <attribute name="readonly">True</attribute>
                     <attribute name="invisible">True</attribute>
                 </xpath>
-                <xpath expr="//button[@name='277']" position="after">
+                <xpath expr="//header" position="inside">
                     <button name="button_delete" string="Delete Direct Project" type="object" class="oe_highlight" />
                 </xpath>
                 <xpath expr="(//field[@name='company_id'])[2]" position="attributes">
