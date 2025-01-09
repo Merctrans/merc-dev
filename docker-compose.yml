@@ -12,6 +12,9 @@ services:
       - odoo-mercdev-web-data:/var/lib/odoo
       - ./config:/etc/odoo
       - ./local-addons:/mnt/extra-addons
+    ports:
+      - 8069:8069
+      - 8072:8072
     environment:
       - USER=odoo
       - PASSWORD=odoo
