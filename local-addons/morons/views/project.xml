@@ -31,15 +31,15 @@
                 <xpath expr="//field[@name='label_tasks']" position="after">
                     <field name="job_id"/>
                     <field name="service" widget="many2many_tags" options="{'no_create': True}"/>
-                    <field name="currency"/>
+                    <field name="currency_id"/>
                     <field name="source_language" options="{'no_create': True}" />
                     <field name="target_language" options="{'no_create': True}"
                         widget="many2many_tags" />
                 </xpath>
                 <xpath expr="//field[@name='user_id']" position="after">
                     <field name="work_unit" />
-                    <field name="volume" widget="char"/>
-                    <field name="sale_rate" widget="char"/>
+                    <field name="volume"/>
+                    <field name="sale_rate"/>
                     <field name="discount"/>
                     <field name="job_value"/>
                     <field name="po_value"/>
@@ -53,14 +53,15 @@
                     <page string="Purchase Order" name="tasks">
                         <field name="tasks" >                           
                             <tree>
+                                <field name="currency_id" invisible="1"/>
                                 <field name="user_ids" optional="show"
                                     widget="many2many_avatar_user"
                                     domain="[('share', '=', False), ('active', '=', True)]"
-                                    options="{'no_quick_create': True}" />
-                                <field name="service" />
+                                    options="{'no_quick_create': True, 'no_create': True}" />
+                                <field name="service" widget="many2many_tags"/>
                                 <field name="work_unit" />
-                                <field name="volume" options="{'no_create': True}" />
-                                <field name="rate" options="{'no_create': True}" />
+                                <field name="volume"  />
+                                <field name="rate" />
                                 <field name="date_deadline" />
                                 <field name="stages_id"  />
                                 <field name="payment_status" />                                   
@@ -94,7 +95,7 @@
                 <xpath expr="//field[@name='partner_id']" position="after">
                     <field name="service" widget="many2many_tags" />
                     <field name="work_unit" />
-                    <field name="currency" />
+                    <field name="currency_id" />
                     <field name="sale_rate" />
                     <field name="volume" />
                     <field name="discount" />
@@ -125,7 +126,7 @@
                 <xpath expr="//field[@name='partner_id']" position="after">
                     <field name="volume" />
                     <field name="po_value" />
-                    <field name="currency" />
+                    <field name="currency_id" />
                     <field name="payment_status" />
                     
                 </xpath>

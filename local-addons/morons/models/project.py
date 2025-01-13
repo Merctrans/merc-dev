@@ -129,16 +129,8 @@ class MerctransProject(models.Model):
         string="Work Unit", selection=work_unit_list, tracking=True
     )
     volume = fields.Float("Project Volume", tracking=True)
-    # currency_id = fields.Many2one("res.currency", string="Currency*", required=True, readonly=False, tracking=True)
-    currency_selection = [
-        ("USD", "USD"),
-        ("VND", "VND"),
-        ("EUR", "EUR"),
-    ]
-    currency = fields.Selection(
-        currency_selection, string="Currency*", required=True, tracking=True
-    )
-    sale_rate = fields.Float("Sale Rate", digits=(16, 3), tracking=True)
+    currency_id = fields.Many2one("res.currency", string="Currency*", required=True, tracking=True, store=True, readonly=False)
+    sale_rate = fields.Monetary("Sale Rate", tracking=True, currency_field="currency_id")
     job_value = fields.Monetary(
         "Project Value",
         compute="_compute_job_value",
@@ -169,8 +161,6 @@ class MerctransProject(models.Model):
         tracking=True,
         digits=(16, 3)
     )
-    # receivable = fields.Monetary("Receivable", compute="_compute_receivable")
-    # receivable_in_USD = fields.Monte
 
     @api.model
     def create(self, vals):
@@ -441,7 +431,8 @@ class MerctransTask(models.Model):
     stages_id = fields.Selection(
         string="Stage*", selection=po_status_list, required=True,tracking= True
     )
-    rate = fields.Float(string="Rate*", digits=(16, 3),tracking= True)
+
+    rate = fields.Monetary(string="Rate*", tracking=True, currency_field="currency_id")
     service = fields.Many2many("merctrans.services",tracking= True)
     source_language = fields.Many2one(
         "res.lang",
@@ -460,9 +451,10 @@ class MerctransTask(models.Model):
     work_unit = fields.Selection(
         string="Work Unit*", selection=work_unit_list, required=True,tracking= True
     )
-    volume = fields.Float(string="Volume*", required=True, default=0,tracking= True)
-    po_value = fields.Float(
-        "PO Value", compute="_compute_po_value", store=True, readonly=True, default=0,tracking= True
+    volume = fields.Float(string="Volume*", required=True, default=0, tracking= True)
+    po_value = fields.Monetary("PO Value", default=0,
+        compute="_compute_po_value", store=True, readonly=True,
+        tracking=True, currency_field="currency_id"
     )
     payment_status = fields.Selection(
         string="Payment Status*",
@@ -471,7 +463,7 @@ class MerctransTask(models.Model):
         default="unpaid",
         tracking= True
     )
-    currency = fields.Char("Currency", compute="_compute_currency_id",tracking= True)
+    currency_id = fields.Many2one("res.currency", string="Currency", compute="_compute_currency_id", store=True, tracking= True, readonly=False)
     name = fields.Char(compute="_compute_name", readonly=False,tracking= True)
 
     def _invert_get_source_lang(self):
@@ -480,11 +472,10 @@ class MerctransTask(models.Model):
     def _invert_get_target_lang(self):
         pass
 
-    @api.onchange("volume", "rate")
     @api.depends("volume", "rate")
     def _compute_po_value(self):
         for task in self:
-            task.po_value = (100 - 0) / 100 * task.volume * task.rate
+            task.po_value = task.volume * task.rate
 
     @api.depends("project_id")
     def _get_source_lang(self):
@@ -502,12 +493,14 @@ class MerctransTask(models.Model):
                     project.display_name for project in task.project_id
                 )
 
-    @api.onchange("user_ids")
+    @api.depends("user_ids")
     def _compute_currency_id(self):
         for record in self:
-            if record.user_ids:
-                record.currency = record.user_ids.currency.name
-          
+            if record.user_ids.currency:
+                record.currency_id = record.user_ids.currency[0]
+            else:
+                record.currency_id = record.project_id.currency_id
+
     @api.model
     def write(self, vals):
         if self.env.user.has_group("morons.group_contributors"):
