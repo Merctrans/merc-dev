@@ -139,8 +139,7 @@ class MerctransProject(models.Model):
         readonly=True,
         tracking=True,
     )
-    # project_status = fields.Selection(string='Project Status',
-    #                                   selection=project_status_list)
+
     payment_status = fields.Selection(
         string="Payment Status", selection=payment_status_list, tracking=True
     )

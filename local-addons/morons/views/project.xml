@@ -40,7 +40,6 @@
                     <field name="work_unit" />
                     <field name="volume"/>
                     <field name="sale_rate"/>
-                    <field name="discount"/>
                     <field name="job_value"/>
                     <field name="po_value"/>
                     <field name="margin" widget="percentage"/>
@@ -101,8 +100,9 @@
                     <field name="currency_id" />
                     <field name="sale_rate" />
                     <field name="volume" />
-                    <field name="discount" />
                     <field name="job_value" />
+                </xpath>
+                <xpath expr="//field[@name='user_id']" position="after">
                     <field name="payment_status" />
                 </xpath>
             </field>
