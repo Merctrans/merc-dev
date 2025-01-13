@@ -54,6 +54,7 @@
                         <field name="tasks" >                           
                             <tree>
                                 <field name="currency_id" invisible="1"/>
+                                <field name="project_currency_id" invisible="1"/>
                                 <field name="user_ids" optional="show"
                                     widget="many2many_avatar_user"
                                     domain="[('share', '=', False), ('active', '=', True)]"
@@ -62,6 +63,8 @@
                                 <field name="work_unit" />
                                 <field name="volume"  />
                                 <field name="rate" />
+                                <field name="po_value" />
+                                <field name="po_value_by_project_currency" optional="hide" />
                                 <field name="date_deadline" />
                                 <field name="stages_id"  />
                                 <field name="payment_status" />                                   
@@ -124,11 +127,16 @@
                     <field name="stages_id"  />                   
                 </xpath>
                 <xpath expr="//field[@name='partner_id']" position="after">
+                    <field name="show_po_value_currency_string" invisible="1"/>
                     <field name="volume" />
-                    <field name="po_value" />
+                    <label for="po_value" />
+                    <div name="po_value_div" class="o_row">
+                        <field name="po_value" class="oe_inline" />
+                        <field name="po_value_by_project_currency_string" class="oe_inline" attrs="{'invisible': [('show_po_value_currency_string', '=', False)]}" />
+                    </div>
                     <field name="currency_id" />
                     <field name="payment_status" />
-                    
+                    <field name="project_currency_id" invisible="1"/>
                 </xpath>
                 <xpath expr="//field[@name='partner_id']" position="attributes">
                     <attribute name="invisible">True</attribute>

@@ -150,8 +150,7 @@ class MerctransProject(models.Model):
         currency_field="currency_id",
         store=True,
         readonly=True,
-        tracking=True,
-        digits=(16, 3)
+        tracking=True
     )
     margin = fields.Float(
         "Project Margin",
@@ -293,7 +292,7 @@ class MerctransProject(models.Model):
                 (100 - project.discount) / 100 * project.volume * project.sale_rate
             )
 
-    @api.depends("tasks")
+    @api.depends("tasks", 'tasks.po_value_by_project_currency', 'currency_id')
     def _compute_po_value(self):
         """Computes the total Purchase Order (PO) value of the project.
 
@@ -304,8 +303,7 @@ class MerctransProject(models.Model):
             None: Updates the 'po_value' field of each project record with the calculated sum.
         """
         for project in self:
-            if project.tasks:
-                project.po_value = sum(po.po_value for po in project.tasks)
+            project.po_value = sum(project.tasks.mapped("po_value_by_project_currency"))
 
     @api.depends("po_value", "job_value")
     def _compute_margin(self):
@@ -323,6 +321,8 @@ class MerctransProject(models.Model):
                 project.margin = (
                     project.job_value - project.po_value
                 ) / project.job_value
+            else:
+                project.margin = 0
 
     @api.depends("po_value", "job_value")
     def _compute_receivable(self):
@@ -456,6 +456,15 @@ class MerctransTask(models.Model):
         compute="_compute_po_value", store=True, readonly=True,
         tracking=True, currency_field="currency_id"
     )
+    po_value_by_project_currency = fields.Monetary("PO Value (By Project)",
+        compute="_compute_po_value_by_project_currency", store=True, readonly=True,
+        currency_field="project_currency_id"
+    )
+    po_value_by_project_currency_string = fields.Char("PO Value (By Project)",
+        compute="_compute_po_value_by_project_currency_string",
+    )
+    show_po_value_currency_string = fields.Boolean("Show PO Value Currency String", default=False, compute="_compute_show_po_value_currency_string")
+
     payment_status = fields.Selection(
         string="Payment Status*",
         selection=payment_status_list,
@@ -464,6 +473,7 @@ class MerctransTask(models.Model):
         tracking= True
     )
     currency_id = fields.Many2one("res.currency", string="Currency", compute="_compute_currency_id", store=True, tracking= True, readonly=False)
+    project_currency_id = fields.Many2one("res.currency", related="project_id.currency_id", store=True, readonly=True)
     name = fields.Char(compute="_compute_name", readonly=False,tracking= True)
 
     def _invert_get_source_lang(self):
@@ -476,6 +486,51 @@ class MerctransTask(models.Model):
     def _compute_po_value(self):
         for task in self:
             task.po_value = task.volume * task.rate
+
+    @api.depends("project_id.currency_id", "currency_id", 'po_value')
+    def _compute_po_value_by_project_currency(self):
+        """
+        If the currency of the PO is different from the currency of the Project, conversion is necessary as follows:
+            1. Convert the currency of the PO to the company's currency
+            2. Convert the company's currency to the currency on the Project
+        """
+        for record in self:
+            company_currency = record.project_id.company_id.currency_id
+            project_currency = record.project_id.currency_id
+            po_currency = record.currency_id
+
+            project_po_value = record.po_value
+
+            if po_currency != project_currency:
+                # 1. Convert the PO currency to the company's currency
+                if po_currency != company_currency:
+                    project_po_value = po_currency._convert(
+                        project_po_value,
+                        company_currency,
+                        record.project_id.company_id,
+                        fields.Date.context_today(record)
+                    )
+            
+                # 2. Convert the company's currency to the currency on the Project
+                if company_currency != project_currency:
+                    project_po_value = company_currency._convert(
+                        project_po_value,
+                        project_currency,
+                        record.project_id.company_id,
+                        fields.Date.context_today(record)
+                    )
+            record.po_value_by_project_currency = project_po_value
+
+    @api.depends("po_value_by_project_currency")
+    def _compute_po_value_by_project_currency_string(self):
+        for record in self:
+            po_value_str = record.project_id.currency_id.format(record.po_value_by_project_currency)
+            record.po_value_by_project_currency_string = "( = %s )" % po_value_str
+
+    @api.depends("currency_id", "project_currency_id")
+    def _compute_show_po_value_currency_string(self):
+        for record in self:
+            record.show_po_value_currency_string = record.currency_id != record.project_currency_id
 
     @api.depends("project_id")
     def _get_source_lang(self):
