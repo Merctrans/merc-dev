@@ -25,14 +25,18 @@
     'data': [
         'security/security.xml',
         'security/ir.model.access.csv',
+        
         'views/project.xml',
+        'views/task.xml',
         'views/user.xml',
+        
         'data/languages.xml',
         'data/currencies.xml',
         'data/email_template.xml',
         'data/company_data.xml',
         'data/services.xml',
         'data/tags.xml',
+        'data/sequence.xml',
 
     ],
     "assets": {

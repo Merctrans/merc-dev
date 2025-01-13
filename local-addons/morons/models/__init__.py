@@ -1,5 +1,4 @@
-# -*- coding: utf-8 -*-
-
-from . import project
-from . import contributor
-from . import invoice
+from . import merctrans_contributor
+from . import merctrans_service
+from . import merctrans_project
+from . import merctrans_task
