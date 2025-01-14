@@ -109,7 +109,7 @@
             <field name="perm_unlink" eval="1" />
         </record>
 
-        <record id="module_category_pm_access_invoice" model="ir.model.access">
+        <!-- <record id="module_category_pm_access_invoice" model="ir.model.access">
             <field name="name">Contributor access to invoice</field>
             <field name="model_id" ref="morons.model_morons_invoice" />
             <field name="group_id" ref="morons.group_contributors" />
@@ -117,10 +117,10 @@
             <field name="perm_write" eval="1" />
             <field name="perm_create" eval="1" />
             <field name="perm_unlink" eval="1" />
-        </record>
+        </record> -->
 
 
-        <record id="module_category_contributor_access_invoice" model="ir.model.access">
+        <!-- <record id="module_category_contributor_access_invoice" model="ir.model.access">
             <field name="name">PM access to invoice</field>
             <field name="model_id" ref="morons.model_morons_invoice" />
             <field name="group_id" ref="morons.group_pm" />
@@ -128,9 +128,9 @@
             <field name="perm_write" eval="1" />
             <field name="perm_create" eval="1" />
             <field name="perm_unlink" eval="1" />
-        </record>
+        </record> -->
 
-        <record id="module_category_bod_access_invoice" model="ir.model.access">
+        <!-- <record id="module_category_bod_access_invoice" model="ir.model.access">
             <field name="name">BOD access to invoice</field>
             <field name="model_id" ref="morons.model_morons_invoice" />
             <field name="group_id" ref="morons.group_bod" />
@@ -138,9 +138,9 @@
             <field name="perm_write" eval="1" />
             <field name="perm_create" eval="1" />
             <field name="perm_unlink" eval="1" />
-        </record>
+        </record> -->
 
-        <record id="module_category_accountant_access_invoice" model="ir.model.access">
+        <!-- <record id="module_category_accountant_access_invoice" model="ir.model.access">
             <field name="name">Accountant access to invoice</field>
             <field name="model_id" ref="morons.model_morons_invoice" />
             <field name="group_id" ref="morons.group_accountants" />
@@ -158,7 +158,7 @@
             <field name="perm_write" eval="1" />
             <field name="perm_create" eval="1" />
             <field name="perm_unlink" eval="1" />
-        </record>
+        </record> -->
 
         <!-- <record model="ir.rule" id="rule_po_contributor_access">
             <field name="name">PO Contributor Access</field>

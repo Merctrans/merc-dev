@@ -1,5 +1,3 @@
-# -*- coding: utf-8 -*-
-
 from odoo import models, fields, api
 from odoo.exceptions import AccessError, RedirectWarning
 import logging
@@ -12,37 +10,6 @@ logger = logging.getLogger(__name__)
 - Task to delegate tasks to Contributors
 
 """
-
-
-class MercTransServices(models.Model):
-    """
-    A model representing the different services offered by MercTrans.
-
-    This class encapsulates the various services that MercTrans provides,
-    categorized into different departments. It serves as a way to manage
-    and access the services information in an organized manner.
-
-    Attributes:
-        _name (str): Internal name of the model in the Odoo framework.
-        _rec_name (str): Field to use for record name.
-        _description (str): A brief description of the model's purpose.
-        department_list (list of tuples): A predefined list of departments.
-        department (fields.Selection): Field for selecting a department from the department_list.
-        name (fields.Char): Field for the name of the service.
-    """
-
-    _name = "merctrans.services"
-    _rec_name = "name"
-    _description = "Services offered by MercTrans"
-
-    department_list = [
-        ("localization", "Localization"),
-        ("marketing", "Marketing"),
-        ("development", "Development"),
-    ]
-    department = fields.Selection(string="Department", selection=department_list)
-    name = fields.Char("Services")
-
 
 class MerctransProject(models.Model):
     """
@@ -82,18 +49,16 @@ class MerctransProject(models.Model):
 
     _inherit = ["project.project"]
 
+    # Override default value as the setting tab will be hidden on view
+    privacy_visibility = fields.Selection(default="followers")
+    description = fields.Text(default="WARNING: This field will be visible to Contributors when they are assigned to POs. Please check for sensitive information before submitting.")
+
     work_unit_list = [
         ("word", "Word"),
         ("hour", "Hour"),
         ("page", "Page"),
         ("job", "Job"),
     ]
-
-    # project_status_list = [('potential', 'Potential'),
-    #                        ('confirmed', 'Confirmed'),
-    #                        ('in progress', 'In Progress'), ('in qa', 'In QA'),
-    #                        ('delivered', 'Delivered'),
-    #                        ('canceled', 'Canceled')]
 
     payment_status_list = [
         ("unpaid", "Unpaid"),
@@ -129,16 +94,8 @@ class MerctransProject(models.Model):
         string="Work Unit", selection=work_unit_list, tracking=True
     )
     volume = fields.Float("Project Volume", tracking=True)
-    # currency_id = fields.Many2one("res.currency", string="Currency*", required=True, readonly=False, tracking=True)
-    currency_selection = [
-        ("USD", "USD"),
-        ("VND", "VND"),
-        ("EUR", "EUR"),
-    ]
-    currency = fields.Selection(
-        currency_selection, string="Currency*", required=True, tracking=True
-    )
-    sale_rate = fields.Float("Sale Rate", digits=(16, 3), tracking=True)
+    currency_id = fields.Many2one("res.currency", string="Currency*", required=True, tracking=True, store=True, readonly=False)
+    sale_rate = fields.Monetary("Sale Rate", tracking=True, currency_field="currency_id")
     job_value = fields.Monetary(
         "Project Value",
         compute="_compute_job_value",
@@ -147,8 +104,7 @@ class MerctransProject(models.Model):
         readonly=True,
         tracking=True,
     )
-    # project_status = fields.Selection(string='Project Status',
-    #                                   selection=project_status_list)
+
     payment_status = fields.Selection(
         string="Payment Status", selection=payment_status_list, tracking=True
     )
@@ -158,8 +114,7 @@ class MerctransProject(models.Model):
         currency_field="currency_id",
         store=True,
         readonly=True,
-        tracking=True,
-        digits=(16, 3)
+        tracking=True
     )
     margin = fields.Float(
         "Project Margin",
@@ -169,8 +124,6 @@ class MerctransProject(models.Model):
         tracking=True,
         digits=(16, 3)
     )
-    # receivable = fields.Monetary("Receivable", compute="_compute_receivable")
-    # receivable_in_USD = fields.Monte
 
     @api.model
     def create(self, vals):
@@ -303,7 +256,7 @@ class MerctransProject(models.Model):
                 (100 - project.discount) / 100 * project.volume * project.sale_rate
             )
 
-    @api.depends("tasks")
+    @api.depends("tasks", 'tasks.po_value_by_project_currency', 'currency_id')
     def _compute_po_value(self):
         """Computes the total Purchase Order (PO) value of the project.
 
@@ -314,8 +267,7 @@ class MerctransProject(models.Model):
             None: Updates the 'po_value' field of each project record with the calculated sum.
         """
         for project in self:
-            if project.tasks:
-                project.po_value = sum(po.po_value for po in project.tasks)
+            project.po_value = sum(project.tasks.mapped("po_value_by_project_currency"))
 
     @api.depends("po_value", "job_value")
     def _compute_margin(self):
@@ -333,6 +285,8 @@ class MerctransProject(models.Model):
                 project.margin = (
                     project.job_value - project.po_value
                 ) / project.job_value
+            else:
+                project.margin = 0
 
     @api.depends("po_value", "job_value")
     def _compute_receivable(self):
@@ -373,172 +327,3 @@ class MerctransProject(models.Model):
                 raise ValidationError("Project sale rate cannot be negative.")
             if task.discount < 0:
                 raise ValidationError("Project discount cannot be negative.")
-    
-class MerctransTask(models.Model):
-    """
-    A model representing tasks within Merctrans projects.
-
-    This class extends the 'project.task' model of Odoo, tailored for the specific needs of
-    Merctrans projects. It includes functionality for managing purchase order statuses, work units,
-    payment statuses, and various other task-related details. Key features include the ability to
-    compute the value of tasks based on volume and rate, and handling the source and target languages
-    for tasks in translation projects.
-
-    Attributes:
-        _inherit (str): Inherited model name in the Odoo framework.
-        po_status_list (list of tuples): A predefined list of possible statuses for purchase orders.
-        work_unit_list (list of tuples): A predefined list of work units applicable to tasks.
-        payment_status_list (list of tuples): A predefined list of payment statuses for tasks.
-        rate (fields.Float): Field for the rate applicable to the task.
-        service (fields.Many2many): Relationship to the 'merctrans.services' model, indicating services involved in the task.
-        source_language (fields.Many2one): Computed field for the source language of the task, derived from the associated project.
-        target_language (fields.Many2many): Field for the target languages of the task.
-        work_unit (fields.Selection): Field for selecting a work unit from the work_unit_list.
-        volume (fields.Integer): Field for the volume of work associated with the task.
-        po_value (fields.Float): Computed field for the Purchase Order value of the task.
-        payment_status (fields.Selection): Field for the payment status of the task.
-        currency (fields.Char): Computed field for the currency used in the task.
-
-    Methods:
-        _invert_get_source_lang(): Placeholder method for inverse computation of source language. (TODO)
-        _invert_get_target_lang(): Placeholder method for inverse computation of target language.  (TODO)
-        _compute_po_value(): Computes the Purchase Order value of the task based on volume and rate.
-        _get_source_lang(): Computes the source language of the task based on its associated project.
-        _compute_currency_id(): Computes the currency used in the task based on the users assigned to it.
-    """
-
-    _inherit = "project.task"
-    user_ids = fields.Many2many(
-        "res.users",
-        relation="custom_project_task_user_rel",
-        column1="task_id",
-        column2="user_id",
-        string="Assignees*",
-        context={"active_test": False},
-        tracking=True,
-        domain="[('share', '=', False), ('active', '=', True)]",
-        required=True,
-    )
-
-    po_status_list = [
-        ("in progress", "In Progress"),
-        ("completed", "Completed"),
-        ("canceled", "Canceled"),
-    ]
-
-    work_unit_list = [
-        ("word", "Word"),
-        ("hour", "Hour"),
-        ("page", "Page"),
-        ("job", "Job"),
-    ]
-
-    payment_status_list = [
-        ("unpaid", "Unpaid"),
-        ("invoiced", "Invoiced"),
-        ("paid", "Paid"),
-    ]
-    stages_id = fields.Selection(
-        string="Stage*", selection=po_status_list, required=True,tracking= True
-    )
-    rate = fields.Float(string="Rate*", digits=(16, 3),tracking= True)
-    service = fields.Many2many("merctrans.services",tracking= True)
-    source_language = fields.Many2one(
-        "res.lang",
-        string="Source Language",
-        compute="_get_source_lang",
-        inverse="_invert_get_source_lang",
-        tracking= True,
-        
-    )
-    target_language = fields.Many2many(
-        "res.lang",
-        string="Target Language",
-        tracking= True
-    )
-    
-    work_unit = fields.Selection(
-        string="Work Unit*", selection=work_unit_list, required=True,tracking= True
-    )
-    volume = fields.Float(string="Volume*", required=True, default=0,tracking= True)
-    po_value = fields.Float(
-        "PO Value", compute="_compute_po_value", store=True, readonly=True, default=0,tracking= True
-    )
-    payment_status = fields.Selection(
-        string="Payment Status*",
-        selection=payment_status_list,
-        required=True,
-        default="unpaid",
-        tracking= True
-    )
-    currency = fields.Char("Currency", compute="_compute_currency_id",tracking= True)
-    name = fields.Char(compute="_compute_name", readonly=False,tracking= True)
-
-    def _invert_get_source_lang(self):
-        pass
-
-    def _invert_get_target_lang(self):
-        pass
-
-    @api.onchange("volume", "rate")
-    @api.depends("volume", "rate")
-    def _compute_po_value(self):
-        for task in self:
-            task.po_value = (100 - 0) / 100 * task.volume * task.rate
-
-    @api.depends("project_id")
-    def _get_source_lang(self):
-        for task in self:
-            if self.project_id:
-                self.source_language = self.project_id.source_language
-
-    @api.depends("project_id")
-    def _compute_name(self):
-        for task in self:
-            if len(task.project_id) == 1:
-                task.name = task.project_id.display_name
-            else:
-                task.name = ", ".join(
-                    project.display_name for project in task.project_id
-                )
-
-    @api.onchange("user_ids")
-    def _compute_currency_id(self):
-        for record in self:
-            if record.user_ids:
-                record.currency = record.user_ids.currency.name
-          
-    @api.model
-    def write(self, vals):
-        if self.env.user.has_group("morons.group_contributors"):
-            for task in self:
-                for user in task.user_ids:
-                    if not user.has_group("morons.group_contributors"):
-                        raise AccessError(
-                            "Only users belonging to the 'contributors' group can edit this task."
-                        )
-        return super(MerctransTask, self).write(vals)
-    def unlink(self):
-        if self.env.user.has_group("morons.group_contributors"):
-            for task in self:
-                if task.create_uid.has_group("morons.group_contributors"):
-                    if task.create_uid != self.env.user:
-                        raise AccessError("You do not have permission to delete this task.")
-        return super(MerctransTask, self).unlink()
-    
-    def action_test(self):
-        return{
-            "type": "ir.actions.act_window",
-            "res_model": "project.project",
-            "views": [[False, "tree"]],
-            "res_id": 'project.open_view_project_all',
-            "target": "new",
-            }
-    #Alert negative   
-    @api.constrains("volume","rate")
-    def _check_positive_values(self):
-        for task in self:
-            if task.volume < 0:
-                raise ValidationError("Project Volume cannot be negative.")
-            if task.rate < 0:
-                raise ValidationError("Project Rate cannot be negative.")

@@ -19,20 +19,24 @@
     'version': '0.1',
 
     # any module necessary for this one to work correctly
-    'depends': ['base', 'project', 'account','mail'],
+    'depends': ['base', 'project', 'account', 'mail', 'project_status'],
 
     # always loaded
     'data': [
         'security/security.xml',
         'security/ir.model.access.csv',
+        
         'views/project.xml',
+        'views/task.xml',
         'views/user.xml',
+        
         'data/languages.xml',
         'data/currencies.xml',
         'data/email_template.xml',
         'data/company_data.xml',
         'data/services.xml',
         'data/tags.xml',
+        'data/sequence.xml',
 
     ],
     "assets": {

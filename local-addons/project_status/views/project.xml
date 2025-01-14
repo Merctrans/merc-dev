@@ -8,7 +8,7 @@
         <field name="field_parent">child_ids</field>
         <field name="arch" type="xml">
             <field name="user_id" position="after">
-                <field name="project_status" />
+                <field name="project_status" string="Project Status" />
             </field>
         </field>
     </record>
@@ -76,7 +76,7 @@
                 <filter string="Closed" name="is_closed" domain="[('project_status.is_closed', '=', True)]" />
             </xpath>
             <filter name="Partner" position="after">
-                <filter string="Status" name="project_status" context="{'group_by': 'project_status'}" />
+                <filter string="Project Status" name="project_status" context="{'group_by': 'project_status'}" />
             </filter>
         </field>
     </record>

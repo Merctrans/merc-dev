@@ -1,15 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
     <data>
-        <record id="increment_project_id_sequence" model="ir.sequence">
-            <field name="name">Project ID Increment</field>
-            <field name="code">increment_project_id</field>
-            <field name="prefix">P</field>
-            <field name="padding">5</field>
-            <field name="company_id" eval="False" />
-        </record>
-        <!--PROJECT
-        VIEW FORM-->
+        <!--PROJECT VIEW FORM-->
         <record id="merctrans_project_view_form" model="ir.ui.view">
             <field name="name">merctrans.project.form.view.inherit</field>
             <field name="model">project.project</field>
@@ -21,6 +13,7 @@
                     <attribute name="readonly">True</attribute>
                     <attribute name="invisible">True</attribute>
                 </xpath>
+
                 <xpath expr="//header" position="inside">
                     <button name="button_delete" string="Delete Direct Project" type="object" class="oe_highlight" />
                 </xpath>
@@ -31,16 +24,15 @@
                 <xpath expr="//field[@name='label_tasks']" position="after">
                     <field name="job_id"/>
                     <field name="service" widget="many2many_tags" options="{'no_create': True}"/>
-                    <field name="currency"/>
+                    <field name="currency_id"/>
                     <field name="source_language" options="{'no_create': True}" />
                     <field name="target_language" options="{'no_create': True}"
                         widget="many2many_tags" />
                 </xpath>
                 <xpath expr="//field[@name='user_id']" position="after">
                     <field name="work_unit" />
-                    <field name="volume" widget="char"/>
-                    <field name="sale_rate" widget="char"/>
-                    <field name="discount"/>
+                    <field name="volume"/>
+                    <field name="sale_rate"/>
                     <field name="job_value"/>
                     <field name="po_value"/>
                     <field name="margin" widget="percentage"/>
@@ -48,28 +40,51 @@
                 </xpath>
                 <xpath expr="//field[@name='tag_ids']" position="attributes">
                     <attribute name="options">{'no_quick_create': True, 'no_create_edit': True}</attribute>
-                </xpath>               
+                </xpath>
+                <page name="settings" position="attributes">
+                    <attribute name="invisible">1</attribute>
+                </page>
                 <notebook position="inside">
                     <page string="Purchase Order" name="tasks">
                         <field name="tasks" >                           
                             <tree>
+                                <field name="currency_id" invisible="1"/>
+                                <field name="project_currency_id" invisible="1"/>
                                 <field name="user_ids" optional="show"
                                     widget="many2many_avatar_user"
                                     domain="[('share', '=', False), ('active', '=', True)]"
-                                    options="{'no_quick_create': True}" />
-                                <field name="service" />
+                                    options="{'no_quick_create': True, 'no_create': True}" />
                                 <field name="work_unit" />
-                                <field name="volume" options="{'no_create': True}" />
-                                <field name="rate" options="{'no_create': True}" />
+                                <field name="volume"  />
+                                <field name="rate" />
+                                <field name="po_value" />
+                                <field name="po_value_by_project_currency" optional="hide" />
                                 <field name="date_deadline" />
                                 <field name="stages_id"  />
-                                <field name="payment_status" />                                   
+                                <field name="payment_status" />
                             </tree>
                         </field>
                     </page>
                 </notebook>
             </field>
         </record>
+
+
+        <record id="view_project_project_filter" model="ir.ui.view">
+            <field name="name">view_project_project_filter</field>
+            <field name="model">project.project</field>
+            <field name="inherit_id" ref="project.view_project_project_filter" />
+            <field name="arch" type="xml">
+                <filter name="status" position="attributes">
+                    <attribute name="invisible">1</attribute>
+                </filter>
+                <filter name="status" position="after">
+                    <filter string="Payment Status" name="payment_status" context="{'group_by': 'payment_status'}" />
+                </filter>
+            </field>
+        </record>
+
+
 
         <record id="merctrans_project_view_tree" model="ir.ui.view">
             <field name="name">merctrans.project.tree.view.inherit</field>
@@ -94,49 +109,18 @@
                 <xpath expr="//field[@name='partner_id']" position="after">
                     <field name="service" widget="many2many_tags" />
                     <field name="work_unit" />
-                    <field name="currency" />
+                    <field name="currency_id" />
                     <field name="sale_rate" />
                     <field name="volume" />
-                    <field name="discount" />
                     <field name="job_value" />
+                </xpath>
+                <xpath expr="//field[@name='user_id']" position="after">
                     <field name="payment_status" />
                 </xpath>
             </field>
         </record>
 
-        <!--project.view_task_form2-->
-        <!-- TASK VIEW-->
-        <record id="merctrans_task_view_form" model="ir.ui.view">
-            <field name="name">merctrans.task.form.view.inherit</field>
-            <field name="model">project.task</field>
-            <field name="inherit_id" ref="project.view_task_form2" />
-            <field name="arch" type="xml">            
-                <xpath expr="//field[@name='project_id']" position="attributes">
-                    <attribute name="invisible">True</attribute>
-                </xpath>
-                <xpath expr="//field[@name='user_ids']" position="after">
-                    <field name="rate" />
-                    <field name="service" widget="many2many_tags" />
-                    <field name="source_language" />
-                    <field name="target_language" widget="many2many_tags" />
-                    <field name="work_unit" />
-                    <field name="stages_id"  />                   
-                </xpath>
-                <xpath expr="//field[@name='partner_id']" position="after">
-                    <field name="volume" />
-                    <field name="po_value" />
-                    <field name="currency" />
-                    <field name="payment_status" />
-                    
-                </xpath>
-                <xpath expr="//field[@name='partner_id']" position="attributes">
-                    <attribute name="invisible">True</attribute>
-                </xpath>
-                <xpath expr="//field[@name='tag_ids']" position="attributes">
-                    <attribute name="invisible">True</attribute>
-                </xpath>
-            </field>
-        </record>
+
         <!-- MODIFY INHTERIT ACTION -->
         <record id="project.open_view_project_all" model="ir.actions.act_window">
             <field name="view_id" ref="project.view_project" />
@@ -144,163 +128,13 @@
         <record id="project.menu_projects_config" model="ir.ui.menu">
             <field name="sequence" eval="0"/>
         </record>
-        <record id="project.menu_project_config" model="ir.ui.menu">     
+        <record id="project.menu_project_config" model="ir.ui.menu">
             <field name="sequence" eval="0"/>
-        </record>
-        <!-- INTERNAL USER FORM -->
-        <record id="view_res_users_form_custom" model="ir.ui.view">
-            <field name="name">res.users.form.custom</field>
-            <field name="model">res.users</field>
-            <field name="inherit_id" ref="base.view_users_form" />
-            
-            <field name="arch" type="xml">
-                
-                <sheet position="inside">
-                    <group>
-                        <field name="groups_id" widget="many2many_tags"
-                            options="{'no_create': True}" string="User Groups"
-                            domain="[('category_id', '=', 'Morons')]">
-                            User Groups
-                        </field>
-                        <field name="assigned_records_count" widget="statinfo" />
-                    </group>
-                    <notebook position="inside">
-                        <page string="Employment Information">
-                            <group>
-                                <field name="contributor">Contributor</field>
-                                <field name="currency">Currency</field>
-                                <field name="active">Active</field>
-                                <field name="skype">Skype</field>
-                                <field name="nationality">Nationality</field>
-                                <field name="country_of_residence">Country of Residence</field>
-                                <field name="timezone">Timezone</field>
-                            </group>
-                        </page>
-                        <page string="Payment Information">
-                            <group>
-                                <group col="3">
-                                    <field name="preferred_payment_method">Preferred Payment Method</field>
-                                    <field name="transferwise_id">Wise ID</field>
-                                    <field name="bank_account_number">Bank Account Number</field>
-                                    <field name="bank_name">Bank Name</field>
-                                    <field name="bank_address" widget="text">Bank Address</field>
-                                </group>
-                                <group col="3">
-                                    <field name="paypal">PayPal ID</field>
-                                    <field name="iban">IBAN</field>
-                                    <field name="swift">SWIFT</field>
-                                </group>
-                            </group>
-                        </page>
-                        <page string="Educational Qualification">
-                            <group>
-                                <field name="dates_attended">Dates Attended</field>
-                                <field name="school">School</field>
-                                <field name="field_of_study">Field of Study</field>
-                                <field name="year_obtained" widget="char">Year Obtained</field>
-                                <field name="certificate">Certificate</field>
-                            </group>
-                        </page>
-                    </notebook>
-                </sheet>
-            </field>
-        </record>
-
-        <!-- INTERNAL USER VIEW -->
-        <record id="action_open_res_users" model="ir.actions.act_window">
-            <field name="name">Internal Users</field>
-            <field name="res_model">res.users</field>
-            <field name="view_mode">tree,form</field>
-            <field name="view_ids"
-                eval="[(5, 0, 0), (0, 0, {'view_mode': 'tree', 'view_id': ref('base.view_users_tree')}), 
-                                            (0, 0, {'view_mode': 'form', 'view_id': ref('view_res_users_form_custom')})]" />
-            <field name="domain">[('share', '=', False)]</field>
-        </record>
-
-        <!-- INCREMENT INVOICE ID -->
-        <record id="seq_morons_invoice" model="ir.sequence">
-            <field name="name">Morons Invoice</field>
-            <field name="code">morons.invoice</field>
-            <field name="prefix">INV-</field>
-            <field name="padding">5</field>
-            <field name="number_increment">1</field>
-        </record>
-
-        <record id="morons_invoice_form" model="ir.ui.view">
-            <field name="name">Morons Invoice View Form</field>
-            <field name="model">morons.invoice</field>
-            <field name="arch" type="xml">
-                <form>
-                    <sheet>
-                        <group>
-                            <group>
-                                <field name="invoice_id" readonly="1" />
-                                <field name="issue_date" />
-                                <field name="due_date" />
-                                <field name="sender" />
-                                <field name="purchase_order" />
-                                <field name="note" />
-                            </group>
-                            <group>
-                                <field name="currency" />
-                                <field name="work_unit" />
-                                <field name="rate" />
-                                <field name="sale_unit" />
-                                <field name="payable" />
-                                <field name="payable_usd" />
-                                <field name="status"
-                                    groups="base.group_system,morons.group_pm,morons.group_bod,morons.group_accountants" />
-                            </group>
-                        </group>
-                    </sheet>
-                </form>
-            </field>
-        </record>
-
-        <!-- VIEW ALL INVOICES LIST -->
-        <record id="morons_invoice_tree" model="ir.ui.view">
-            <field name="name">morons list</field>
-            <field name="model">morons.invoice</field>
-            <field name="arch" type="xml">
-                <tree>
-                    <field name="invoice_id" readonly="1" />
-                    <field name="issue_date" />
-                    <field name="due_date" />
-                    <field name="sender" />
-                    <field name="note" />
-                    <field name="currency" />
-                    <field name="work_unit" />
-                    <field name="rate" />
-                    <field name="sale_unit" />
-                    <field name="payable" />
-                    <field name="payable_usd" />
-                    <field name="status" />
-                </tree>
-            </field>
-        </record>
-
-        <!-- IR.ACTION TO OPEN INVOICE LIST VIEW -->
-        <record id="action_open_invoice" model="ir.actions.act_window">
-            <field name="name">Invoices</field>
-            <field name="res_model">morons.invoice</field>
-            <field name="view_mode">tree,form</field>
-            <field name="view_ids"
-                eval="[(5, 0, 0), (0, 0, {'view_mode': 'tree', 'view_id': ref('morons.morons_invoice_tree')}), 
-                                            (0, 0, {'view_mode': 'form', 'view_id': ref('morons.morons_invoice_form')})]" />
         </record>
 
         <menuitem name="Projects" id="project.menu_main_pm" />
 
-        <menuitem id="menu_morons_invoice" name="Invoices" parent="project.menu_main_pm"
-            action="action_open_invoice" groups="base.group_system" />
-
-
-        <!-- CREATION OF INTERNAL USER NAVBAR OPTION -->
-        <menuitem id="menu_res_users" name="Internal Users" parent="project.menu_main_pm"
-            action="action_open_res_users" groups="base.group_system" />
-
         <menuitem id="project.menu_projects" name="Projects" parent="project.menu_main_pm" groups="morons.group_pm"/>
-            
 
         <menuitem id="base.menu_management" name="Apps" groups="base.group_system" />
     </data>
