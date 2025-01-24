@@ -1,0 +1,179 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <!-- Morons Category -->
+        <record model="ir.module.category" id="module_category_morons">
+            <field name="name">Morons</field>
+        </record>
+
+        <!-- Contributors Group: -->
+        <record id="group_contributors" model="res.groups">
+            <field name="name">Contributors</field>
+            <field name="category_id" ref="module_category_morons" />
+        </record>
+
+        <!-- PM Group -->
+        <record id="group_pm" model="res.groups">
+            <field name="name">PM</field>
+            <field name="category_id" ref="module_category_morons" />
+        </record>
+
+        <!-- BOD Group -->
+        <record id="group_bod" model="res.groups">
+            <field name="name">BOD</field>
+            <field name="category_id" ref="module_category_morons" />
+        </record>
+
+        <!-- Accountants Group -->
+        <record id="group_accountants" model="res.groups">
+            <field name="name">Accountants</field>
+            <field name="category_id" ref="module_category_morons" />
+        </record>
+
+    <!-- Phân quyền nhóm quyền Morons
+        1. Project: thiết lập tại ir.model.access
+            - Contributors: Không có quyền truy cập
+            - PM: full quyền, trừ quyền xóa 
+            - BOD: full quyền
+            - Accountants: xem tất cả Projects
+        2. Purchase Order:
+            - Contributors: Có quyền xem PO của mình -> tùy chỉnh rule
+            - PM: Có full quyền với PO, trừ quyền xóa -> tùy chỉnh rule
+            - BOD: Có full quyền với PO -> tùy chỉnh rule
+            - Accountants: Xem tất cả POs, phân quyền tại ir.model.access
+        3. Contributor Invoice: tùy chỉnh rule
+            - Contributors: Có quyền tạo và xem Invoice của mình
+            - PM: Có full quyền với PO, trừ quyền xóa
+            - BOD: Có full quyền với Invoice
+            - Accountants: xem và update Invoice
+    -->
+
+        <!-- Phân quyền cho Purchase Order (project.task) -->
+        <!-- Purchase Order: Contributors xem đc PO của mình đc assign -->
+        <record id="rule_contributor_access_po" model="ir.rule">
+            <field name="name">Contributor access to My POs</field>
+            <field name="model_id" ref="project.model_project_task"/>
+            <field name="domain_force">[('contributor_id', '=', user.id)]</field>
+            <field name="groups" eval="[(4, ref('morons.group_contributors'))]"/>
+            <field name="perm_read" eval="1" />
+            <field name="perm_write" eval="0" />
+            <field name="perm_create" eval="0" />
+            <field name="perm_unlink" eval="0" />
+        </record>
+        <!-- Purchase Order: PM có full quyền, không được xóa -->
+        <record id="rule_pm_access_po" model="ir.rule">
+            <field name="name">PM access to POs</field>
+            <field name="model_id" ref="project.model_project_task"/>
+            <field name="domain_force">[(1, '=', 1)]</field>
+            <field name="groups" eval="[(4, ref('morons.group_pm'))]"/>
+            <field name="perm_read" eval="1" />
+            <field name="perm_write" eval="1" />
+            <field name="perm_create" eval="1" />
+            <field name="perm_unlink" eval="0" />
+        </record>
+        <!-- Purchase Order: BoD có full quyền -->
+        <record id="rule_bod_access_po" model="ir.rule">
+            <field name="name">BOD access to POs</field>
+            <field name="model_id" ref="project.model_project_task"/>
+            <field name="domain_force">[(1, '=', 1)]</field>
+            <field name="groups" eval="[(4, ref('morons.group_bod'))]"/>
+            <field name="perm_read" eval="1" />
+            <field name="perm_write" eval="1" />
+            <field name="perm_create" eval="1" />
+            <field name="perm_unlink" eval="1" />
+        </record>
+
+
+        <!-- 2. Phân quyền cho Invoice (account.move) -->
+        <!-- Invoice: Contributors xem đc Invoice của mình -->
+        <record id="rule_contributor_access_contributor_invoice" model="ir.rule">
+            <field name="name">Contributor access to My Invoices</field>
+            <field name="model_id" ref="account.model_account_move"/>
+            <field name="domain_force">[('partner_id', '=', user.partner_id.id), ('is_contributor_invoice', '=', True)]</field>
+            <field name="groups" eval="[(4, ref('morons.group_contributors'))]"/>
+            <field name="perm_read" eval="1" />
+            <field name="perm_write" eval="0" />
+            <field name="perm_create" eval="1" />
+            <field name="perm_unlink" eval="0" />
+        </record>
+
+        <record id="rule_contributor_access_contributor_invoice_line" model="ir.rule">
+            <field name="name">Contributor access to My Invoice Lines</field>
+            <field name="model_id" ref="account.model_account_move_line"/>
+            <field name="domain_force">[('move_id.partner_id', '=', user.partner_id.id), ('move_id.is_contributor_invoice', '=', True)]</field>
+            <field name="groups" eval="[(4, ref('morons.group_contributors'))]"/>
+            <field name="perm_read" eval="1" />
+            <field name="perm_write" eval="0" />
+            <field name="perm_create" eval="1" />
+            <field name="perm_unlink" eval="0" />
+        </record>
+
+        <!-- Contributor Invoice: PM full quyền, không được xóa -->
+        <record id="rule_pm_access_contributor_invoice" model="ir.rule">
+            <field name="name">PM access to Contributor Invoices</field>
+            <field name="model_id" ref="account.model_account_move"/>
+            <field name="domain_force">[('is_contributor_invoice', '=', True)]</field>
+            <field name="groups" eval="[(4, ref('morons.group_pm'))]"/>
+            <field name="perm_read" eval="1" />
+            <field name="perm_write" eval="1" />
+            <field name="perm_create" eval="1" />
+            <field name="perm_unlink" eval="0" />
+        </record>
+
+        <record id="rule_pm_access_contributor_invoice_line" model="ir.rule">
+            <field name="name">PM access to Contributor Invoice Lines</field>
+            <field name="model_id" ref="account.model_account_move_line"/>
+            <field name="domain_force">[('move_id.is_contributor_invoice', '=', True)]</field>
+            <field name="groups" eval="[(4, ref('morons.group_pm'))]"/>
+            <field name="perm_read" eval="1" />
+            <field name="perm_write" eval="1" />
+            <field name="perm_create" eval="1" />
+            <field name="perm_unlink" eval="0" />
+        </record>
+
+        <!-- Contributor Invoice: Accountants tạo, xem, update Invoice -->
+        <record id="rule_accountants_access_contributor_invoice" model="ir.rule">
+            <field name="name">Accountants access to Contributor Invoices</field>
+            <field name="model_id" ref="account.model_account_move"/>
+            <field name="domain_force">[('is_contributor_invoice', '=', True)]</field>
+            <field name="groups" eval="[(4, ref('morons.group_accountants'))]"/>
+            <field name="perm_read" eval="1" />
+            <field name="perm_write" eval="1" />
+            <field name="perm_create" eval="1" />
+        </record>
+
+        <record id="rule_accountants_access_contributor_invoice_line" model="ir.rule">
+            <field name="name">Accountants access to Contributor Invoice Lines</field>
+            <field name="model_id" ref="account.model_account_move_line"/>
+            <field name="domain_force">[('move_id.is_contributor_invoice', '=', True)]</field>
+            <field name="groups" eval="[(4, ref('morons.group_accountants'))]"/>
+            <field name="perm_read" eval="1" />
+            <field name="perm_write" eval="1" />
+            <field name="perm_create" eval="1" />
+        </record>
+
+        <!-- Contributor Invoice: BOD full quyền -->
+        <record id="rule_bod_access_contributor_invoice" model="ir.rule">
+            <field name="name">BOD access to Contributor Invoices</field>
+            <field name="model_id" ref="account.model_account_move"/>
+            <field name="domain_force">[('is_contributor_invoice', '=', True)]</field>
+            <field name="groups" eval="[(4, ref('morons.group_bod'))]"/>
+            <field name="perm_read" eval="1" />
+            <field name="perm_write" eval="1" />
+            <field name="perm_create" eval="1" />
+            <field name="perm_unlink" eval="1" />
+        </record>
+
+        <record id="rule_bod_access_contributor_invoice_line" model="ir.rule">
+            <field name="name">BOD access to Contributor Invoice Lines</field>
+            <field name="model_id" ref="account.model_account_move_line"/>
+            <field name="domain_force">[('move_id.is_contributor_invoice', '=', True)]</field>
+            <field name="groups" eval="[(4, ref('morons.group_bod'))]"/>
+            <field name="perm_read" eval="1" />
+            <field name="perm_write" eval="1" />
+            <field name="perm_create" eval="1" />
+            <field name="perm_unlink" eval="1" />
+        </record>
+
+    </data>
+</odoo>

@@ -8,14 +8,6 @@ class MercTransServices(models.Model):
     This class encapsulates the various services that MercTrans provides,
     categorized into different departments. It serves as a way to manage
     and access the services information in an organized manner.
-
-    Attributes:
-        _name (str): Internal name of the model in the Odoo framework.
-        _rec_name (str): Field to use for record name.
-        _description (str): A brief description of the model's purpose.
-        department_list (list of tuples): A predefined list of departments.
-        department (fields.Selection): Field for selecting a department from the department_list.
-        name (fields.Char): Field for the name of the service.
     """
 
     _name = "merctrans.services"

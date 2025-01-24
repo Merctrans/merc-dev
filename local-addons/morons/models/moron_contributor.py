@@ -1,11 +1,9 @@
 import datetime
-from odoo import models, fields, api
+from odoo import models, fields, api, _
 from odoo.exceptions import ValidationError
 import re
-import pytz
 
 
-# uncomment and create a view for it
 class InternalUser(models.Model):
     """
     A model for managing internal users at MercTrans.
@@ -46,27 +44,19 @@ class InternalUser(models.Model):
             certificate (fields.Char): Field for the name of any certificate obtained by the user.
 
     Methods:
-        _tz_get(): Returns a list of all timezones for the timezone selection field.
         validate_email(): Validates the format of the user's email for PayPal and login.
     """
 
     _inherit = ["res.users"]
 
+    # Contributor Information
     contributor = fields.Boolean(string='Contributor', default=False)
-    active = fields.Boolean(string='Active', default=True)
     currency = fields.Many2one('res.currency', string='Currency')
     skype = fields.Char(string='Skype')
-    nationality = fields.Many2many('res.lang', required=True)
-    country_of_residence = fields.Many2one('res.country', required=True)
-    timezone = fields.Selection('_tz_get',
-                                string='Timezone',
-                                required=True,
-                                default=lambda self: self.env.user.tz or 'UTC')
-    
-    @api.model
-    def _tz_get(self):
-        return [(x, x) for x in pytz.all_timezones]
-    
+    nationality = fields.Many2many('res.country')
+    country_of_residence = fields.Many2one('res.country')
+    my_pos_count = fields.Integer(string='POs Count', compute='_compute_my_pos_count')
+
     # Payment Methods
     paypal = fields.Char('PayPal ID')
     transferwise_id = fields.Char('Wise ID')
@@ -78,7 +68,13 @@ class InternalUser(models.Model):
     preferred_payment_method = fields.Selection(selection=[('paypal', 'Paypal'),
                                                            ('transferwise', 'Wise'),
                                                            ('bank', 'Bank Transfer')])
-    
+    # Education and Experience
+    dates_attended = fields.Date('Date Attended')
+    school = fields.Char('School')
+    field_of_study = fields.Char('Field of Study')
+    year_obtained = fields.Selection([(str(num), str(num)) for num in range(1900, datetime.datetime.now().year + 1)], 'Year')
+    certificate = fields.Char('Certificate')
+
     @api.constrains('paypal')
     def validate_paypal(self):
         if self.paypal:
@@ -86,23 +82,8 @@ class InternalUser(models.Model):
                 '^[_a-z0-9-]+(\.[_a-z0-9-]+)*@[a-z0-9-]+(\.[a-z0-9-]+)*(\.[a-z]{2,4})$',
                 self.paypal)
             if match is None:
-                raise ValidationError('Not a valid email')
-    
-    # Education and Experience
-    dates_attended = fields.Date('Date Attended')
-    school = fields.Char('School')
-    field_of_study = fields.Char('Field of Study')
-    year_obtained = fields.Selection([(str(num), str(num)) for num in range(1900, datetime.datetime.now().year + 1)], 'Year')
-    certificate = fields.Char('Certificate')
-    
-    assigned_records_count = fields.Integer(string=' Assigned Tasks', compute='_compute_assigned_records_count')
+                raise ValidationError(_('Not a valid email'))
 
-    def _compute_assigned_records_count(self):
-        for record in self:
-            # Count the number of project.task records where this user is in user_ids
-            count = self.env['project.task'].search_count([('user_ids', 'in', record.id)])
-            record.assigned_records_count = count
-    
     @api.constrains('login')
     def validate_login(self):
         if self.login:
@@ -110,4 +91,30 @@ class InternalUser(models.Model):
                 '^[_a-z0-9-]+(\.[_a-z0-9-]+)*@[a-z0-9-]+(\.[a-z0-9-]+)*(\.[a-z]{2,4})$',
                 self.login)
             if match is None:
-                raise ValidationError('Not a valid email')
+                raise ValidationError(_('Not a valid email'))
+
+    def _compute_my_pos_count(self):
+        for r in self:
+            r.my_pos_count = len(r.task_ids)
+
+    @api.model_create_multi
+    def create(self, vals_list):
+        res = super(InternalUser, self).create(vals_list)
+        res._update_is_contributor()
+        return res
+
+    def write(self, vals):
+        res = super(InternalUser, self).write(vals)
+        self._update_is_contributor()
+        return res
+
+    def _update_is_contributor(self):
+        """
+        Nếu đánh dấu là contributor thì add users vào contributor group.
+        """
+        contributors = self.filtered(lambda r: r.contributor)
+        contributor_group = self.env.ref('morons.group_contributors')
+        contributor_group_users = contributor_group.users
+        add_users = contributors - contributor_group_users
+        if add_users:
+            add_users.write({'groups_id': [(4, contributor_group.id)]})

@@ -1,15 +1,6 @@
-from odoo import models, fields, api
-from odoo.exceptions import AccessError, RedirectWarning
-import logging
-from odoo.exceptions import ValidationError
-logger = logging.getLogger(__name__)
+from odoo import models, fields, api, _
+from odoo.exceptions import ValidationError, UserError
 
-""""TODO
-- Inherit to project.project
-- User Project to generate metadata
-- Task to delegate tasks to Contributors
-
-"""
 
 class MerctransProject(models.Model):
     """
@@ -52,6 +43,8 @@ class MerctransProject(models.Model):
     # Override default value as the setting tab will be hidden on view
     privacy_visibility = fields.Selection(default="followers")
     description = fields.Text(default="WARNING: This field will be visible to Contributors when they are assigned to POs. Please check for sensitive information before submitting.")
+    partner_id = fields.Many2one("res.partner", string="Client")
+
 
     work_unit_list = [
         ("word", "Word"),
@@ -76,8 +69,6 @@ class MerctransProject(models.Model):
         tracking=True,
     )
 
-    # services contain tags
-
     service = fields.Many2many("merctrans.services", string="Services", tracking=True)
     source_language = fields.Many2one(
         "res.lang", string="Source Language", tracking=True
@@ -87,21 +78,26 @@ class MerctransProject(models.Model):
     )
     discount = fields.Integer("Discount (%)", tracking=True)
 
-    # add discount field
-    # fixed job
 
     work_unit = fields.Selection(
         string="Work Unit", selection=work_unit_list, tracking=True
     )
     volume = fields.Float("Project Volume", tracking=True)
-    currency_id = fields.Many2one("res.currency", string="Currency*", required=True, tracking=True, store=True, readonly=False)
+    # Ghi đè lại currency_id để tránh thay đổi tiền tệ của công ty
+    currency_id = fields.Many2one('res.currency', related=False, string="Currency", tracking=True, store=True, readonly=False)
+    currency_usd_id = fields.Many2one('res.currency', "USD", readonly=True, 
+                                     default=lambda self: self.env.ref('base.USD'))
     sale_rate = fields.Monetary("Sale Rate", tracking=True, currency_field="currency_id")
     job_value = fields.Monetary(
-        "Project Value",
-        compute="_compute_job_value",
+        "Project Value (DC)",
+        compute="_compute_job_value", store=True,
         currency_field="currency_id",
-        store=True,
-        readonly=True,
+        tracking=True,
+    )
+    job_value_usd = fields.Monetary(
+        "Project Value (USD)",
+        compute="_compute_job_value", store=True,
+        currency_field="currency_usd_id",
         tracking=True,
     )
 
@@ -125,8 +121,112 @@ class MerctransProject(models.Model):
         digits=(16, 3)
     )
 
-    @api.model
-    def create(self, vals):
+    @api.constrains("volume", "sale_rate", "discount")
+    def _check_positive_values(self):
+        for task in self:
+            if task.volume < 0:
+                raise ValidationError(_("Project volume cannot be negative."))
+            if task.sale_rate < 0:
+                raise ValidationError(_("Project sale rate cannot be negative."))
+            if task.discount < 0:
+                raise ValidationError(_("Project discount cannot be negative."))
+
+
+    @api.depends("volume", "sale_rate", "discount", 'currency_id')
+    def _compute_job_value(self):
+        """Computes the job value of the project.
+
+        Parameters:
+            volume: The volume of the project.
+            sale_rate: The sale rate of the project.
+            discount: The discount of the project (if any).
+
+        Returns:
+            None: Updates the 'job_value' and 'job_value_usd' fields of each project record with the calculated job value.
+        """
+        for r in self:
+            job_value = ((100 - r.discount) / 100 * r.volume * r.sale_rate)
+            r.job_value = job_value
+
+            # Quy đổi sang USD: project currency -> company currency -> USD
+            if job_value == 0:
+                job_value_usd = 0
+            else:
+                company_currency = r.company_id.currency_id
+                project_currency = r.currency_id
+                usd_currency = r.currency_usd_id or self.env.ref('base.USD')
+                job_value_usd = job_value  # nếu tiền tệ của project = usd thì gán luôn giá trị đó
+                if project_currency != usd_currency:
+                    # Quy đổi sang USD: project currency -> company currency -> USD
+                    # 1. project currency -> company currency
+                    if project_currency != company_currency:
+                        job_value_usd = project_currency._convert(
+                            job_value_usd,
+                            company_currency,
+                            r.company_id,
+                            fields.Date.context_today(r)
+                        )
+                    # 2. company currency -> USD
+                    if company_currency != usd_currency:
+                        job_value_usd = company_currency._convert(
+                            job_value_usd,
+                            usd_currency,
+                            r.company_id,
+                            fields.Date.context_today(r)
+                        )
+            r.job_value_usd = job_value_usd
+
+    @api.depends("tasks", 'tasks.po_value_by_project_currency', 'currency_id')
+    def _compute_po_value(self):
+        """Computes the total Purchase Order (PO) value of the project.
+
+        Parameters:
+            tasks: The tasks associated with the project.
+
+        Returns:
+            None: Updates the 'po_value' field of each project record with the calculated sum.
+        """
+        for project in self:
+            project.po_value = sum(project.tasks.mapped("po_value_by_project_currency"))
+
+    @api.depends("po_value", "job_value")
+    def _compute_margin(self):
+        """Computes the margin of the project.
+
+        Parameters:
+            po_value: The total PO value of the project.
+            job_value: The total job value of the project.
+
+        Returns:
+            None: Updates the 'margin' field of each project record with the calculated margin.
+        """
+        for project in self:
+            if project.job_value and project.po_value:
+                project.margin = (
+                    project.job_value - project.po_value
+                ) / project.job_value
+            else:
+                project.margin = 0
+
+    @api.depends("po_value", "job_value")
+    def _compute_receivable(self):
+        """Computes the receivable of the project.
+
+        Parameters:
+            po_value: The total PO value of the project.
+            job_value: The total job value of the project.
+
+        Returns:
+            None: Updates the 'receivable' field of each project record with the calculated receivable.
+        """
+        for project in self:
+            if project.po_value and project.job_value:
+                project.receivable = project.job_value - project.po_value
+            else:
+                project.receivable = 0
+
+    @api.model_create_multi
+    def create(self, vals_list):
         """Creates a new project.
 
         This method creates a new project and assigns it a unique project ID.
@@ -138,56 +238,12 @@ class MerctransProject(models.Model):
         Returns:
             project: The newly created project.
         """
-        if self.env.user.has_group("morons.group_contributors"):
-            raise AccessError("You do not have permission to create projects.")
+        for vals in vals_list:
+            if vals.get("job_id", "New") == "New":
+                vals["job_id"] = self.env["ir.sequence"].next_by_code("increment_project_id")
+        return super(MerctransProject, self).create(vals_list)
 
-        if vals.get("job_id", "New") == "New":
-            vals["job_id"] = self.env["ir.sequence"].next_by_code(
-                "increment_project_id"
-            )
-
-        return super(MerctransProject, self).create(vals)
-
-    def unlink(self):
-        if self.env.user.has_group("morons.group_contributors"):
-            raise AccessError("You do not have permission to delete projects.")
-        
-        res = super(MerctransProject, self).unlink()
-            
-        return res 
-    
-    def button_delete(self):
-        
-        if self.env.user.has_group("morons.group_contributors"):
-            raise AccessError("You do not have permission to delete projects.")
-        res = super(MerctransProject, self).unlink()
-        if res:
-            return {
-            'type': 'ir.actions.act_url',
-            'url': 'https://moron.merctrans.vn/web#action=337&model=project.project&view_type=list&cids=1&menu_id=195',
-            'target': 'self',  
-            }
-        
     def write(self, vals):
-        if self.env.user.has_group("morons.group_contributors") and any(
-            field_name in vals
-            for field_name in [
-                "source_language",
-                "payment_status",
-                "sale_rate",
-                "currency",
-                "volume",
-                "work_unit",
-                "discount",
-                "target_language",
-                "service",
-                'tag_ids',
-                'partner_id',
-                'date_start',
-                'user_id'
-            ]
-        ):
-            raise AccessError("You do not have permission to edit projects.")
         old_services = self.mapped("service")
         old_target_language = self.mapped("target_language")
         old_tag_ids = self.mapped("tag_ids")
@@ -239,91 +295,22 @@ class MerctransProject(models.Model):
 
         return res
 
-    @api.depends("volume", "sale_rate", "discount")
-    def _compute_job_value(self):
-        """Computes the job value of the project.
-
-        Parameters:
-            volume: The volume of the project.
-            sale_rate: The sale rate of the project.
-            discount: The discount of the project (if any).
-
+    def unlink(self):
+        """Delete project and redirect to project list.
         Returns:
-            None: Updates the 'job_value' field of each project record with the calculated job value.
+            dict: Action window open project list
         """
-        for project in self:
-            project.job_value = (
-                (100 - project.discount) / 100 * project.volume * project.sale_rate
-            )
-
-    @api.depends("tasks", 'tasks.po_value_by_project_currency', 'currency_id')
-    def _compute_po_value(self):
-        """Computes the total Purchase Order (PO) value of the project.
-
-        Parameters:
-            tasks: The tasks associated with the project.
-
-        Returns:
-            None: Updates the 'po_value' field of each project record with the calculated sum.
-        """
-        for project in self:
-            project.po_value = sum(project.tasks.mapped("po_value_by_project_currency"))
-
-    @api.depends("po_value", "job_value")
-    def _compute_margin(self):
-        """Computes the margin of the project.
-
-        Parameters:
-            po_value: The total PO value of the project.
-            job_value: The total job value of the project.
-
-        Returns:
-            None: Updates the 'margin' field of each project record with the calculated margin.
-        """
-        for project in self:
-            if project.job_value and project.po_value:
-                project.margin = (
-                    project.job_value - project.po_value
-                ) / project.job_value
-            else:
-                project.margin = 0
-
-    @api.depends("po_value", "job_value")
-    def _compute_receivable(self):
-        """Computes the receivable of the project.
-
-        Parameters:
-            po_value: The total PO value of the project.
-            job_value: The total job value of the project.
-
-        Returns:
-            None: Updates the 'receivable' field of each project record with the calculated receivable.
-        """
-        for project in self:
-            if project.po_value and project.job_value:
-                project.receivable = project.job_value - project.po_value
-            else:
-                project.receivable = 0
-
-
-    @api.model
-    def search(self, args, **kwargs):
-        if self.env.user.has_group("base.group_system") or self.env.user.has_group("morons.group_pm") :
-            pass
-        else:
-            args += [("user_id", "=", self.env.user.id)] 
-        return super(MerctransProject, self).search(args, **kwargs)
-    def _get_dynamic_domain(self):
-        accountant_group = self.env.ref("morons.group_accountants")
-        accountant_user_ids = accountant_group.users.ids
-        return [("create_uid", "not in", accountant_user_ids)]
-    # Alert negative
-    @api.constrains("volume", "sale_rate", "discount")
-    def _check_positive_values(self):
-        for task in self:
-            if task.volume < 0:
-                raise ValidationError("Project volume cannot be negative.")
-            if task.sale_rate < 0:
-                raise ValidationError("Project sale rate cannot be negative.")
-            if task.discount < 0:
-                raise ValidationError("Project discount cannot be negative.")
+        if self.tasks:
+            raise UserError(_("Please delete all related POs and invoices before deleting this project."))
+    
+        res = super(MerctransProject, self).unlink()
+        if res:
+            return {
+                'type': 'ir.actions.act_window',
+                'name': _('Projects'),
+                'res_model': 'project.project',
+                'view_mode': 'list,form',
+                'target': 'current',
+                'action': self.env.ref('project.open_view_project_all').id
+            }
+        return res

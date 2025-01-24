@@ -1,0 +1,97 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+   <!-- Moron Project Menu (App) -->
+   <menuitem 
+        name="Moron Project"
+        id="moron_project_app_menu"
+        groups="morons.group_pm,morons.group_bod,morons.group_accountants,morons.group_contributors"
+        sequence="50"/>
+    
+    <!-- Project Menu: PM, BOD, Accountants -->
+    <menuitem 
+        name="Projects"
+        id="project_menu"
+        action="project.open_view_project_all"
+        parent="morons.moron_project_app_menu"
+        groups="morons.group_pm,morons.group_bod,morons.group_accountants"
+        sequence="10"/>
+
+    <!-- Purchase Order Menu: PM, BOD, Accountants -->
+    <menuitem 
+        name="Purchase Orders"
+        id="purchase_order_menu"
+        action="morons.merctrans_task_action_my_task"
+        parent="morons.moron_project_app_menu"
+        groups="morons.group_pm,morons.group_bod,morons.group_accountants"
+        sequence="20"/>
+    
+    <!-- My POs Menu: Contributors -->
+    <menuitem 
+        name="My POs"
+        id="my_pos_menu"
+        action="morons.merctrans_task_action_my_task"
+        parent="morons.moron_project_app_menu"
+        groups="morons.group_contributors"
+        sequence="25"/>
+
+    <!-- Contributors Invoice Menu: PM, BOD, Accountants -->
+    <menuitem 
+        name="Contributors Invoices"
+        id="contributors_invoices_menu"
+        action="morons.contributor_invoice_action_all"
+        parent="morons.moron_project_app_menu"
+        groups="morons.group_pm,morons.group_bod,morons.group_accountants"
+        sequence="30"/>
+    
+    <!-- My Invoices Menu: Contributors -->
+    <menuitem
+        name="My Invoices"
+        id="my_invoices_menu"
+        action="morons.contributor_invoice_action_my_po"
+        parent="morons.moron_project_app_menu"
+        groups="morons.group_contributors"
+        sequence="35"/>
+
+    <!-- Contributor Menu: PM, BOD, Accountants -->
+    <menuitem 
+        name="Contributors"
+        id="contributors_menu"
+        action="morons.action_open_contributor_list"
+        parent="morons.moron_project_app_menu"
+        groups="morons.group_pm,morons.group_bod,morons.group_accountants"
+        sequence="40"/>
+
+    <!-- Configuration Menu: BOD -->
+    <menuitem 
+        name="Configuration"
+        id="configuration_menu"
+        parent="morons.moron_project_app_menu"
+        groups="morons.group_bod"
+        sequence="50"/>
+
+    <!-- Configuration: Tag Menu -->
+    <menuitem
+        id="menu_project_tags_act"
+        name="Project Tags"
+        action="project.project_tags_action"
+        parent="morons.configuration_menu"
+        sequence="10"/>
+
+    <!-- Configuration: Activity Type Menu -->
+    <menuitem
+        id="project_menu_config_activity_type"
+        name="Project Activity Types"
+        action="project.mail_activity_type_action_config_project_types"
+        parent="morons.configuration_menu"
+        sequence="20"/>
+
+    <!-- Configuration: Status Menu -->
+    <menuitem
+        name="Project Statuses"
+        id="project_status_menu"
+        action="project_status.project_status_action"
+        parent="morons.configuration_menu"
+        sequence="30"
+    />
+
+</odoo>

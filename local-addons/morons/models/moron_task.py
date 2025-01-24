@@ -1,15 +1,6 @@
-from odoo import models, fields, api
-from odoo.exceptions import AccessError, RedirectWarning
-import logging
+from odoo import models, fields, api, _
 from odoo.exceptions import ValidationError
-logger = logging.getLogger(__name__)
 
-""""TODO
-- Inherit to project.project
-- User Project to generate metadata
-- Task to delegate tasks to Contributors
-
-"""
 
 class MerctransTask(models.Model):
     """
@@ -37,8 +28,6 @@ class MerctransTask(models.Model):
         currency (fields.Char): Computed field for the currency used in the task.
 
     Methods:
-        _invert_get_source_lang(): Placeholder method for inverse computation of source language. (TODO)
-        _invert_get_target_lang(): Placeholder method for inverse computation of target language.  (TODO)
         _compute_po_value(): Computes the Purchase Order value of the task based on volume and rate.
         _get_source_lang(): Computes the source language of the task based on its associated project.
         _compute_currency_id(): Computes the currency used in the task based on the users assigned to it.
@@ -46,12 +35,9 @@ class MerctransTask(models.Model):
 
     _inherit = "project.task"
 
-    # Override to set attrs
-    user_ids = fields.Many2many(
-        string="Assignees*",
-        domain="[('share', '=', False), ('active', '=', True)]",
-        required=True,
-    )
+    contributor_id = fields.Many2one("res.users", string='Contributor',
+                                        domain="[('share', '=', False), ('active', '=', True), ('contributor', '=', True)]",
+                                        required=True)
 
     po_status_list = [
         ("in progress", "In Progress"),
@@ -72,24 +58,16 @@ class MerctransTask(models.Model):
         ("paid", "Paid"),
     ]
     stages_id = fields.Selection(
-        string="Completion Status*", selection=po_status_list, required=True,tracking= True
+        string="Completion Status*", selection=po_status_list, required=True,tracking= True, default="in progress"
     )
 
     rate = fields.Monetary(string="Rate*", tracking=True, currency_field="currency_id")
     service = fields.Many2many("merctrans.services",tracking= True)
-    source_language = fields.Many2one(
-        "res.lang",
-        string="Source Language",
-        compute="_get_source_lang",
-        inverse="_invert_get_source_lang",
-        tracking= True,
-        
-    )
-    target_language = fields.Many2many(
-        "res.lang",
-        string="Target Language",
-        tracking= True
-    )
+    source_language = fields.Many2one("res.lang", string="Source Language", tracking= True, readonly=True)
+    target_language = fields.Many2one("res.lang", string="Target Language", tracking= True, compute_sudo=True,
+                                        domain="[('id', 'in', target_language_selected)]")
+    target_language_selected = fields.Many2many("res.lang", string="Target Language Selected",
+                                                compute="_compute_target_language_selected", compute_sudo=True)
     
     work_unit = fields.Selection(
         string="Work Unit*", selection=work_unit_list, required=True,tracking= True
@@ -113,20 +91,28 @@ class MerctransTask(models.Model):
         selection=payment_status_list,
         required=True,
         default="unpaid",
-        tracking= True
+        tracking= True,
+        compute="_compute_payment_status", store=True
     )
     currency_id = fields.Many2one("res.currency", string="Currency", compute="_compute_currency_id", store=True, tracking= True, readonly=False)
     project_currency_id = fields.Many2one("res.currency", related="project_id.currency_id", store=True, readonly=True)
-    name = fields.Char(compute="_compute_name", tracking= True, store=True)
+    name = fields.Char(string="Name", required=True, tracking= True, default="New")
 
-    def _invert_get_source_lang(self):
-        pass
+    contributor_invoice_id = fields.Many2one("account.move", string="Contributor Invoice")
 
-    def _invert_get_target_lang(self):
-        pass
+    @api.constrains("volume","rate")
+    def _check_positive_values(self):
+        for task in self:
+            if task.volume < 0:
+                raise ValidationError(_("Project Volume cannot be negative."))
+            if task.rate < 0:
+                raise ValidationError(_("Project Rate cannot be negative."))
 
     @api.depends("volume", "rate")
     def _compute_po_value(self):
+        """
+        Lưu ý: khi thay đổi công thức ở đây, cần phải điều chỉnh lại logic tạo hóa đơn để đảm bảo số tiền của PO Value = số tiền của hóa đơn
+        """
         for task in self:
             task.po_value = task.volume * task.rate
 
@@ -176,62 +162,106 @@ class MerctransTask(models.Model):
             record.show_po_value_currency_string = record.currency_id != record.project_currency_id
 
     @api.depends("project_id")
-    def _get_source_lang(self):
-        for task in self:
-            if self.project_id:
-                self.source_language = self.project_id.source_language
+    def _compute_target_language_selected(self):
+        for r in self:
+            r.target_language_selected = r.project_id.target_language
 
-    @api.depends("project_id")
-    def _compute_name(self):
-        for task in self:
-            task.name = task.project_id.display_name
-
-    @api.depends("user_ids")
+    @api.depends("contributor_id")
     def _compute_currency_id(self):
         for record in self:
-            if record.user_ids.currency:
-                record.currency_id = record.user_ids.currency[0]
+            if record.contributor_id.currency:
+                record.currency_id = record.contributor_id.currency[0]
             else:
                 record.currency_id = record.project_id.currency_id
 
-    @api.model
-    def write(self, vals):
-        if self.env.user.has_group("morons.group_contributors"):
-            for task in self:
-                for user in task.user_ids:
-                    if not user.has_group("morons.group_contributors"):
-                        raise AccessError(
-                            "Only users belonging to the 'contributors' group can edit this task."
-                        )
-        return super(MerctransTask, self).write(vals)
-    def unlink(self):
-        if self.env.user.has_group("morons.group_contributors"):
-            for task in self:
-                if task.create_uid.has_group("morons.group_contributors"):
-                    if task.create_uid != self.env.user:
-                        raise AccessError("You do not have permission to delete this task.")
-        return super(MerctransTask, self).unlink()
-    
-    def action_test(self):
-        return{
-            "type": "ir.actions.act_window",
-            "res_model": "project.project",
-            "views": [[False, "tree"]],
-            "res_id": 'project.open_view_project_all',
-            "target": "new",
-            }
-    #Alert negative   
-    @api.constrains("volume","rate")
-    def _check_positive_values(self):
-        for task in self:
-            if task.volume < 0:
-                raise ValidationError("Project Volume cannot be negative.")
-            if task.rate < 0:
-                raise ValidationError("Project Rate cannot be negative.")
+    @api.depends("contributor_invoice_id", 'contributor_invoice_id.payment_state')
+    def _compute_payment_status(self):
+        for r in self:
+            payment_status = "unpaid"
+            if r.contributor_invoice_id:
+                payment_status = "invoiced"
+                if r.contributor_invoice_id.payment_state == "paid":
+                    payment_status = "paid"
+            r.payment_status = payment_status
 
     @api.onchange("project_id")
     def onchange_project_id(self):
         self.service = self.project_id.service
         self.source_language = self.project_id.source_language
-        self.target_language = self.project_id.target_language
         self.work_unit = self.project_id.work_unit
+
+    @api.model_create_multi
+    def create(self, vals_list):
+        for vals in vals_list:
+            if not vals.get("name") or vals.get("name") == "New":
+                vals["name"] = self.env["ir.sequence"].next_by_code("increment_PO_id")
+        return super(MerctransTask, self).create(vals_list)
+
+    def action_create_invoice(self):
+        """
+        Cho phép tạo invoice cho 1 hoặc nhiều PO:
+        - Nếu PO đã có invoice => cảnh báo
+        - Nếu PO không có invoice => tạo invoice:
+            - Tạo invoice gộp cho nhiều PO nếu có nhiều PO
+        """
+        # check common
+        for r in self:
+            if not r.contributor_id:
+                raise ValidationError("A contributor must be designated for purchase order '%s'." % r.name)
+            if r.contributor_invoice_id:
+                raise ValidationError(_("This purchase order '%s' already has an invoice.") % r.name)
+
+
+        invoices = self.env["account.move"]
+        for contributor in self.contributor_id:
+            AccountMove = self.env["account.move"]
+            # check contributor
+            purchase_orders = self.filtered(lambda po: po.contributor_id == contributor)
+            if len(purchase_orders.currency_id) > 1:
+                raise ValidationError(_("You cannot create an invoice for multiple currencies: %s") % purchase_orders.mapped("name"))
+            if self.env.user.has_group("morons.group_contributors"):
+                if self.env.user == contributor:
+                    AccountMove = AccountMove.sudo()
+                else:
+                    raise ValidationError(_("You cannot create an contributor invoice for another contributor: %s") % contributor.name)
+            
+            invoice_line_data = []
+            for po in purchase_orders:
+                invoice_line_data.append((0, 0, {
+                    'name': po.name,
+                    'quantity': po.volume,
+                    'price_unit': po.rate,
+                    'tax_ids': False
+                }))
+            
+            invoice = AccountMove.create({
+                'partner_id': contributor.partner_id.id,
+                'move_type': 'in_invoice',
+                'currency_id': purchase_orders.currency_id.id,
+                'date': fields.Date.context_today(self),
+                'invoice_line_ids': invoice_line_data
+            })
+            if invoice:
+                purchase_orders.sudo().write({"contributor_invoice_id": invoice.id})
+                invoices |= invoice
+
+
+        if len(invoices) == 1:
+            if self.env.user.has_group("morons.group_contributors"):
+                view_form_id = self.env.ref('morons.contributor_invoice_view_form_my_po').id
+            else:
+                view_form_id = self.env.ref('morons.contributor_invoice_view_form_all').id
+            return {
+                "type": "ir.actions.act_window",
+                "res_model": "account.move",
+                "views": [[view_form_id, "form"]],
+                "res_id": invoices.id,
+                "target": "current",
+            }
+        else:
+            return {
+                "type": "ir.actions.act_window",
+                "res_model": "account.move",
+                "views": [[self.env.ref('morons.contributor_invoice_view_tree').id, "tree"]],
+                "target": "new",
+            }
