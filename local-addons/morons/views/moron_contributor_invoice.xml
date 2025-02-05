@@ -1,0 +1,174 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <!-- Tree view: Contributor invoice -->
+    <record id="contributor_invoice_view_tree" model="ir.ui.view">
+        <field name="name">contributor_invoice.tree</field>
+        <field name="model">account.move</field>
+        <field name="priority">80</field>
+        <field name="arch" type="xml">
+            <tree>
+                <field name="currency_id" invisible="1"/>
+                <field name="company_currency_id" invisible="1"/>
+                <field name="name"/>
+                <field name="invoice_partner_display_name" string="Vendor"/>
+                <field name="date" />
+                <field name="invoice_date_due" string="Due Date"/>
+                <field name="purchase_order_ids" widget="many2many_tags" string="Purchase Orders"/>
+                <field name="amount_total" sum="Total" decoration-bf="1"/>
+                <field name="amount_total_signed_display" sum="Total" decoration-bf="1"
+                    groups="morons.group_bod,morons.group_pm,morons.group_accountants" />
+                <field name="payment_state" widget="badge"
+                    decoration-danger="payment_state == 'not_paid'"
+                    decoration-warning="payment_state in ('partial', 'in_payment')"
+                    decoration-success="payment_state in ('paid', 'reversed')"
+                    attrs="{'invisible': [('payment_state', 'in', ('invoicing_legacy'))]}"
+                />
+                <field name="state" widget="badge"
+                    decoration-success="state == 'posted'"
+                    decoration-info="state == 'draft'"
+                />
+                <field name="move_type" invisible="1"/>
+            </tree>
+        </field>
+    </record>
+
+    <!-- Form view: Contributor invoice -->
+    <record id="contributor_invoice_view_form_all" model="ir.ui.view">
+        <field name="name">contributor_invoice.form</field>
+        <field name="model">account.move</field>
+        <field name="priority">80</field>
+        <field name="inherit_id" ref="account.view_move_form"/>
+        <field name="mode">primary</field>
+        <field name="arch" type="xml">
+            <field name="partner_id" position="after">
+                <field name="purchase_order_ids" widget="many2many_tags" string="Purchase Orders"/>
+            </field>
+
+            <field name="tax_cash_basis_origin_move_id" position="attributes">
+                <attribute name="invisible">1</attribute>
+            </field>
+            <label name="invoice_vendor_bill_id_label" position="attributes">
+                <attribute name="invisible">1</attribute>
+            </label>
+            <field name="invoice_vendor_bill_id" position="attributes">
+                <attribute name="invisible">1</attribute>
+            </field>
+            <field name="partner_bank_id" position="attributes">
+                <attribute name="invisible">1</attribute>
+            </field>
+
+            <field name="product_id" position="attributes">
+                <attribute name="optional">hide</attribute>
+            </field>
+            <field name="tax_ids" position="attributes">
+                <attribute name="optional">hide</attribute>
+            </field>
+        </field>
+    </record>
+
+    <!-- Form view: My Contributor invoice -->
+    <record id="contributor_invoice_view_form_my_po" model="ir.ui.view">
+        <field name="name">contributor_invoice.form_my_po</field>
+        <field name="model">account.move</field>
+        <field name="priority">81</field>
+        <field name="inherit_id" ref="account.view_move_form"/>
+        <field name="mode">primary</field>
+        <field name="arch" type="xml">
+            <xpath expr="//header" position="replace">
+                <header>
+                    <field name="state" widget="statusbar"/>
+                </header>
+            </xpath>
+
+            <field name="partner_id" position="after">
+                <field name="purchase_order_ids" widget="many2many_tags" string="Purchase Orders"/>
+            </field>
+
+            <field name="tax_cash_basis_origin_move_id" position="attributes">
+                <attribute name="invisible">1</attribute>
+            </field>
+            <label name="invoice_vendor_bill_id_label" position="attributes">
+                <attribute name="invisible">1</attribute>
+            </label>
+            <field name="invoice_vendor_bill_id" position="attributes">
+                <attribute name="invisible">1</attribute>
+            </field>
+            <field name="partner_bank_id" position="attributes">
+                <attribute name="invisible">1</attribute>
+            </field>
+
+            <field name="product_id" position="attributes">
+                <attribute name="optional">hide</attribute>
+            </field>
+            <field name="tax_ids" position="attributes">
+                <attribute name="optional">hide</attribute>
+            </field>
+
+
+            <xpath expr="//page[@id='other_tab_entry']" position="attributes">
+                <attribute name="invisible">1</attribute>
+            </xpath>
+
+            <xpath expr="//page[@id='other_tab']" position="attributes">
+                <attribute name="invisible">1</attribute>
+            </xpath>
+
+            <xpath expr="//div[@class='oe_chatter']" position="replace">
+            </xpath>
+        </field>
+    </record>
+
+
+
+    <!-- Action: Contributor Invoices -->
+    <record id="contributor_invoice_action_all" model="ir.actions.act_window">
+        <field name="name">Contributor Invoices</field>
+        <field name="res_model">account.move</field>
+        <field name="view_mode">tree,form</field>
+        <field name="view_id" ref="contributor_invoice_view_tree"/>
+        <field name="search_view_id" ref="account.view_account_invoice_filter"/>
+        <field name="domain">[('move_type', '=', 'in_invoice')]</field>
+        <field name="context">{'default_move_type': 'in_invoice'}</field>
+    </record>
+
+    <record id="contributor_invoice_action_view_tree_all" model="ir.actions.act_window.view">
+        <field name="sequence" eval="1"/>
+        <field name="view_mode">tree</field>
+        <field name="view_id" ref="contributor_invoice_view_tree"/>
+        <field name="act_window_id" ref="contributor_invoice_action_all"/>
+    </record>
+
+    <record id="contributor_invoice_action_view_form_all" model="ir.actions.act_window.view">
+        <field name="sequence" eval="1"/>
+        <field name="view_mode">form</field>
+        <field name="view_id" ref="contributor_invoice_view_form_all"/>
+        <field name="act_window_id" ref="contributor_invoice_action_all"/>
+    </record>
+
+    <!-- Action: My Contributor Invoices -->
+    <record id="contributor_invoice_action_my_po" model="ir.actions.act_window">
+        <field name="name">My Invoices</field>
+        <field name="res_model">account.move</field>
+        <field name="view_mode">tree,form</field>
+        <field name="view_id" ref="contributor_invoice_view_tree"/>
+        <field name="search_view_id" ref="account.view_account_invoice_filter"/>
+        <field name="domain">[('move_type', '=', 'in_invoice')]</field>
+        <field name="context">{'default_move_type': 'in_invoice'}</field>
+    </record>
+
+    <record id="contributor_invoice_action_view_tree_my_po" model="ir.actions.act_window.view">
+        <field name="sequence" eval="1"/>
+        <field name="view_mode">tree</field>
+        <field name="view_id" ref="contributor_invoice_view_tree"/>
+        <field name="act_window_id" ref="contributor_invoice_action_my_po"/>
+    </record>
+
+    <record id="contributor_invoice_action_view_form_my_po" model="ir.actions.act_window.view">
+        <field name="sequence" eval="1"/>
+        <field name="view_mode">form</field>
+        <field name="view_id" ref="contributor_invoice_view_form_my_po"/>
+        <field name="act_window_id" ref="contributor_invoice_action_my_po"/>
+    </record>
+
+</odoo>

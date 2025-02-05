@@ -14,9 +14,6 @@
                     <attribute name="invisible">True</attribute>
                 </xpath>
 
-                <xpath expr="//header" position="inside">
-                    <button name="button_delete" string="Delete Direct Project" type="object" class="oe_highlight" />
-                </xpath>
                 <xpath expr="(//field[@name='company_id'])[2]" position="attributes">
                     <attribute name="required">False</attribute>
                     <attribute name="invisible">True</attribute>
@@ -34,9 +31,11 @@
                     <field name="volume"/>
                     <field name="sale_rate"/>
                     <field name="job_value"/>
+                    <field name="job_value_usd"/>
                     <field name="po_value"/>
                     <field name="margin" widget="percentage"/>
                     <field name="payment_status"/>
+                    <field name="currency_usd_id" invisible="1"/>
                 </xpath>
                 <xpath expr="//field[@name='tag_ids']" position="attributes">
                     <attribute name="options">{'no_quick_create': True, 'no_create_edit': True}</attribute>
@@ -46,22 +45,20 @@
                 </page>
                 <notebook position="inside">
                     <page string="Purchase Order" name="tasks">
-                        <field name="tasks" >                           
+                        <field name="tasks" string="Purchase Order" context="{'form_view_ref': 'morons.merctrans_task_view_form_my_task'}">                           
                             <tree>
                                 <field name="currency_id" invisible="1"/>
                                 <field name="project_currency_id" invisible="1"/>
-                                <field name="user_ids" optional="show"
-                                    widget="many2many_avatar_user"
-                                    domain="[('share', '=', False), ('active', '=', True)]"
-                                    options="{'no_quick_create': True, 'no_create': True}" />
+                                <field name="name" />
+                                <field name="contributor_id" />
                                 <field name="work_unit" />
                                 <field name="volume"  />
                                 <field name="rate" />
                                 <field name="po_value" />
                                 <field name="po_value_by_project_currency" optional="hide" />
                                 <field name="date_deadline" />
-                                <field name="stages_id"  />
-                                <field name="payment_status" />
+                                <field name="stages_id" widget="badge" decoration-warning="stages_id == 'in progress'" decoration-success="stages_id == 'completed'" />
+                                <field name="payment_status" widget="badge" decoration-success="payment_status == 'paid'" decoration-info="payment_status == 'invoiced'" />
                             </tree>
                         </field>
                     </page>
@@ -83,8 +80,6 @@
                 </filter>
             </field>
         </record>
-
-
 
         <record id="merctrans_project_view_tree" model="ir.ui.view">
             <field name="name">merctrans.project.tree.view.inherit</field>
@@ -132,10 +127,12 @@
             <field name="sequence" eval="0"/>
         </record>
 
-        <menuitem name="Projects" id="project.menu_main_pm" />
+        <!-- Ẩn menu Project của Odoo -->
+        <record id="project.menu_main_pm" model="ir.ui.menu">
+            <field name="active" eval="False"/>
+        </record>
 
-        <menuitem id="project.menu_projects" name="Projects" parent="project.menu_main_pm" groups="morons.group_pm"/>
 
-        <menuitem id="base.menu_management" name="Apps" groups="base.group_system" />
+
     </data>
 </odoo>

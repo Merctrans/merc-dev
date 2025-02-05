@@ -1,0 +1,100 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- User: Form view in Setting menu-->
+    <record id="view_users_form" model="ir.ui.view">
+        <field name="name">res.users.form</field>
+        <field name="model">res.users</field>
+        <field name="inherit_id" ref="base.view_users_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='login']" position="attributes">
+                <attribute name="placeholder">e.g. email@domain.com</attribute>
+            </xpath>
+            <xpath expr="//field[@name='login']" position="after">
+                <label for="phone" string="Phone"/>
+                <field name="phone" string='Phone'>Phone</field>   
+            </xpath>
+
+            <xpath expr="//notebook" position="inside">
+                <page string="MercTrans Preferences" name="merctrans_preferences">
+                    <group name="is_contributor">
+                        <field name="contributor" string="Is Contributor"/>
+                    </group>
+
+                    <group name="contributor_info" attrs="{'invisible': [('contributor', '=', False)]}">
+                        <group name="general_info" string="General Information">
+                            <field name="currency"/>
+                            <field name="skype"/>
+                            <field name="tz"/>
+                            <field name="country_of_residence"/>
+                            <field name="nationality" widget="many2many_tags"/>
+                        </group>
+                        <group name="educational_qualifications" string="Educational Qualifications">
+                            <field name="dates_attended"/>
+                            <field name="school"/>
+                            <field name="field_of_study"/>
+                            <field name="year_obtained"/>
+                            <field name="certificate"/>
+                        </group>
+                        <group name="payment_methods" string="Payment Methods">
+                            <field name="preferred_payment_method" widget="selection"/>
+                            <!-- PayPal fields -->
+                            <field name="paypal" string="PayPal"
+                                   attrs="{'invisible': [('preferred_payment_method', '!=', 'paypal')],
+                                            'required': [('preferred_payment_method', '=', 'paypal')]}" />
+                            <!-- Wise fields -->
+                            <field name="transferwise_id" string="Wise ID"
+                                   attrs="{'invisible': [('preferred_payment_method', '!=', 'transferwise')],
+                                            'required': [('preferred_payment_method', '=', 'transferwise')]}" />
+                            <!-- Bank fields -->
+                            <field name="bank_account_number" string="Bank Account Number"
+                                   attrs="{'invisible': [('preferred_payment_method', '!=', 'bank')],
+                                            'required': [('preferred_payment_method', '=', 'bank')]}" />
+                            <field name="bank_name" string="Bank Name"
+                                   attrs="{'invisible': [('preferred_payment_method', '!=', 'bank')],
+                                            'required': [('preferred_payment_method', '=', 'bank')]}" />
+                            <field name="iban" string="IBAN"
+                                   attrs="{'invisible': [('preferred_payment_method', '!=', 'bank')]}" />
+                            <field name="swift" string="SWIFT"
+                                   attrs="{'invisible': [('preferred_payment_method', '!=', 'bank')]}" />
+                            <field name="bank_address" string="Bank Address"
+                                   attrs="{'invisible': [('preferred_payment_method', '!=', 'bank')]}" />
+                        </group>
+                    </group>
+                </page>
+            </xpath>
+        </field>
+    </record>
+
+
+    <!-- Contributor: Form view -->
+    <record id="contributor_list_view_form" model="ir.ui.view">
+        <field name="name">contributor.view.form</field>
+        <field name="model">res.users</field>
+        <field name="inherit_id" ref="morons.view_users_form" />
+        <field name="mode">primary</field>
+        <field name="arch" type="xml">
+            <xpath expr="//page[@name='access_rights']" position="attributes">
+                <attribute name="invisible">1</attribute>
+            </xpath>
+            <xpath expr="//page[@name='preferences']" position="attributes">
+                <attribute name="invisible">1</attribute>
+            </xpath>
+            <xpath expr="//page[@name='security']" position="attributes">
+                <attribute name="invisible">1</attribute>
+            </xpath>
+        </field>
+    </record>
+
+
+    <!-- Contributor: Action window -->
+    <record id="action_open_contributor_list" model="ir.actions.act_window">
+        <field name="name">Internal Users</field>
+        <field name="res_model">res.users</field>
+        <field name="view_mode">tree,form</field>
+        <field name="view_ids"
+            eval="[(5, 0, 0), (0, 0, {'view_mode': 'tree', 'view_id': ref('base.view_users_tree')}), 
+                                        (0, 0, {'view_mode': 'form', 'view_id': ref('contributor_list_view_form')})]" />
+        <field name="domain">[('share', '=', False), ('contributor', '=', True)]</field>
+    </record>
+
+</odoo>
