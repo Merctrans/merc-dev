@@ -15,4 +15,12 @@
         <field name="padding">5</field>
         <field name="company_id" eval="False" />
     </record>
+
+    <record id="seq_moron_sale_order" model="ir.sequence">
+        <field name="name">Moron Sale Order</field>
+        <field name="code">moron.sale.order</field>
+        <field name="prefix">SO</field>
+        <field name="padding">5</field>
+        <field name="company_id" eval="False"/>
+    </record>
 </odoo>

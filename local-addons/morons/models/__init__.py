@@ -3,3 +3,7 @@ from . import moron_service
 from . import moron_project
 from . import moron_task
 from . import moron_contributor_invoice
+from . import moron_client_invoice
+from . import moron_sale_order
+from . import moron_sale_order_line
+from . import moron_payment
