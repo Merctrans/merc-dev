@@ -41,6 +41,13 @@
         <field name="inherit_id" ref="account.view_move_form"/>
         <field name="mode">primary</field>
         <field name="arch" type="xml">
+            <xpath expr="//button[@name='button_set_checked']" position="attributes">
+                <attribute name="invisible">1</attribute>
+            </xpath>
+            <xpath expr="//button[@name='action_reverse']" position="attributes">
+                <attribute name="invisible">1</attribute>
+            </xpath>
+
             <field name="partner_id" position="after">
                 <field name="purchase_order_ids" widget="many2many_tags" string="Purchase Orders"/>
             </field>
@@ -128,7 +135,7 @@
         <field name="view_mode">tree,form</field>
         <field name="view_id" ref="contributor_invoice_view_tree"/>
         <field name="search_view_id" ref="account.view_account_invoice_filter"/>
-        <field name="domain">[('move_type', '=', 'in_invoice')]</field>
+        <field name="domain">[('move_type', '=', 'in_invoice'), ('is_contributor_invoice', '=', True)]</field>
         <field name="context">{'default_move_type': 'in_invoice'}</field>
     </record>
 
@@ -153,7 +160,7 @@
         <field name="view_mode">tree,form</field>
         <field name="view_id" ref="contributor_invoice_view_tree"/>
         <field name="search_view_id" ref="account.view_account_invoice_filter"/>
-        <field name="domain">[('move_type', '=', 'in_invoice')]</field>
+        <field name="domain">[('move_type', '=', 'in_invoice'), ('is_contributor_invoice', '=', True)]</field>
         <field name="context">{'default_move_type': 'in_invoice'}</field>
     </record>
 

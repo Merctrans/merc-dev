@@ -26,6 +26,12 @@
                     <field name="target_language" options="{'no_create': True}"
                         widget="many2many_tags" />
                 </xpath>
+                <xpath expr="//header/field[@name='stage_id']" position="before">
+                    <field name="show_create_so" invisible="1" />
+                    <button name="action_create_sale_order" string="Create Sale Order"
+                        type="object" class="btn-primary"
+                        attrs="{'invisible': [('show_create_so', '=', False)]}" />
+                </xpath>
                 <xpath expr="//field[@name='user_id']" position="after">
                     <field name="work_unit" />
                     <field name="volume"/>

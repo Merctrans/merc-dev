@@ -12,30 +12,18 @@ patch(ListRenderer.prototype, "my_list_view_patch", {
   },
 
   _onClick(record) {
-
-    const result = confirm("Are you sure you want to delete this POs?");
-    
-    // var currentModel = window.location.href.split('/')[3];
-    // var params = currentModel.split('&');
-
-    // var modelValue;
-    // for (var i = 0; i < params.length; i++) {
-    //     var param = params[i].split('=');
-    //     if (param[0] === 'model') {
-    //         modelValue = param[1];
-    //         break;
-    //     }
-    // }
-
-    // console.log(modelValue);
-    
-    if (result) {
-
-      this.onDeleteRecord(record);
+    // Kiểm tra xem record có thuộc model project.task không
+    if (record.resModel === 'project.task') {
+      const result = confirm("Are you sure you want to delete this POs?");
+      
+      if (result) {
+        this.onDeleteRecord(record);
+      } else {
+        console.log("Delete operation cancelled");
+      }
     } else {
-
-      console.log("Delete operation cancelled");
+      // Đối với các model khác, xóa trực tiếp không cần confirm
+      this.onDeleteRecord(record);
     }
   },
 });
-
