@@ -121,6 +121,10 @@ class MerctransProject(models.Model):
         digits=(16, 3)
     )
 
+    # for Sale Order
+    moron_sale_order_ids = fields.One2many('moron.sale.order', 'project_id', string='Sale Orders')
+    show_create_so = fields.Boolean(string='Show Create SO', compute='_compute_show_create_so', compute_sudo=True)
+
     @api.constrains("volume", "sale_rate", "discount")
     def _check_positive_values(self):
         for task in self:
@@ -225,6 +229,11 @@ class MerctransProject(models.Model):
             else:
                 project.receivable = 0
 
+    @api.depends('moron_sale_order_ids')
+    def _compute_show_create_so(self):
+        for r in self:
+            r.show_create_so = False if r.moron_sale_order_ids else True
+
     @api.model_create_multi
     def create(self, vals_list):
         """Creates a new project.
@@ -314,3 +323,12 @@ class MerctransProject(models.Model):
                 'action': self.env.ref('project.open_view_project_all').id
             }
         return res
+
+    def action_create_sale_order(self):
+        """
+        Create a new sale order for the project
+        """
+        sale_order = self.env['moron.sale.order'].create({
+            'project_id': self.id,
+            'partner_id': self.partner_id.id,
+        })

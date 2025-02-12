@@ -1,0 +1,102 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <!-- Sale Order: tree view -->
+    <record id="moron_sale_order_view_tree" model="ir.ui.view">
+        <field name="name">moron.sale.order.tree</field>
+        <field name="model">moron.sale.order</field>
+        <field name="arch" type="xml">
+            <tree>
+                <header>
+                    <button name="action_create_invoice" type="object" string="Create Invoice" />
+                </header>
+                <field name="name" string="Sale Order"/>
+                <field name="project_id" />
+                <field name="partner_id" />
+                <field name="date_order" />
+                <field name="payment_term_id" />
+                <field name="status" widget="badge" decoration-success="status == 'completed'" decoration-info="status == 'invoiced'" />
+                <field name="currency_id" invisible="1"/>
+                <field name="company_id" invisible="1"/>
+            </tree>
+        </field>
+    </record>
+
+    <!-- Sale Order: form view -->
+    <record id="moron_sale_order_view_form" model="ir.ui.view">
+        <field name="name">moron.sale.order.form</field>
+        <field name="model">moron.sale.order</field>
+        <field name="arch" type="xml">
+            <form string="Sale Order">
+                <header>
+                    <button name="action_create_invoice" string="Create Invoice"
+                        type="object" class="oe_highlight" 
+                        attrs="{'invisible': [('client_invoice_id', '!=', False)]}" />
+                    <field name="status" widget="statusbar" />
+                    <button name="action_cancel" type="object" string="Cancel"
+                        attrs="{'invisible': ['|', ('status', '=', 'cancelled'), ('client_invoice_id', '!=', False)]}" />
+                </header>
+                <sheet>
+                    <div name="button_box" class="oe_button_box">
+                    </div>
+                    <div class="oe_title">
+                        <h1>
+                            <field name="name" readonly="1" />
+                        </h1>
+                    </div>
+                    <group>
+                        <group>
+                            <field name="project_id" />
+                            <field name="partner_id" />
+                            <field name="client_invoice_id" readonly="1" context="{'form_view_ref': 'morons.client_invoice_view_form_all'}"/>
+                        </group>
+                        <group>
+                            <field name="date_order" />
+                            <field name="payment_term_id" />
+                            <field name="currency_id" />
+                            <field name="company_id" invisible="1"/>
+                        </group>
+                        <field name="line_ids">
+                            <tree>
+                                <field name="name" />
+                                <field name="volume" />
+                                <field name="work_unit" />
+                                <field name="sale_rate" />
+                                <field name="project_value" />
+                                <field name="currency_id" invisible="1" />
+                            </tree>
+                        </field>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <!-- Sale Order: Search view -->
+    <record id="moron_sale_order_view_search" model="ir.ui.view">
+        <field name="name">moron.sale.order.search</field>
+        <field name="model">moron.sale.order</field>
+        <field name="arch" type="xml">
+            <search>
+                <field name="name" string="Sale Order"/>
+                <field name="project_id" />
+                <separator />
+                <filter name="ftr_date_order" string="Date Order" date="date_order" />
+                <separator />
+                <group expand="0" string="Group By">
+                    <filter string="Project" name="project_id" context="{'group_by': 'project_id'}"/>
+                    <filter string="Partner" name="partner_id" context="{'group_by': 'partner_id'}"/>
+                    <filter string="Status" name="status" context="{'group_by': 'status'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <!-- Sale Order: Action window -->
+    <record id="moron_sale_order_action" model="ir.actions.act_window">
+        <field name="name">Sale Orders</field>
+        <field name="res_model">moron.sale.order</field>
+        <field name="view_mode">tree,form</field>
+    </record>
+
+</odoo>
