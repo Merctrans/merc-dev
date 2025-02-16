@@ -16,6 +16,9 @@ class MercTransContributorInvoice(models.Model):
     # Các trường kỹ thuật, tham chiếu giữa hóa đơn và payment để chỉnh sửa payment tự động thông qua hóa đơn
     moron_contributor_payment_ids = fields.One2many("account.payment", 'moron_contributor_invoice_id', string="Contributor Payments")
 
+    # Override
+    invoice_date = fields.Date(default=fields.Date.context_today, string='Invoice Date')
+
     @api.depends("purchase_order_ids")
     def _compute_is_contributor_invoice(self):
         for invoice in self:

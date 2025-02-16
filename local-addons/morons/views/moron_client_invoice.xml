@@ -11,11 +11,12 @@
                 <field name="currency_id" invisible="1"/>
                 <field name="company_currency_id" invisible="1"/>
                 <field name="name"/>
-                <field name="invoice_partner_display_name"/>
-                <field name="invoice_date" />
+                <field name="invoice_partner_display_name" string="Customer"/>
+                <field name="invoice_date"/>
                 <field name="invoice_date_due" />
                 <field name="sale_order_ids" widget="many2many_tags" string="Sale Orders"/>
-                <field name="amount_total_signed" sum="Total" decoration-bf="1"/>
+                <field name="amount_total" string="Invoice Total" sum="Invoice Total" decoration-bf="1"/>
+                <field name="amount_total_signed" string="Total" sum="Total" decoration-bf="1"/>
                 <field name="paid_on" />
                 <field name="payment_state" widget="badge"
                     decoration-danger="payment_state == 'not_paid'"

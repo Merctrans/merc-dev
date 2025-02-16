@@ -39,25 +39,18 @@
                             <field name="preferred_payment_method" widget="selection"/>
                             <!-- PayPal fields -->
                             <field name="paypal" string="PayPal"
-                                   attrs="{'invisible': [('preferred_payment_method', '!=', 'paypal')],
-                                            'required': [('preferred_payment_method', '=', 'paypal')]}" />
+                                   attrs="{'required': [('preferred_payment_method', '=', 'paypal')]}" />
                             <!-- Wise fields -->
                             <field name="transferwise_id" string="Wise ID"
-                                   attrs="{'invisible': [('preferred_payment_method', '!=', 'transferwise')],
-                                            'required': [('preferred_payment_method', '=', 'transferwise')]}" />
+                                   attrs="{'required': [('preferred_payment_method', '=', 'transferwise')]}" />
                             <!-- Bank fields -->
                             <field name="bank_account_number" string="Bank Account Number"
-                                   attrs="{'invisible': [('preferred_payment_method', '!=', 'bank')],
-                                            'required': [('preferred_payment_method', '=', 'bank')]}" />
+                                   attrs="{'required': [('preferred_payment_method', '=', 'bank')]}" />
                             <field name="bank_name" string="Bank Name"
-                                   attrs="{'invisible': [('preferred_payment_method', '!=', 'bank')],
-                                            'required': [('preferred_payment_method', '=', 'bank')]}" />
-                            <field name="iban" string="IBAN"
-                                   attrs="{'invisible': [('preferred_payment_method', '!=', 'bank')]}" />
-                            <field name="swift" string="SWIFT"
-                                   attrs="{'invisible': [('preferred_payment_method', '!=', 'bank')]}" />
-                            <field name="bank_address" string="Bank Address"
-                                   attrs="{'invisible': [('preferred_payment_method', '!=', 'bank')]}" />
+                                   attrs="{'required': [('preferred_payment_method', '=', 'bank')]}" />
+                            <field name="iban" string="IBAN" />
+                            <field name="swift" string="SWIFT"/>
+                            <field name="bank_address" string="Bank Address"/>
                         </group>
                     </group>
                 </page>
@@ -85,6 +78,41 @@
         </field>
     </record>
 
+    <!-- Inherit view_users_form_simple_modif -->
+    <record id="view_users_form_simple_modif" model="ir.ui.view">
+        <field name="name">view.users.simple.form</field>
+        <field name="model">res.users</field>
+        <field name="inherit_id" ref="base.view_users_form_simple_modif"/>
+        <field name="arch" type="xml">
+            <xpath expr="//page[@name='preferences_page']" position="before">
+                <page string="General Information" name="info_page" groups="morons.group_contributors">
+                    <group>
+                        <group>
+                            <field name="login" string="Email (Login)"/>
+                            <field name="phone" string="Phone"/>
+                            <field name="skype" string="Skype"/>
+                            <field name="country_of_residence" string="Country of Residence"/>
+                            <field name="nationality" string="Nationality" widget="many2many_tags"/>
+                            <field name="tz" string="Timezone"/>
+                            <field name="vat" string="VAT/ABN Number"/>
+                        </group>
+                        <group>
+                            <field name="currency" string="Currency"/>
+                            <field name="preferred_payment_method" string="Preferred Payment Method"/>
+                            <field name="paypal" string="PayPal" attrs="{'required': [('preferred_payment_method', '=', 'paypal')]}" />
+                            <field name="transferwise_id" string="Wise ID" attrs="{'required': [('preferred_payment_method', '=', 'transferwise')]}" />
+                            <field name="bank_account_number" string="Bank Account Number" attrs="{'required': [('preferred_payment_method', '=', 'bank')]}" />
+                            <field name="bank_name" string="Bank Name" attrs="{'required': [('preferred_payment_method', '=', 'bank')]}" />
+                            <field name="iban" string="IBAN"/>
+                            <field name="swift" string="SWIFT"/>
+                            <field name="bank_address" string="Bank Address"/>
+                        </group>
+                    </group>
+                </page>
+            </xpath>
+
+        </field>
+    </record>
 
     <!-- Contributor: Action window -->
     <record id="action_open_contributor_list" model="ir.actions.act_window">
