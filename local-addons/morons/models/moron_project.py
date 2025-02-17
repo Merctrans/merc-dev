@@ -123,6 +123,8 @@ class MerctransProject(models.Model):
 
     # for Sale Order
     moron_sale_order_ids = fields.One2many('moron.sale.order', 'project_id', string='Sale Orders')
+    display_so_id = fields.Many2one('moron.sale.order', string='Sale Order',
+                                        compute='_compute_display_so_id')
     show_create_so = fields.Boolean(string='Show Create SO', compute='_compute_show_create_so', compute_sudo=True)
 
     @api.constrains("volume", "sale_rate", "discount")
@@ -234,6 +236,11 @@ class MerctransProject(models.Model):
         for r in self:
             r.show_create_so = False if r.moron_sale_order_ids else True
 
+    @api.depends('moron_sale_order_ids')
+    def _compute_display_so_id(self):
+        for r in self:
+            r.display_so_id = r.moron_sale_order_ids[:1]
+
     @api.model_create_multi
     def create(self, vals_list):
         """Creates a new project.
@@ -332,3 +339,12 @@ class MerctransProject(models.Model):
             'project_id': self.id,
             'partner_id': self.partner_id.id,
         })
+        sale_order.onchange_project_id()
+        view_form_id = self.env.ref('morons.moron_sale_order_view_form').id
+        return {
+            "type": "ir.actions.act_window",
+            "res_model": "moron.sale.order",
+            "views": [[view_form_id, "form"]],
+            "res_id": sale_order.id,
+            "target": "current",
+        }

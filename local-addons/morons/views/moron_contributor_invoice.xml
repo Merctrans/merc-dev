@@ -12,10 +12,10 @@
                 <field name="company_currency_id" invisible="1"/>
                 <field name="name"/>
                 <field name="invoice_partner_display_name" string="Vendor"/>
-                <field name="date" />
+                <field name="invoice_date"/>
                 <field name="invoice_date_due" string="Due Date"/>
                 <field name="purchase_order_ids" widget="many2many_tags" string="Purchase Orders"/>
-                <field name="amount_total" sum="Total" decoration-bf="1"/>
+                <field name="amount_total" sum="Invoice Total" decoration-bf="1"/>
                 <field name="amount_total_signed_display" sum="Total" decoration-bf="1"
                     groups="morons.group_bod,morons.group_pm,morons.group_accountants" />
                 <field name="payment_state" widget="badge"
@@ -41,6 +41,7 @@
         <field name="inherit_id" ref="account.view_move_form"/>
         <field name="mode">primary</field>
         <field name="arch" type="xml">
+            <!-- Ẩn button set checked, reverse -->
             <xpath expr="//button[@name='button_set_checked']" position="attributes">
                 <attribute name="invisible">1</attribute>
             </xpath>
@@ -48,30 +49,59 @@
                 <attribute name="invisible">1</attribute>
             </xpath>
 
+            <!-- Hiện trường Purchase Orders -->
             <field name="partner_id" position="after">
                 <field name="purchase_order_ids" widget="many2many_tags" string="Purchase Orders"
                     attrs="{'readonly': [('state', '!=', 'draft')]}"/>
             </field>
 
+            <!-- Ẩn trường Tax cash basis origin move -->
             <field name="tax_cash_basis_origin_move_id" position="attributes">
                 <attribute name="invisible">1</attribute>
             </field>
+
+            <!-- Ẩn trường Invoice vendor bill -->
             <label name="invoice_vendor_bill_id_label" position="attributes">
                 <attribute name="invisible">1</attribute>
             </label>
             <field name="invoice_vendor_bill_id" position="attributes">
                 <attribute name="invisible">1</attribute>
             </field>
+
+            <!-- Ẩn trường Partner bank -->
             <field name="partner_bank_id" position="attributes">
                 <attribute name="invisible">1</attribute>
             </field>
 
+            <!-- Ẩn trường Product, Thuế-->
             <field name="product_id" position="attributes">
                 <attribute name="optional">hide</attribute>
             </field>
             <field name="tax_ids" position="attributes">
                 <attribute name="optional">hide</attribute>
             </field>
+
+            <!-- Ẩn trường Accounting date -->
+            <xpath expr="//group[@id='header_right_group']/field[@name='date']" position="attributes">
+                <attribute name="invisible">1</attribute>
+            </xpath>
+
+            <!-- Ẩn trường payment reference -->
+            <field name="payment_reference" position="attributes">
+                <attribute name="invisible">1</attribute>
+            </field>
+
+            <!-- Ẩn trường Ref -->
+            <xpath expr="//label[@for='ref']" position="attributes">
+                <attribute name="invisible">1</attribute>
+            </xpath>
+            <xpath expr="//group[@id='header_left_group']/field[@name='ref'][1]" position="attributes">
+                <attribute name="invisible">1</attribute>
+            </xpath>
+            <xpath expr="//group[@id='header_left_group']/field[@name='ref'][2]" position="attributes">
+                <attribute name="invisible">1</attribute>
+            </xpath>
+
         </field>
     </record>
 
@@ -83,31 +113,38 @@
         <field name="inherit_id" ref="account.view_move_form"/>
         <field name="mode">primary</field>
         <field name="arch" type="xml">
+            <!-- Hiện trường State -->
             <xpath expr="//header" position="replace">
                 <header>
                     <field name="state" widget="statusbar"/>
                 </header>
             </xpath>
 
+            <!-- Hiện trường Purchase Orders -->
             <field name="partner_id" position="after">
                 <field name="purchase_order_ids" string="Purchase Orders"
                     widget="many2many_tags"
                     attrs="{'readonly': [('state', '!=', 'draft')]}"/>
             </field>
 
+            <!-- Ẩn trường Tax cash basis origin move -->
             <field name="tax_cash_basis_origin_move_id" position="attributes">
                 <attribute name="invisible">1</attribute>
             </field>
+
+            <!-- Ẩn trường Invoice vendor bill -->
             <label name="invoice_vendor_bill_id_label" position="attributes">
                 <attribute name="invisible">1</attribute>
             </label>
             <field name="invoice_vendor_bill_id" position="attributes">
                 <attribute name="invisible">1</attribute>
             </field>
+
             <field name="partner_bank_id" position="attributes">
                 <attribute name="invisible">1</attribute>
             </field>
 
+            <!-- Ẩn trường Product, Thuế-->
             <field name="product_id" position="attributes">
                 <attribute name="optional">hide</attribute>
             </field>
@@ -115,12 +152,32 @@
                 <attribute name="optional">hide</attribute>
             </field>
 
-
+            <!-- Ẩn page Other tab entry, Other tab -->
             <xpath expr="//page[@id='other_tab_entry']" position="attributes">
                 <attribute name="invisible">1</attribute>
             </xpath>
-
             <xpath expr="//page[@id='other_tab']" position="attributes">
+                <attribute name="invisible">1</attribute>
+            </xpath>
+
+            <!-- Ẩn trường Accounting date -->
+            <xpath expr="//group[@id='header_right_group']/field[@name='date']" position="attributes">
+                <attribute name="invisible">1</attribute>
+            </xpath>
+
+            <!-- Ẩn trường payment reference -->
+            <field name="payment_reference" position="attributes">
+                <attribute name="invisible">1</attribute>
+            </field>
+
+            <!-- Ẩn trường Ref -->
+            <xpath expr="//label[@for='ref']" position="attributes">
+                <attribute name="invisible">1</attribute>
+            </xpath>
+            <xpath expr="//group[@id='header_left_group']/field[@name='ref'][1]" position="attributes">
+                <attribute name="invisible">1</attribute>
+            </xpath>
+            <xpath expr="//group[@id='header_left_group']/field[@name='ref'][2]" position="attributes">
                 <attribute name="invisible">1</attribute>
             </xpath>
 

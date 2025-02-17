@@ -46,6 +46,10 @@
                 <xpath expr="//field[@name='tag_ids']" position="attributes">
                     <attribute name="options">{'no_quick_create': True, 'no_create_edit': True}</attribute>
                 </xpath>
+                <xpath expr="//field[@name='tag_ids']" position="after">
+                    <field name="display_so_id" />
+                </xpath>
+
                 <page name="settings" position="attributes">
                     <attribute name="invisible">1</attribute>
                 </page>

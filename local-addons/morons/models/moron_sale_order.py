@@ -59,7 +59,7 @@ class MoronSaleOrder(models.Model):
                 r.status = 'draft'
 
     @api.onchange('project_id')
-    def _onchange_project_id(self):
+    def onchange_project_id(self):
         """
         Thiết lập lại partner, SO lines
         """

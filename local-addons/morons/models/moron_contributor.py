@@ -4,6 +4,26 @@ from odoo.exceptions import ValidationError
 import re
 
 
+CONTRIBUTOR_FIELDS = [
+    'login',
+    'phone',
+    'skype',
+    'nationality',
+    'country_of_residence',
+    'currency',
+    'vat',
+    'tz',
+    'preferred_payment_method',
+    'paypal',
+    'transferwise_id',
+    'bank_account_number',
+    'bank_name',
+    'iban',
+    'swift',
+    'bank_address',
+]
+
+
 class InternalUser(models.Model):
     """
     A model for managing internal users at MercTrans.
@@ -118,3 +138,11 @@ class InternalUser(models.Model):
         add_users = contributors - contributor_group_users
         if add_users:
             add_users.write({'groups_id': [(4, contributor_group.id)]})
+
+    @property
+    def SELF_READABLE_FIELDS(self):
+        return super().SELF_READABLE_FIELDS + CONTRIBUTOR_FIELDS
+
+    @property
+    def SELF_WRITEABLE_FIELDS(self):
+        return super().SELF_WRITEABLE_FIELDS + CONTRIBUTOR_FIELDS
