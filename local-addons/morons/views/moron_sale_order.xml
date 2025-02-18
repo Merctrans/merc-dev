@@ -47,7 +47,7 @@
                     <group>
                         <group>
                             <field name="project_id" />
-                            <field name="partner_id" />
+                            <field name="partner_id" context="{'form_view_ref': 'morons.moron_customer_view_form'}" />
                             <field name="client_invoice_id" readonly="1" context="{'form_view_ref': 'morons.client_invoice_view_form_all'}"/>
                         </group>
                         <group>

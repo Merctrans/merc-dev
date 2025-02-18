@@ -1,0 +1,119 @@
+<odoo>
+
+
+    <!-- Kế thừa base.view_partner_tree -->
+    <record id="moron_customer_view_tree" model="ir.ui.view">
+        <field name="name">moron.customer.tree.view.inherit</field>
+        <field name="model">res.partner</field>
+        <field name="inherit_id" ref="base.view_partner_tree"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='user_id']" position="attributes">
+                <attribute name="invisible">1</attribute>
+            </xpath>
+            <xpath expr="//field[@name='activity_ids']" position="attributes">
+                <attribute name="invisible">1</attribute>
+            </xpath>
+            <xpath expr="//field[@name='user_id']" position="after">
+                <field name="moron_salesperson_ids" widget="many2many_tags"/>
+            </xpath>
+        </field>
+    </record>
+
+    <!-- Kế thừa view form base.view_partner_form -->
+    <record id="moron_customer_view_form" model="ir.ui.view">
+        <field name="name">moron.customer.form.view.inherit</field>
+        <field name="model">res.partner</field>
+        <field name="inherit_id" ref="base.view_partner_form"/>
+        <field name="mode">primary</field>
+        <field name="priority">0</field>
+        <field name="arch" type="xml">
+            <!-- Thay thế thành button box mới, tránh bị ảnh hưởng bởi các module khác -->
+            <xpath expr="//div[@class='oe_button_box']" position="attributes">
+                <attribute name="invisible">1</attribute>
+            </xpath>
+
+            <xpath expr="//div[@class='o_address_format']" position="before">
+                <field name="customerId" />
+            </xpath>
+
+            <!-- Ẩn các trang không cần thiết -->
+            <xpath expr="//page[@name='sales_purchases']" position="attributes">
+                <attribute name="invisible">1</attribute>
+            </xpath>
+            <xpath expr="//page[@name='accounting']" position="attributes">
+                <attribute name="invisible">1</attribute>
+            </xpath>
+            <xpath expr="//page[@name='accounting_disabled']" position="attributes">
+                <attribute name="invisible">1</attribute>
+            </xpath>
+
+            <!-- Thêm các trang mới -->
+            <xpath expr="//page[@name='contact_addresses']" position="after">
+                <page name="moron_salesperson" string="Sale Info">
+                    <group>
+                        <group>
+                            <field name="moron_salesperson_ids" widget="many2many_tags"/>
+                            <field name="payment_term_id"/>
+                            <field name="payment_method"/>
+                        </group>
+                        <group>
+                            <field name="paypal"/>
+                            <field name="transferwise_id"/>
+                            <field name="bank_account_number"/>
+                            <field name="bank_name"/>
+                            <field name="iban"/>
+                            <field name="swift"/>
+                            <field name="bank_address"/>
+                        </group>
+                    </group>
+                </page>
+                <page name="moron_project" string="Projects">
+                    <field name="moron_project_ids" readonly="1">
+                        <tree>
+                            <field name="name"/>
+                            <field name="job_id"/>
+                            <field name="service" widget="many2many_tags"/>
+                            <field name="tag_ids" widget="many2many_tags"/>
+                            <field name="source_language"/>
+                            <field name="target_language"/>
+                            <field name="job_value_usd"/>
+                            <field name="user_id" widget="many2one_avatar_user"/>
+                        </tree>
+                    </field>
+                </page>
+                <page name="moron_invoice" string="Invoices">
+                    <field name="moron_invoice_ids" readonly="1" context="{'form_view_ref': 'morons.client_invoice_view_form_all'}">
+                        <tree context="{'form_view_ref': 'morons.client_invoice_view_form_all'}">
+                            <field name="name"/>
+                            <field name="moron_project_ids" widget="many2many_tags"/>
+                            <field name="amount_total"/>
+                            <field name="currency_id"/>
+                            <field name="invoice_date"/>
+                            <field name="paid_on"/>
+                            <field name="payment_state" widget="badge"
+                                decoration-danger="payment_state == 'not_paid'"
+                                decoration-warning="payment_state in ('partial', 'in_payment')"
+                                decoration-success="payment_state in ('paid', 'reversed')"
+                                attrs="{'invisible': [('payment_state', 'in', ('invoicing_legacy'))]}"
+                            />
+                            <!-- <field name="invoice_user_id" widget="many2one_avatar_user"/> -->
+                        </tree>
+                    </field>
+                </page>
+            </xpath>
+        </field>
+    </record>
+
+    <!-- Customer Action -->
+    <record id="moron_customer_action" model="ir.actions.act_window">
+        <field name="name">Customers</field>
+        <field name="type">ir.actions.act_window</field>
+        <field name="res_model">res.partner</field>
+        <field name="view_mode">tree,form</field>
+        <field name="view_ids" eval="[(5, 0, 0),
+            (0, 0, {'view_mode': 'tree', 'view_id': ref('base.view_partner_tree')}),
+            (0, 0, {'view_mode': 'form', 'view_id': ref('morons.moron_customer_view_form')})]"/>
+        <field name="context">{'res_partner_search_mode': 'customer', 'default_is_company': True, 'default_customer_rank': 1}</field>
+        <field name="domain">[('customer_rank', '>', 0)]</field>
+    </record>
+</odoo>

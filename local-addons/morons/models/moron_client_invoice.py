@@ -7,6 +7,8 @@ class MercTransClientInvoice(models.Model):
     
     sale_order_ids = fields.One2many("moron.sale.order", 'client_invoice_id', string="Sale Orders",
                                     domain="[('partner_id', '=', partner_id), ('client_invoice_id', '=', False)]")
+    moron_project_ids = fields.Many2many("project.project", string="Projects",
+                                        compute="_compute_moron_project_ids")
     is_client_invoice = fields.Boolean(string="Is Client Invoice", compute="_compute_is_client_invoice", store=True,
                                             help="Trường kỹ thuật, dùng để phân quyền")
 
@@ -33,6 +35,11 @@ class MercTransClientInvoice(models.Model):
                 r.paid_on = max(payment_date_list) if payment_date_list else False
             else:
                 r.paid_on = False
+
+    @api.depends("sale_order_ids")
+    def _compute_moron_project_ids(self):
+        for r in self:
+            r.moron_project_ids = r.sale_order_ids.project_id
 
     @api.onchange("sale_order_ids")
     def onchange_sale_order_ids(self):
@@ -78,12 +85,12 @@ class MercTransClientInvoice(models.Model):
         if self.moron_client_payment_ids:
             # Xóa các payment nếu đã có để tạo lại payment mới
             self.moron_client_payment_ids.filtered(lambda x: x.state == "posted").action_draft()
-            self.moron_client_payment_ids.unlink()
+            self.moron_client_payment_ids.sudo().unlink()
         return res
 
     def button_cancel(self):
         res = super(MercTransClientInvoice, self).button_cancel()
         if self.moron_client_payment_ids:
             self.moron_client_payment_ids.filtered(lambda x: x.state == "posted").action_draft()
-            self.moron_client_payment_ids.unlink()
+            self.moron_client_payment_ids.sudo().unlink()
         return res

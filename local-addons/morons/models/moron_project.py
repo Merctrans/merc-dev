@@ -43,7 +43,7 @@ class MerctransProject(models.Model):
     # Override default value as the setting tab will be hidden on view
     privacy_visibility = fields.Selection(default="followers")
     description = fields.Text(default="WARNING: This field will be visible to Contributors when they are assigned to POs. Please check for sensitive information before submitting.")
-    partner_id = fields.Many2one("res.partner", string="Client")
+    partner_id = fields.Many2one("res.partner", string="Customer")
 
 
     work_unit_list = [
@@ -101,8 +101,12 @@ class MerctransProject(models.Model):
         tracking=True,
     )
 
+    client_invoice_id = fields.Many2one('account.move', string='Client Invoice',
+        compute="_compute_client_invoice_id", store=True)
+
     payment_status = fields.Selection(
-        string="Payment Status", selection=payment_status_list, tracking=True
+        string="Payment Status", selection=payment_status_list, tracking=True,
+        compute="_compute_payment_status", store=True, compute_sudo=True
     )
     po_value = fields.Monetary(
         "PO Value",
@@ -240,6 +244,21 @@ class MerctransProject(models.Model):
     def _compute_display_so_id(self):
         for r in self:
             r.display_so_id = r.moron_sale_order_ids[:1]
+
+    @api.depends('moron_sale_order_ids', 'moron_sale_order_ids.client_invoice_id')
+    def _compute_client_invoice_id(self):
+        for r in self:
+            r.client_invoice_id = r.moron_sale_order_ids[:1].client_invoice_id
+
+    @api.depends('client_invoice_id', 'client_invoice_id.payment_state')
+    def _compute_payment_status(self):
+        for r in self:
+            payment_status = "unpaid"
+            if r.client_invoice_id:
+                payment_status = "invoiced"
+                if r.client_invoice_id.payment_state == "paid":
+                    payment_status = "paid"
+            r.payment_status = payment_status
 
     @api.model_create_multi
     def create(self, vals_list):

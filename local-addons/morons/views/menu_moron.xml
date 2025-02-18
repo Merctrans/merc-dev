@@ -61,9 +61,9 @@
         groups="morons.group_contributors"
         sequence="35"/>
     
-    <!-- Client Invoice Menu: PM, BOD, Accountants -->
+    <!-- Customer Invoice Menu: PM, BOD, Accountants -->
     <menuitem 
-        name="Client Invoices"
+        name="Customer Invoices"
         id="client_invoices_menu"
         action="morons.client_invoice_action_all"
         parent="morons.moron_project_app_menu"
@@ -78,6 +78,15 @@
         parent="morons.moron_project_app_menu"
         groups="morons.group_pm,morons.group_bod,morons.group_accountants"
         sequence="45"/>
+
+    <!-- Customer Menu: PM, BOD, Accountants -->
+    <menuitem 
+        name="Customers"
+        id="customer_menu"
+        action="morons.moron_customer_action"
+        parent="morons.moron_project_app_menu"
+        groups="morons.group_pm,morons.group_bod,morons.group_accountants"
+        sequence="46"/>
 
     <!-- Configuration Menu: BOD -->
     <menuitem 

@@ -119,12 +119,18 @@ class InternalUser(models.Model):
 
     @api.model_create_multi
     def create(self, vals_list):
-        res = super(InternalUser, self).create(vals_list)
+        self_sudo = self
+        if self.user_has_groups('morons.group_bod,morons.group_pm'):
+            self_sudo = self.sudo()
+        res = super(InternalUser, self_sudo).create(vals_list)
         res._update_is_contributor()
         return res
 
     def write(self, vals):
-        res = super(InternalUser, self).write(vals)
+        self_sudo = self
+        if self.user_has_groups('morons.group_bod,morons.group_pm'):
+            self_sudo = self.sudo()
+        res = super(InternalUser, self_sudo).write(vals)
         self._update_is_contributor()
         return res
 
