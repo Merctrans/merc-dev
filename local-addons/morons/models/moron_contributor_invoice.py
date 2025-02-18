@@ -80,12 +80,25 @@ class MercTransContributorInvoice(models.Model):
         if self.moron_contributor_payment_ids:
             # Xóa các payment nếu đã có để tạo lại payment mới
             self.moron_contributor_payment_ids.filtered(lambda x: x.state == "posted").action_draft()
-            self.moron_contributor_payment_ids.unlink()
+            self.moron_contributor_payment_ids.sudo().unlink()
         return res
 
     def button_cancel(self):
         res = super(MercTransContributorInvoice, self).button_cancel()
         if self.moron_contributor_payment_ids:
             self.moron_contributor_payment_ids.filtered(lambda x: x.state == "posted").action_draft()
-            self.moron_contributor_payment_ids.unlink()
+            self.moron_contributor_payment_ids.sudo().unlink()
         return res
+
+    # Override invoice. Include customer invoice, contributor invoice
+    def _post(self, soft=True):
+        self_sudo = self
+        if self.user_has_groups('morons.group_bod,morons.group_pm,morons.group_account'):
+            self_sudo = self.sudo()
+        return super(MercTransContributorInvoice, self_sudo)._post(soft)
+
+    def button_draft(self):
+        self_sudo = self
+        if self.user_has_groups('morons.group_bod,morons.group_pm,morons.group_account'):
+            self_sudo = self.sudo()
+        return super(MercTransContributorInvoice, self_sudo).button_draft()

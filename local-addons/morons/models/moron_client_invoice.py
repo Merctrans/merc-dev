@@ -78,12 +78,12 @@ class MercTransClientInvoice(models.Model):
         if self.moron_client_payment_ids:
             # Xóa các payment nếu đã có để tạo lại payment mới
             self.moron_client_payment_ids.filtered(lambda x: x.state == "posted").action_draft()
-            self.moron_client_payment_ids.unlink()
+            self.moron_client_payment_ids.sudo().unlink()
         return res
 
     def button_cancel(self):
         res = super(MercTransClientInvoice, self).button_cancel()
         if self.moron_client_payment_ids:
             self.moron_client_payment_ids.filtered(lambda x: x.state == "posted").action_draft()
-            self.moron_client_payment_ids.unlink()
+            self.moron_client_payment_ids.sudo().unlink()
         return res

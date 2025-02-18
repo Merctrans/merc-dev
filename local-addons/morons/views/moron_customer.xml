@@ -1,0 +1,50 @@
+<odoo>
+
+    <!-- Kế thừa view form base.view_partner_form -->
+    <record id="moron_customer_view_form" model="ir.ui.view">
+        <field name="name">moron.customer.form.view.inherit</field>
+        <field name="model">res.partner</field>
+        <field name="inherit_id" ref="base.view_partner_form"/>
+        <field name="mode">primary</field>
+        <field name="arch" type="xml">
+            <!-- Thay thế thành button box mới, tránh bị ảnh hưởng bởi các module khác -->
+            <xpath expr="//div[@class='oe_button_box']" position="attributes">
+                <attribute name="invisible">1</attribute>
+            </xpath>
+
+            <!-- Ẩn các trang không cần thiết -->
+            <xpath expr="//page[@name='sales_purchases']" position="attributes">
+                <attribute name="invisible">1</attribute>
+            </xpath>
+            <xpath expr="//page[@name='accounting']" position="attributes">
+                <attribute name="invisible">1</attribute>
+            </xpath>
+            <xpath expr="//page[@name='accounting_disabled']" position="attributes">
+                <attribute name="invisible">1</attribute>
+            </xpath>
+
+            <!-- Thêm các trang mới -->
+            <xpath expr="//page[@name='contact_addresses']" position="after">
+                <page name="moron_project" string="Projects">
+                    <field name="comment" placeholder="Projects..."/>
+                </page>
+                <page name="moron_invoice" string="Invoices">
+                    <field name="comment" placeholder="Invoices..."/>
+                </page>
+            </xpath>
+        </field>
+    </record>
+
+    <!-- Customer Action -->
+    <record id="moron_customer_action" model="ir.actions.act_window">
+        <field name="name">Customers</field>
+        <field name="type">ir.actions.act_window</field>
+        <field name="res_model">res.partner</field>
+        <field name="view_mode">tree,form</field>
+        <field name="view_ids" eval="[(5, 0, 0),
+            (0, 0, {'view_mode': 'tree', 'view_id': ref('base.view_partner_tree')}),
+            (0, 0, {'view_mode': 'form', 'view_id': ref('morons.moron_customer_view_form')})]"/>
+        <field name="context">{'res_partner_search_mode': 'customer', 'default_is_company': True, 'default_customer_rank': 1}</field>
+        <field name="domain">[('customer_rank', '>', 0)]</field>
+    </record>
+</odoo>
