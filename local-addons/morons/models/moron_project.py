@@ -43,7 +43,7 @@ class MerctransProject(models.Model):
     # Override default value as the setting tab will be hidden on view
     privacy_visibility = fields.Selection(default="followers")
     description = fields.Text(default="WARNING: This field will be visible to Contributors when they are assigned to POs. Please check for sensitive information before submitting.")
-    partner_id = fields.Many2one("res.partner", string="Client")
+    partner_id = fields.Many2one("res.partner", string="Customer")
 
 
     work_unit_list = [

@@ -7,7 +7,7 @@ class MoronSaleOrder(models.Model):
 
     name = fields.Char(string='Name', default='New', readonly=True, required=True)
     project_id = fields.Many2one('project.project', string='Project', required=True)
-    partner_id = fields.Many2one('res.partner', string='Client', required=True)
+    partner_id = fields.Many2one('res.partner', string='Customer', required=True)
     partner_invoice_id = fields.Many2one('res.partner', 'Invoice Address',
                                         compute='_compute_partner_invoice_id', store=True, precompute=True)
 
@@ -92,12 +92,12 @@ class MoronSaleOrder(models.Model):
         """
         # check permission
         if not self.env.user.has_group("morons.group_pm") and not self.env.user.has_group("morons.group_bod"):
-            raise ValidationError(_("You cannot create a client invoice, please contact PM, BoD."))
+            raise ValidationError(_("You cannot create a customer invoice, please contact PM, BoD."))
 
         # check common
         for r in self:
             if not r.partner_id:
-                raise ValidationError("A client must be designated for sale order '%s'." % r.name)
+                raise ValidationError("A customer must be designated for sale order '%s'." % r.name)
             if r.client_invoice_id:
                 raise ValidationError(_("This sale order '%s' already has an invoice.") % r.name)
 
