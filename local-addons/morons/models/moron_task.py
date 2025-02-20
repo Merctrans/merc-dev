@@ -92,7 +92,7 @@ class MerctransTask(models.Model):
         required=True,
         default="unpaid",
         tracking= True,
-        compute="_compute_payment_status", store=True
+        compute="_compute_payment_status", store=True, compute_sudo=True
     )
     currency_id = fields.Many2one("res.currency", string="Currency", compute="_compute_currency_id", store=True, tracking= True, readonly=False)
     project_currency_id = fields.Many2one("res.currency", related="project_id.currency_id", store=True, readonly=True)

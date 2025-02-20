@@ -49,11 +49,29 @@
                 <attribute name="invisible">1</attribute>
             </xpath>
 
+            <!-- Add Group moron -->
+            <xpath expr="//button[@name='action_post'][1]" position="attributes">
+                <attribute name="groups">account.group_account_invoice,morons.group_bod,morons.group_pm,morons.group_account</attribute>
+            </xpath>
+            <xpath expr="//button[@name='action_post'][2]" position="attributes">
+                <attribute name="groups">account.group_account_invoice,morons.group_bod,morons.group_pm,morons.group_account</attribute>
+            </xpath>
+            <xpath expr="//button[@name='button_draft']" position="attributes">
+                <attribute name="groups">account.group_account_invoice,morons.group_bod,morons.group_pm,morons.group_account</attribute>
+            </xpath>
+            <xpath expr="//button[@name='action_register_payment']" position="attributes">
+                <attribute name="groups">account.group_account_invoice,morons.group_bod,morons.group_pm,morons.group_account</attribute>
+            </xpath>
+
+            <field name="partner_id" position="attributes">
+                <attribute name="options">{'no_open': True}</attribute>
+            </field>
             <!-- Hiện trường Purchase Orders -->
             <field name="partner_id" position="after">
                 <field name="purchase_order_ids" widget="many2many_tags" string="Purchase Orders"
                     attrs="{'readonly': [('state', '!=', 'draft')]}"/>
             </field>
+            
 
             <!-- Ẩn trường Tax cash basis origin move -->
             <field name="tax_cash_basis_origin_move_id" position="attributes">

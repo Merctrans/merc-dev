@@ -32,6 +32,7 @@
         'views/moron_contributor_invoice.xml',
         'views/moron_sale_order.xml',
         'views/moron_client_invoice.xml',
+        'views/moron_customer.xml',
         'views/menu_moron.xml',
         
         'data/languages.xml',
