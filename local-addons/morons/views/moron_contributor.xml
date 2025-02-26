@@ -22,9 +22,10 @@
 
                     <group name="contributor_info" attrs="{'invisible': [('contributor', '=', False)]}">
                         <group name="general_info" string="General Information">
-                            <field name="currency"/>
+                            <field name="currency" attrs="{'required': [('contributor', '=', True)]}"/>
                             <field name="skype"/>
                             <field name="tz"/>
+                            <field name="languages_ids" widget="many2many_tags"/>
                             <field name="country_of_residence"/>
                             <field name="nationality" widget="many2many_tags"/>
                         </group>
@@ -91,6 +92,7 @@
                             <field name="login" string="Email (Login)"/>
                             <field name="phone" string="Phone"/>
                             <field name="skype" string="Skype"/>
+                            <field name="languages_ids" widget="many2many_tags"/>
                             <field name="country_of_residence" string="Country of Residence"/>
                             <field name="nationality" string="Nationality" widget="many2many_tags"/>
                             <field name="tz" string="Timezone"/>

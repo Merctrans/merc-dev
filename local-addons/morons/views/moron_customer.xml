@@ -114,6 +114,6 @@
             (0, 0, {'view_mode': 'tree', 'view_id': ref('base.view_partner_tree')}),
             (0, 0, {'view_mode': 'form', 'view_id': ref('morons.moron_customer_view_form')})]"/>
         <field name="context">{'res_partner_search_mode': 'customer', 'default_is_company': True, 'default_customer_rank': 1}</field>
-        <field name="domain">[('customer_rank', '>', 0)]</field>
+        <field name="domain">[('type', '=', 'contact'),('customer_rank', '>', 0)]</field>
     </record>
 </odoo>
