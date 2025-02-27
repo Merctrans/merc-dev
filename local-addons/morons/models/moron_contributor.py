@@ -76,6 +76,7 @@ class InternalUser(models.Model):
     nationality = fields.Many2many('res.country')
     country_of_residence = fields.Many2one('res.country')
     my_pos_count = fields.Integer(string='POs Count', compute='_compute_my_pos_count')
+    languages_ids = fields.Many2many('res.lang', string='Languages')
 
     # Payment Methods
     paypal = fields.Char('PayPal ID')

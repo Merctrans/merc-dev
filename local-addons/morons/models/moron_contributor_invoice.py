@@ -37,6 +37,11 @@ class MercTransContributorInvoice(models.Model):
         for r in self:
             r.amount_total_signed_display = abs(r.amount_total_signed)
 
+    @api.onchange("partner_id")
+    def onchange_partner_id(self):
+        if self.partner_id and not self.purchase_order_ids:
+            self.currency_id = self.partner_id.user_ids[:1].currency
+
     @api.onchange("purchase_order_ids")
     def onchange_purchase_order_ids(self):
         if self.purchase_order_ids:
@@ -93,12 +98,12 @@ class MercTransContributorInvoice(models.Model):
     # Override invoice. Include customer invoice, contributor invoice
     def _post(self, soft=True):
         self_sudo = self
-        if self.user_has_groups('morons.group_bod,morons.group_pm,morons.group_account'):
+        if self.user_has_groups('morons.group_bod,morons.group_pm,morons.group_accountants'):
             self_sudo = self.sudo()
         return super(MercTransContributorInvoice, self_sudo)._post(soft)
 
     def button_draft(self):
         self_sudo = self
-        if self.user_has_groups('morons.group_bod,morons.group_pm,morons.group_account'):
+        if self.user_has_groups('morons.group_bod,morons.group_pm,morons.group_accountants'):
             self_sudo = self.sudo()
         return super(MercTransContributorInvoice, self_sudo).button_draft()

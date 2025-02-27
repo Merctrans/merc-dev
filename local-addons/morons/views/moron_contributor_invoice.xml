@@ -51,16 +51,16 @@
 
             <!-- Add Group moron -->
             <xpath expr="//button[@name='action_post'][1]" position="attributes">
-                <attribute name="groups">account.group_account_invoice,morons.group_bod,morons.group_pm,morons.group_account</attribute>
+                <attribute name="groups">account.group_account_invoice,morons.group_bod,morons.group_pm,morons.group_accountants</attribute>
             </xpath>
             <xpath expr="//button[@name='action_post'][2]" position="attributes">
-                <attribute name="groups">account.group_account_invoice,morons.group_bod,morons.group_pm,morons.group_account</attribute>
+                <attribute name="groups">account.group_account_invoice,morons.group_bod,morons.group_pm,morons.group_accountants</attribute>
             </xpath>
             <xpath expr="//button[@name='button_draft']" position="attributes">
-                <attribute name="groups">account.group_account_invoice,morons.group_bod,morons.group_pm,morons.group_account</attribute>
+                <attribute name="groups">account.group_account_invoice,morons.group_bod,morons.group_pm,morons.group_accountants</attribute>
             </xpath>
             <xpath expr="//button[@name='action_register_payment']" position="attributes">
-                <attribute name="groups">account.group_account_invoice,morons.group_bod,morons.group_pm,morons.group_account</attribute>
+                <attribute name="groups">account.group_account_invoice,morons.group_bod,morons.group_pm,morons.group_accountants</attribute>
             </xpath>
 
             <field name="partner_id" position="attributes">
