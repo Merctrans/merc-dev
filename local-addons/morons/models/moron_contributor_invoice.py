@@ -5,6 +5,9 @@ from odoo.exceptions import UserError
 class MercTransContributorInvoice(models.Model):
     _inherit = "account.move"
 
+    # contributor
+    contributor_id = fields.Many2one("res.users", string='Contributor',
+                                        compute="_compute_contributor_id", store=True)
     purchase_order_ids = fields.One2many("project.task", 'contributor_invoice_id', string="Purchase Orders",
                                         domain="[('contributor_id.partner_id', '=', partner_id), ('contributor_invoice_id', '=', False)]")
     is_contributor_invoice = fields.Boolean(string="Is Contributor Invoice", compute="_compute_is_contributor_invoice", store=True,
@@ -18,6 +21,11 @@ class MercTransContributorInvoice(models.Model):
 
     # Override
     invoice_date = fields.Date(default=fields.Date.context_today, string='Invoice Date')
+
+    @api.depends("purchase_order_ids")
+    def _compute_contributor_id(self):
+        for r in self:
+            r.contributor_id = r.purchase_order_ids[:1].contributor_id
 
     @api.depends("purchase_order_ids")
     def _compute_is_contributor_invoice(self):
