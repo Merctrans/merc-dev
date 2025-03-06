@@ -8,3 +8,4 @@ from . import moron_sale_order
 from . import moron_sale_order_line
 from . import moron_payment
 from . import moron_customer
+from . import contributor_service_rate

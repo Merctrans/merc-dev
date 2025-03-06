@@ -77,6 +77,9 @@ class InternalUser(models.Model):
     country_of_residence = fields.Many2one('res.country')
     my_pos_count = fields.Integer(string='POs Count', compute='_compute_my_pos_count')
     languages_ids = fields.Many2many('res.lang', string='Languages')
+    # 1 trường đánh giá ratring từ 0* -> 5* và 1 trường mô tả đánh giá
+    rating = fields.Selection([('1', '1*'), ('2', '2*'), ('3', '3*'), ('4', '4*'), ('5', '5*')], 'Rating')
+    rating_description = fields.Text(string='Rating Description')
 
     # Payment Methods
     paypal = fields.Char('PayPal ID')
@@ -95,6 +98,13 @@ class InternalUser(models.Model):
     field_of_study = fields.Char('Field of Study')
     year_obtained = fields.Selection([(str(num), str(num)) for num in range(1900, datetime.datetime.now().year + 1)], 'Year')
     certificate = fields.Char('Certificate')
+
+    # Purchase Orders
+    mertrans_po_ids = fields.One2many('project.task', 'contributor_id', string='Purchase Orders')
+    # Invoices
+    contributor_invoice_ids = fields.One2many('account.move', 'contributor_id', string='Invoices')
+    # Services
+    contributor_service_rate_ids = fields.One2many('contributor.service.rate', 'contributor_id', string='Service Rates')
 
     @api.constrains('paypal')
     def validate_paypal(self):
@@ -141,7 +151,7 @@ class InternalUser(models.Model):
         """
         contributors = self.filtered(lambda r: r.contributor)
         contributor_group = self.env.ref('morons.group_contributors')
-        contributor_group_users = contributor_group.users
+        contributor_group_users = contributor_group.with_context(active_test=False).users
         add_users = contributors - contributor_group_users
         if add_users:
             add_users.write({'groups_id': [(4, contributor_group.id)]})

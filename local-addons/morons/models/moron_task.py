@@ -1,5 +1,6 @@
 from odoo import models, fields, api, _
 from odoo.exceptions import ValidationError
+from odoo.tools.misc import format_date
 
 
 class MerctransTask(models.Model):
@@ -100,6 +101,8 @@ class MerctransTask(models.Model):
 
     contributor_invoice_id = fields.Many2one("account.move", string="Contributor Invoice")
 
+    show_warning_deadline = fields.Text(string="Show Warning Deadline", default="", compute="_compute_show_warning_deadline")
+
     @api.constrains("volume","rate")
     def _check_positive_values(self):
         for task in self:
@@ -107,6 +110,20 @@ class MerctransTask(models.Model):
                 raise ValidationError(_("Project Volume cannot be negative."))
             if task.rate < 0:
                 raise ValidationError(_("Project Rate cannot be negative."))
+
+    @api.depends("date_deadline")
+    def _compute_show_warning_deadline(self):
+        for r in self:
+            msg = ''
+            if r.date_deadline and r.project_id.date_start and r.date_deadline < r.project_id.date_start:
+                date_start = format_date(self.env, r.project_id.date_start)
+                date_end = format_date(self.env, r.project_id.date)
+                msg = _("Deadline must be within Project timeline: %s - %s") % (date_start, date_end)
+            elif r.date_deadline and r.project_id.date and r.date_deadline > r.project_id.date:
+                date_start = format_date(self.env, r.project_id.date_start)
+                date_end = format_date(self.env, r.project_id.date)
+                msg = _("Deadline must be within Project timeline: %s - %s") % (date_start, date_end)
+            r.show_warning_deadline = msg
 
     @api.depends("volume", "rate")
     def _compute_po_value(self):

@@ -1,5 +1,27 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
+
+
+    <!-- User: Tree view in Setting menu-->
+    <record id="view_users_tree_contributor" model="ir.ui.view">
+        <field name="name">res.users.tree.contributor</field>
+        <field name="model">res.users</field>
+        <field name="inherit_id" ref="base.view_users_tree"/>
+        <field name="mode">primary</field>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='lang']" position="attributes">
+                <attribute name="invisible">1</attribute>
+            </xpath>
+            <xpath expr="//field[@name='login_date']" position="attributes">
+                <attribute name="invisible">1</attribute>
+            </xpath>
+            <xpath expr="//field[@name='lang']" position="after">
+                <field name="languages_ids" widget="many2many_tags"/>
+                <field name="rating" widget="priority" groups="morons.group_bod,morons.group_pm"/>
+            </xpath>
+        </field>
+    </record>
+
     <!-- User: Form view in Setting menu-->
     <record id="view_users_form" model="ir.ui.view">
         <field name="name">res.users.form</field>
@@ -22,12 +44,13 @@
 
                     <group name="contributor_info" attrs="{'invisible': [('contributor', '=', False)]}">
                         <group name="general_info" string="General Information">
+                            <field name="vat" string="VAT/ABN Number"/>
                             <field name="currency" attrs="{'required': [('contributor', '=', True)]}"/>
                             <field name="skype"/>
-                            <field name="tz"/>
+                            <field name="tz" attrs="{'required': [('contributor', '=', True)]}"/>
                             <field name="languages_ids" widget="many2many_tags"/>
-                            <field name="country_of_residence"/>
-                            <field name="nationality" widget="many2many_tags"/>
+                            <field name="country_of_residence" attrs="{'required': [('contributor', '=', True)]}"/>
+                            <field name="nationality" widget="many2many_tags" attrs="{'required': [('contributor', '=', True)]}"/>
                         </group>
                         <group name="educational_qualifications" string="Educational Qualifications">
                             <field name="dates_attended"/>
@@ -50,9 +73,80 @@
                             <field name="bank_name" string="Bank Name"
                                    attrs="{'required': [('preferred_payment_method', '=', 'bank')]}" />
                             <field name="iban" string="IBAN" />
-                            <field name="swift" string="SWIFT"/>
-                            <field name="bank_address" string="Bank Address"/>
+                            <field name="swift" string="SWIFT" />
+                            <field name="bank_address" string="Bank Address" />
                         </group>
+                    </group>
+                </page>
+                <!-- page service rates -->
+                <page string="Negotiated Rates" name="service_rates"
+                    groups="morons.group_bod,morons.group_pm,morons.group_accountants"
+                    attrs="{'invisible': [('contributor', '=', False)]}">
+                    <field name="contributor_service_rate_ids">
+                        <tree editable="bottom">
+                            <field name="currency_id" invisible="1"/>
+                            <field name="service_id" />
+                            <field name="rate" />
+                            <field name="note" />
+                        </tree>
+                    </field>
+                </page>
+                <!-- page purchase order -->
+                <page string="Purchase Orders" name="purchase_orders" attrs="{'invisible': [('contributor', '=', False)]}">
+                    <field name="mertrans_po_ids" readonly="1">
+                        <tree>
+                            <field name="name" string="#PO"/>
+                            <field name="project_id" />
+                            <field name="contributor_id" invisible="1" />
+                            <field name="source_language" string="Source"/>
+                            <field name="target_language" string="Target"/>
+                            <field name="service" widget="many2many_tags" />
+                            <field name="work_unit" />
+                            <field name="volume" />
+                            <field name="rate" />
+                            <field name="po_value" />
+                            <field name="date_deadline" />
+                            <field name="stages_id" string="Status" widget="badge" decoration-warning="stages_id == 'in progress'" decoration-success="stages_id == 'completed'" />
+                            <field name="payment_status" string="Payment Status" widget="badge" decoration-success="payment_status == 'paid'" decoration-info="payment_status == 'invoiced'" />
+                            <field name="currency_id" invisible="1"/>
+                            <field name="company_id" invisible="1"/>
+                            <field name="target_language_selected" invisible="1"/>
+                        </tree>
+                    </field>
+                </page>
+                <!-- page invoices -->
+                <page string="Invoices" name="invoices" attrs="{'invisible': [('contributor', '=', False)]}">
+                    <field name="contributor_invoice_ids" readonly="1" context="{'form_view_ref': 'morons.contributor_invoice_view_form_all'}">
+                        <tree>
+                            <field name="currency_id" invisible="1"/>
+                            <field name="company_currency_id" invisible="1"/>
+                            <field name="name"/>
+                            <field name="invoice_partner_display_name" string="Vendor" invisible="1"/>
+                            <field name="invoice_date"/>
+                            <field name="invoice_date_due" string="Due Date"/>
+                            <field name="purchase_order_ids" widget="many2many_tags" string="Purchase Orders"/>
+                            <field name="amount_total" sum="Invoice Total" decoration-bf="1"/>
+                            <field name="amount_total_signed_display" sum="Total" decoration-bf="1"
+                                groups="morons.group_bod,morons.group_pm,morons.group_accountants" />
+                            <field name="state" widget="badge"
+                                decoration-success="state == 'posted'"
+                                decoration-info="state == 'draft'"
+                            />
+                            <field name="payment_state" widget="badge"
+                                decoration-danger="payment_state == 'not_paid'"
+                                decoration-warning="payment_state in ('partial', 'in_payment')"
+                                decoration-success="payment_state in ('paid', 'reversed')"
+                                attrs="{'invisible': [('payment_state', 'in', ('invoicing_legacy'))]}"
+                            />
+                            <field name="move_type" invisible="1"/>
+                        </tree>
+                    </field>
+                </page>
+                <!-- page rating -->
+                <page string="Rating" name="rating" groups="morons.group_bod,morons.group_pm" attrs="{'invisible': [('contributor', '=', False)]}">
+                    <group name="rating_group">
+                        <field name="rating" widget="priority"/>
+                        <field name="rating_description" string="Description"/>
                     </group>
                 </page>
             </xpath>
@@ -89,17 +183,17 @@
                 <page string="General Information" name="info_page" groups="morons.group_contributors">
                     <group>
                         <group>
-                            <field name="login" string="Email (Login)"/>
-                            <field name="phone" string="Phone"/>
+                            <field name="login" string="Email (Login)" readonly="1"/>
+                            <field name="phone" string="Phone" readonly="1"/>
                             <field name="skype" string="Skype"/>
                             <field name="languages_ids" widget="many2many_tags"/>
-                            <field name="country_of_residence" string="Country of Residence"/>
-                            <field name="nationality" string="Nationality" widget="many2many_tags"/>
-                            <field name="tz" string="Timezone"/>
+                            <field name="country_of_residence" string="Country of Residence" readonly="1"/>
+                            <field name="nationality" string="Nationality" widget="many2many_tags" readonly="1"/>
+                            <field name="tz" string="Timezone" readonly="1"/>
                             <field name="vat" string="VAT/ABN Number"/>
                         </group>
                         <group>
-                            <field name="currency" string="Currency"/>
+                            <field name="currency" string="Currency" readonly="1"/>
                             <field name="preferred_payment_method" string="Preferred Payment Method"/>
                             <field name="paypal" string="PayPal" attrs="{'required': [('preferred_payment_method', '=', 'paypal')]}" />
                             <field name="transferwise_id" string="Wise ID" attrs="{'required': [('preferred_payment_method', '=', 'transferwise')]}" />
@@ -122,8 +216,8 @@
         <field name="res_model">res.users</field>
         <field name="view_mode">tree,form</field>
         <field name="view_ids"
-            eval="[(5, 0, 0), (0, 0, {'view_mode': 'tree', 'view_id': ref('base.view_users_tree')}), 
-                                        (0, 0, {'view_mode': 'form', 'view_id': ref('contributor_list_view_form')})]" />
+            eval="[(5, 0, 0), (0, 0, {'view_mode': 'tree', 'view_id': ref('view_users_tree_contributor')}), 
+                              (0, 0, {'view_mode': 'form', 'view_id': ref('contributor_list_view_form')})]" />
         <field name="domain">[('share', '=', False), ('contributor', '=', True)]</field>
     </record>
 

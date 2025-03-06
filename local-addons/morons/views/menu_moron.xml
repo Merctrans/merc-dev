@@ -96,6 +96,14 @@
         groups="morons.group_bod"
         sequence="50"/>
 
+    <!-- Configuration: Service Menu -->
+    <menuitem
+        id="menu_service_act"
+        name="Project Services"
+        action="morons.merctrans_service_action"
+        parent="morons.configuration_menu"
+        sequence="5"/>
+
     <!-- Configuration: Tag Menu -->
     <menuitem
         id="menu_project_tags_act"
