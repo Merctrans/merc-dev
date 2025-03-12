@@ -49,6 +49,14 @@
                 <attribute name="invisible">1</attribute>
             </xpath>
 
+            <!-- Add button action_send_invoice_to_contributor -->
+            <xpath expr="//header" position="inside">
+                <button name="action_send_invoice_to_contributor" string="Send Invoice to Contributor"
+                    type="object" icon="fa-solid fa-paper-plane"
+                    groups="morons.group_bod,morons.group_pm,morons.group_accountants"
+                    attrs="{'invisible': [('payment_state', '!=', 'paid')]}"/>
+            </xpath>
+
             <!-- Add Group moron -->
             <xpath expr="//button[@name='action_post'][1]" position="attributes">
                 <attribute name="groups">account.group_account_invoice,morons.group_bod,morons.group_pm,morons.group_accountants</attribute>

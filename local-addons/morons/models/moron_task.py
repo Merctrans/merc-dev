@@ -207,13 +207,6 @@ class MerctransTask(models.Model):
         self.source_language = self.project_id.source_language
         self.work_unit = self.project_id.work_unit
 
-    @api.model_create_multi
-    def create(self, vals_list):
-        for vals in vals_list:
-            if not vals.get("name") or vals.get("name") == "New":
-                vals["name"] = self.env["ir.sequence"].next_by_code("increment_PO_id")
-        return super(MerctransTask, self).create(vals_list)
-
     def action_create_invoice(self):
         """
         Cho phép tạo invoice cho 1 hoặc nhiều PO:
@@ -241,7 +234,7 @@ class MerctransTask(models.Model):
                     AccountMove = AccountMove.sudo()
                 else:
                     raise ValidationError(_("You cannot create an contributor invoice for another contributor: %s") % contributor.name)
-            
+
             invoice_line_data = []
             for po in purchase_orders:
                 invoice_line_data.append((0, 0, {
@@ -282,3 +275,50 @@ class MerctransTask(models.Model):
                 "views": [[self.env.ref('morons.contributor_invoice_view_tree').id, "tree"]],
                 "target": "new",
             }
+
+    @api.model_create_multi
+    def create(self, vals_list):
+        for vals in vals_list:
+            if not vals.get("name") or vals.get("name") == "New":
+                vals["name"] = self.env["ir.sequence"].next_by_code("increment_PO_id")
+        res = super(MerctransTask, self).create(vals_list)
+        res._send_notyfy_assign_contributor()
+        return res
+
+    def write(self, vals):
+        res = super(MerctransTask, self).write(vals)
+        if vals.get("contributor_id", False):
+            self._send_notyfy_assign_contributor()
+        return res
+
+    def _send_notyfy_assign_contributor(self):
+        # Utility method to send assignation notification upon writing/creation.
+        template_id = self.env['ir.model.data']._xmlid_to_res_id('morons.project_message_contributor_assigned', raise_if_not_found=False)
+        if not template_id:
+            return
+        task_model_description = self.env['ir.model']._get(self._name).display_name
+        for task in self.sudo():
+            if not task.contributor_id:
+                continue
+            values = {
+                'object': task,
+                'model_description': task_model_description,
+                'assignee_name': task.contributor_id.sudo().name,
+                'access_link': task._notify_get_action_link('view'),
+            }
+            assignation_msg = self.env['ir.qweb']._render('morons.project_message_contributor_assigned', values, minimal_qcontext=True)
+            assignation_msg = self.env['mail.render.mixin']._replace_local_links(assignation_msg)
+            task.message_notify(
+                subject=_('You have been assigned to %s', task.display_name),
+                body=assignation_msg,
+                partner_ids=task.contributor_id.partner_id.ids,
+                record_name=task.display_name,
+                email_layout_xmlid='mail.mail_notification_layout',
+                model_description=task_model_description,
+                mail_auto_delete=False,
+            )
+
+    @api.model
+    def _task_message_auto_subscribe_notify(self, users_per_task):
+        # Override để không gửi email cho người dùng được assign. chỉ cần gửi cho contributor tại hàm '_send_notyfy_assign_contributor'
+        return

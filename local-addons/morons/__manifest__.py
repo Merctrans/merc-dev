@@ -36,6 +36,7 @@
         'views/moron_service.xml',
         'views/menu_moron.xml',
         
+        'data/mail_template_data.xml',
         'data/languages.xml',
         'data/currencies.xml',
         'data/email_template.xml',
