@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <record id="spreadsheet_dashboard_group_moron" model="spreadsheet.dashboard.group">
+        <field name="name">Moron</field>
+        <field name="sequence">10</field>
+    </record>
+
+    <record id="dashboard_sale_moron" model="spreadsheet.dashboard">
+        <field name="name">Sale</field>
+        <field name="data" type="base64" file="morons_dashboard/data/files/moron_dashboard.json"/>
+        <field name="dashboard_group_id" ref="morons_dashboard.spreadsheet_dashboard_group_moron"/>
+        <field name="group_ids" eval="[Command.link(ref('morons.group_bod')), Command.link(ref('morons.group_pm')), Command.link(ref('morons.group_accountants'))]"/>
+        <field name="sequence">10</field>
+    </record>
+
+    <record id="dashboard_moron_contributor" model="spreadsheet.dashboard">
+        <field name="name">Contributor</field>
+        <field name="data" type="base64" file="morons_dashboard/data/files/moron_contributor.json"/>
+        <field name="dashboard_group_id" ref="morons_dashboard.spreadsheet_dashboard_group_moron"/>
+        <field name="group_ids" eval="[Command.link(ref('morons.group_bod')), Command.link(ref('morons.group_pm')), Command.link(ref('morons.group_accountants'))]"/>
+        <field name="sequence">20</field>
+    </record>
+
+</odoo>

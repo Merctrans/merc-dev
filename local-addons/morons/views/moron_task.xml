@@ -107,6 +107,11 @@
                 <separator />
                 <filter string="Archived" name="inactive" domain="[('active', '=', False)]"/>
                 <separator />
+                <filter name="ftr_last_12_months" string="Last 12 Months"
+                    domain="[
+                        ('create_date', '>=', (context_today() + relativedelta(months=-12, day=1)).strftime('%Y-%m-%d')),
+                        ('create_date', '&lt;=', (context_today() + relativedelta(months=0, day=31, normalize=True)).strftime('%Y-%m-%d'))
+                    ]"/>
                 <group expand="0" string="Group By">
                     <filter string="contributor" name="contributor_id" context="{'group_by': 'contributor_id'}"/>
                     <filter string="Project" name="project_id" context="{'group_by': 'project_id'}"/>

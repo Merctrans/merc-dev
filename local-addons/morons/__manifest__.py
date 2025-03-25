@@ -35,6 +35,8 @@
         'views/moron_customer.xml',
         'views/moron_service.xml',
         'views/menu_moron.xml',
+        'report/moron_sale_report_views.xml',
+        # 'report/moron_project_service_report_views.xml',  # pending
         
         'data/mail_template_data.xml',
         'data/languages.xml',
@@ -57,7 +59,7 @@
     },
     # only loaded in demonstration mode
     'demo': [
-        'demo/demo.xml',
+        # 'demo/demo.xml',
     ],
     'installable': True,
     'auto_install': False,
