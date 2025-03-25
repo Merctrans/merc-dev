@@ -34,10 +34,12 @@
                 <header>
                     <button name="action_create_invoice" string="Create Invoice"
                         type="object" class="oe_highlight" 
-                        attrs="{'invisible': [('client_invoice_id', '!=', False)]}" />
-                    <field name="status" widget="statusbar" />
+                        attrs="{'invisible': ['|', ('client_invoice_id', '!=', False), ('status', 'in', ['invoiced', 'cancelled'])]}" />
                     <button name="action_cancel" type="object" string="Cancel"
                         attrs="{'invisible': ['|', ('status', '=', 'cancelled'), ('client_invoice_id', '!=', False)]}" />
+                    <button name="action_draft" type="object" string="Draft"
+                        attrs="{'invisible': [('status', '!=', 'cancelled')]}" />
+                    <field name="status" widget="statusbar" statusbar_visible="draft,invoiced,completed" readonly="1" />
                 </header>
                 <sheet>
                     <div name="button_box" class="oe_button_box">
@@ -74,6 +76,10 @@
                         </field>
                     </group>
                 </sheet>
+                <div class="oe_chatter">
+                    <field name="activity_ids"/>
+                    <field name="message_ids"/>
+                </div>
             </form>
         </field>
     </record>

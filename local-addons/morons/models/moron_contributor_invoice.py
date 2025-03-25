@@ -9,7 +9,7 @@ class MercTransContributorInvoice(models.Model):
     contributor_id = fields.Many2one("res.users", string='Contributor',
                                         compute="_compute_contributor_id", store=True)
     purchase_order_ids = fields.One2many("project.task", 'contributor_invoice_id', string="Purchase Orders",
-                                        domain="[('contributor_id.partner_id', '=', partner_id), ('contributor_invoice_id', '=', False)]")
+                                        domain="[('contributor_id.partner_id', '=', partner_id), ('contributor_invoice_id', '=', False), ('stages_id', '=', 'completed')]")
     PO_str = fields.Char(string="Purchase Orders", compute="_compute_PO_str", compute_sudo=True)
     is_contributor_invoice = fields.Boolean(string="Is Contributor Invoice", compute="_compute_is_contributor_invoice", store=True,
                                             help="Trường kỹ thuật, dùng để phân quyền")
@@ -22,6 +22,8 @@ class MercTransContributorInvoice(models.Model):
 
     # Override
     invoice_date = fields.Date(default=fields.Date.context_today, string='Invoice Date')
+    invoice_payment_term_id = fields.Many2one(tracking=True)
+    invoice_due_date = fields.Date(tracking=True)
 
     @api.depends("purchase_order_ids")
     def _compute_contributor_id(self):
@@ -65,7 +67,12 @@ class MercTransContributorInvoice(models.Model):
             for po in self.purchase_order_ids:
                 # tạo invoice line
                 lines_data.append((0, 0, {
-                    'name': po.name,
+                    'name': "%s - %s - %s: %s" % (
+                        po.project_id.name, 
+                        po.name,
+                        dict(po._fields['work_unit'].selection).get(po.work_unit),
+                        ", ".join(po.service.mapped("name"))
+                    ),
                     'quantity': po.volume,
                     'price_unit': po.rate,
                     'tax_ids': False

@@ -84,10 +84,4 @@
             'search_default_grp_invoice_date': 1}</field>
     </record>
 
-    <!-- Menu -->
-    <menuitem id="menu_moron_sale_report"
-        name="Sale Report"
-        action="action_moron_sale_report"
-        parent="morons.moron_project_app_menu"
-        sequence="47"/>
 </odoo>

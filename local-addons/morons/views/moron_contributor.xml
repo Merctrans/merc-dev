@@ -180,7 +180,6 @@
         <field name="inherit_id" ref="base.view_users_form_simple_modif"/>
         <field name="arch" type="xml">
             <xpath expr="//page[@name='preferences_page']" position="before">
-                <field name="is_system" invisible="1"/>
                 <page string="General Information" name="info_page" groups="morons.group_contributors">
                     <group>
                         <group>
@@ -226,13 +225,14 @@
 
     <!-- Contributor: Action window -->
     <record id="action_open_contributor_list" model="ir.actions.act_window">
-        <field name="name">Internal Users</field>
+        <field name="name">Contributor</field>
         <field name="res_model">res.users</field>
         <field name="view_mode">tree,form</field>
         <field name="view_ids"
             eval="[(5, 0, 0), (0, 0, {'view_mode': 'tree', 'view_id': ref('view_users_tree_contributor')}), 
                               (0, 0, {'view_mode': 'form', 'view_id': ref('contributor_list_view_form')})]" />
         <field name="domain">[('share', '=', False), ('contributor', '=', True)]</field>
+        <field name="context">{'default_contributor': True}</field>
     </record>
 
 </odoo>

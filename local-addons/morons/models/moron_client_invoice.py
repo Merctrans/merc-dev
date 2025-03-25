@@ -56,7 +56,7 @@ class MercTransClientInvoice(models.Model):
             for so in self.sale_order_ids:
                 for line in so.line_ids:
                     lines_data.append((0, 0, {
-                        'name': line.name,
+                        'name': "%s - %s" % (line.name, so.name),
                         'quantity': line.volume,
                         'price_unit': line.sale_rate,
                         'tax_ids': False

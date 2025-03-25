@@ -7,6 +7,10 @@ import re
 class ResPartner(models.Model):
     _inherit = ["res.partner"]
 
+
+    is_contributor = fields.Boolean(string="Is Contributor",
+        compute="_compute_is_contributor", store=True)
+
     moron_project_ids = fields.One2many("project.project", "partner_id", string="Projects")
 
     moron_invoice_ids = fields.Many2many("account.move", string="Invoices",
@@ -32,3 +36,8 @@ class ResPartner(models.Model):
     def _compute_moron_invoice_ids(self):
         for r in self:
             r.moron_invoice_ids = r.moron_project_ids.client_invoice_id
+
+    @api.depends("user_ids", "user_ids.contributor")
+    def _compute_is_contributor(self):
+        for r in self:
+            r.is_contributor = True if r.user_ids.filtered(lambda c: c.contributor) else False

@@ -43,8 +43,8 @@ class MerctransProject(models.Model):
     # Override default value as the setting tab will be hidden on view
     privacy_visibility = fields.Selection(default="followers")
     description = fields.Text(default="WARNING: This field will be visible to Contributors when they are assigned to POs. Please check for sensitive information before submitting.")
-    partner_id = fields.Many2one("res.partner", string="Customer")
-
+    partner_id = fields.Many2one("res.partner", string="Customer",
+        domain=[('type', '=', 'contact'),('customer_rank', '>', 0)])
 
     work_unit_list = [
         ("word", "Word"),
@@ -104,6 +104,14 @@ class MerctransProject(models.Model):
     client_invoice_id = fields.Many2one('account.move', string='Client Invoice',
         compute="_compute_client_invoice_id", store=True)
 
+    project_status = fields.Selection(string="Project Status",
+        selection=[("potential", "Potential"),
+                   ("confirmed", "Confirmed"),
+                   ("in_progress", "In Progress"),
+                   ("pending_qa", "Pending QA"),
+                   ("delivered", "Delivered"),
+                   ("canceled", "Canceled")
+        ], tracking=True)
     payment_status = fields.Selection(
         string="Payment Status", selection=payment_status_list, tracking=True,
         compute="_compute_payment_status", store=True, compute_sudo=True

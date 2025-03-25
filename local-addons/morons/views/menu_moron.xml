@@ -1,13 +1,40 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
-   <!-- Moron Project Menu (App) -->
+
+    <!-- Ghi đè lại menu Dashboard: đứng sau menu Moron Project-->
+    <record id="spreadsheet_dashboard.spreadsheet_dashboard_menu_root" model="ir.ui.menu">
+        <field name="sequence">2</field>
+        <field name="groups_id" eval="[(4, ref('morons.group_pm')), (4, ref('morons.group_bod')), (4, ref('morons.group_accountants')), (4, ref('base.group_system'))]"/>
+    </record>
+    <!-- ẩn menu Discuss -->
+    <record id="mail.menu_root_discuss" model="ir.ui.menu">
+        <field name="active" eval="False"/>
+    </record>
+    <!-- ẩn menu Project -->
+    <record id="project.menu_main_pm" model="ir.ui.menu">
+        <field name="active" eval="False"/>
+    </record>
+    <!-- Ẩn menu Invoice -->
+    <record id="account.menu_finance" model="ir.ui.menu">
+        <field name="active" eval="False"/>
+    </record>
+    <!-- Ghi đè lại group cho menu App -->
+    <record id="base.menu_management" model="ir.ui.menu">
+        <field name="groups_id" eval="[(4, ref('morons.group_bod')), (4, ref('base.group_system'))]"/>
+    </record>
+
+
+
+   <!-- 0. Moron Project Menu -->
    <menuitem 
         name="Moron Project"
         id="moron_project_app_menu"
         groups="morons.group_pm,morons.group_bod,morons.group_accountants,morons.group_contributors"
-        sequence="50"/>
-    
-    <!-- Project Menu: PM, BOD, Accountants -->
+        sequence="1"/>
+
+
+
+    <!-- 1. Project Menu: PM, BOD, Accountants -->
     <menuitem 
         name="Projects"
         id="project_menu"
@@ -16,117 +43,149 @@
         groups="morons.group_pm,morons.group_bod,morons.group_accountants"
         sequence="10"/>
 
-    <!-- Purchase Order Menu: PM, BOD, Accountants -->
+
+
+    <!-- 2. Contributor Menu: PM, BOD, Accountants -->
+    <menuitem 
+        name="Contributor"
+        id="contributor_group_menu"
+        parent="morons.moron_project_app_menu"
+        groups="morons.group_pm,morons.group_bod,morons.group_accountants"
+        sequence="20"/>
+    <!-- 2.1 Purchase Order Menu -->
     <menuitem 
         name="Purchase Orders"
         id="purchase_order_menu"
         action="morons.merctrans_task_action_my_task"
-        parent="morons.moron_project_app_menu"
+        parent="morons.contributor_group_menu"
+        groups="morons.group_pm,morons.group_bod,morons.group_accountants"
+        sequence="10"/>
+    <!-- 2.2 Contributors Invoice Menu-->
+    <menuitem 
+        name="Contributors Invoices"
+        id="contributors_invoices_menu"
+        action="morons.contributor_invoice_action_all"
+        parent="morons.contributor_group_menu"
         groups="morons.group_pm,morons.group_bod,morons.group_accountants"
         sequence="20"/>
+    <!-- 2.3 Contributor Menu: -->
+    <menuitem 
+        name="Contributors"
+        id="contributors_menu"
+        action="morons.action_open_contributor_list"
+        parent="morons.contributor_group_menu"
+        groups="morons.group_pm,morons.group_bod,morons.group_accountants"
+        sequence="30"/>
 
-    <!-- Sale Order Menu: PM, BOD, Accountants -->
+
+
+    <!-- 3. Customer Menu: PM, BOD, Accountants -->
+    <menuitem 
+        name="Customer"
+        id="customer_group_menu"
+        parent="morons.moron_project_app_menu"
+        groups="morons.group_pm,morons.group_bod,morons.group_accountants"
+        sequence="30"/>
+    <!-- 3.1 Sale Order Menu -->
     <menuitem 
         name="Sale Orders"
         id="sale_order_menu"
         action="morons.moron_sale_order_action"
-        parent="morons.moron_project_app_menu"
+        parent="morons.customer_group_menu"
         groups="morons.group_pm,morons.group_bod,morons.group_accountants"
-        sequence="21"/>
+        sequence="10"/>
+    <!-- 3.2 Customer Invoice Menu -->
+    <menuitem 
+        name="Customer Invoices"
+        id="client_invoices_menu"
+        action="morons.client_invoice_action_all"
+        parent="morons.customer_group_menu"
+        groups="morons.group_pm,morons.group_bod,morons.group_accountants"
+        sequence="20"/>
+    <!-- 3.3 Customer Menu -->
+    <menuitem 
+        name="Customers"
+        id="customer_menu"
+        action="morons.moron_customer_action"
+        parent="morons.customer_group_menu"
+        groups="morons.group_pm,morons.group_bod,morons.group_accountants"
+        sequence="30"/>
 
-    <!-- My POs Menu: Contributors -->
+
+
+    <!-- 4.0 Menu dành cho Contributor -->
+    <!-- 4.1 My POs Menu: Contributors -->
     <menuitem 
         name="My POs"
         id="my_pos_menu"
         action="morons.merctrans_task_action_my_task"
         parent="morons.moron_project_app_menu"
         groups="morons.group_contributors"
-        sequence="25"/>
-
-    <!-- Contributors Invoice Menu: PM, BOD, Accountants -->
-    <menuitem 
-        name="Contributors Invoices"
-        id="contributors_invoices_menu"
-        action="morons.contributor_invoice_action_all"
-        parent="morons.moron_project_app_menu"
-        groups="morons.group_pm,morons.group_bod,morons.group_accountants"
-        sequence="30"/>
-    
-    <!-- My Invoices Menu: Contributors -->
+        sequence="35"/>
+    <!-- 4.2 My Invoices Menu: Contributors -->
     <menuitem
         name="My Invoices"
         id="my_invoices_menu"
         action="morons.contributor_invoice_action_my_po"
         parent="morons.moron_project_app_menu"
         groups="morons.group_contributors"
-        sequence="35"/>
-    
-    <!-- Customer Invoice Menu: PM, BOD, Accountants -->
+        sequence="36"/>
+
+
+
+    <!-- 5. Reporting Menu: PM, BOD, Accountants -->
     <menuitem 
-        name="Customer Invoices"
-        id="client_invoices_menu"
-        action="morons.client_invoice_action_all"
+        name="Reporting"
+        id="reporting_group_menu"
         parent="morons.moron_project_app_menu"
         groups="morons.group_pm,morons.group_bod,morons.group_accountants"
         sequence="40"/>
-
-    <!-- Contributor Menu: PM, BOD, Accountants -->
+    <!-- 5.1 Reporting Menu -->
     <menuitem 
-        name="Contributors"
-        id="contributors_menu"
-        action="morons.action_open_contributor_list"
-        parent="morons.moron_project_app_menu"
+        name="Sale Report"
+        id="sale_report_menu"
+        action="morons.action_moron_sale_report"
+        parent="morons.reporting_group_menu"
         groups="morons.group_pm,morons.group_bod,morons.group_accountants"
-        sequence="45"/>
+        sequence="10"/>
 
-    <!-- Customer Menu: PM, BOD, Accountants -->
-    <menuitem 
-        name="Customers"
-        id="customer_menu"
-        action="morons.moron_customer_action"
-        parent="morons.moron_project_app_menu"
-        groups="morons.group_pm,morons.group_bod,morons.group_accountants"
-        sequence="46"/>
 
-    <!-- Configuration Menu: BOD -->
+
+    <!-- 6. Configuration Menu: BOD -->
     <menuitem 
         name="Configuration"
         id="configuration_menu"
         parent="morons.moron_project_app_menu"
         groups="morons.group_bod"
         sequence="50"/>
-
-    <!-- Configuration: Service Menu -->
+    <!-- 6.1 Configuration: Service Menu -->
     <menuitem
         id="menu_service_act"
         name="Project Services"
         action="morons.merctrans_service_action"
         parent="morons.configuration_menu"
         sequence="5"/>
-
-    <!-- Configuration: Tag Menu -->
+    <!-- 6.2 Configuration: Tag Menu -->
     <menuitem
         id="menu_project_tags_act"
         name="Project Tags"
         action="project.project_tags_action"
         parent="morons.configuration_menu"
         sequence="10"/>
-
-    <!-- Configuration: Activity Type Menu -->
+    <!-- 6.3 Configuration: Activity Type Menu -->
     <menuitem
         id="project_menu_config_activity_type"
         name="Project Activity Types"
         action="project.mail_activity_type_action_config_project_types"
         parent="morons.configuration_menu"
         sequence="20"/>
-
-    <!-- Configuration: Status Menu -->
+    <!-- 6.4 Curency Menu -->
     <menuitem
-        name="Project Statuses"
-        id="project_status_menu"
-        action="project_status.project_status_action"
+        id="currency_menu"
+        name="Currencies"
+        action="base.action_currency_form"
         parent="morons.configuration_menu"
-        sequence="30"
-    />
+        groups="morons.group_bod"
+        sequence="30"/>
 
 </odoo>
