@@ -35,6 +35,7 @@ class MerctransTask(models.Model):
     """
 
     _inherit = "project.task"
+    _description = "Purchase Order"
 
     contributor_id = fields.Many2one("res.users", string='Contributor',
                                         domain="[('share', '=', False), ('active', '=', True), ('contributor', '=', True)]",
@@ -59,7 +60,7 @@ class MerctransTask(models.Model):
         ("paid", "Paid"),
     ]
     stages_id = fields.Selection(
-        string="Completion Status*", selection=po_status_list, required=True,tracking= True, default="in progress"
+        string="Completion Status", selection=po_status_list, required=True,tracking= True, default="in progress"
     )
 
     rate = fields.Monetary(string="Rate*", tracking=True, currency_field="currency_id")
@@ -207,6 +208,26 @@ class MerctransTask(models.Model):
         self.source_language = self.project_id.source_language
         self.work_unit = self.project_id.work_unit
 
+    def action_complete(self):
+        self.sudo().write({"stages_id": "completed"})
+
+    def action_in_progress(self):
+        self.sudo().write({"stages_id": "in progress"})
+
+    def action_cancel(self):
+        is_contributor = self.env.user.has_group("morons.group_contributors")
+        for r in self:
+            if r.contributor_invoice_id:
+                raise ValidationError("Purchase order '%s' already has a contributor invoice. Please delete the contributor invoice first." % r.name)
+        
+            if is_contributor:
+                if self.env.user == r.contributor_id:
+                    r.sudo().write({"stages_id": "canceled"})
+                else:
+                    raise ValidationError(_("You cannot cancel a contributor invoice for another contributor: %s") % r.contributor_id.name)
+            else:
+                r.write({"stages_id": "canceled"})
+
     def action_create_invoice(self):
         """
         Cho phép tạo invoice cho 1 hoặc nhiều PO:
@@ -216,6 +237,8 @@ class MerctransTask(models.Model):
         """
         # check common
         for r in self:
+            if r.stages_id != "completed":
+                raise ValidationError("Purchase order '%s' must be completed before creating an invoice." % r.name)
             if not r.contributor_id:
                 raise ValidationError("A contributor must be designated for purchase order '%s'." % r.name)
             if r.contributor_invoice_id:
@@ -238,7 +261,12 @@ class MerctransTask(models.Model):
             invoice_line_data = []
             for po in purchase_orders:
                 invoice_line_data.append((0, 0, {
-                    'name': po.name,
+                    'name': "%s - %s - %s: %s" % (
+                        po.project_id.name, 
+                        po.name,
+                        dict(po._fields['work_unit'].selection).get(po.work_unit),
+                        ", ".join(po.service.mapped("name"))
+                    ),
                     'quantity': po.volume,
                     'price_unit': po.rate,
                     'tax_ids': False

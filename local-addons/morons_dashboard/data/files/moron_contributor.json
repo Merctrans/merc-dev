@@ -1,0 +1,254 @@
+{
+  "version": 12.5,
+  "sheets": [
+    {
+      "id": "sheet1",
+      "name": "Sheet1",
+      "colNumber": 10,
+      "rowNumber": 23,
+      "rows": {
+        "8": {"size": 43},
+        "9": {"size": 38}
+      },
+      "cols": {
+        "0": {"size": 100},
+        "1": {"size": 100},
+        "2": {"size": 100},
+        "3": {"size": 134},
+        "4": {"size": 100},
+        "5": {"size": 100},
+        "6": {"size": 100},
+        "7": {"size": 100},
+        "8": {"size": 100},
+        "9": {"size": 100}
+      },
+      "merges": ["A10:C10", "A9:J9", "A11:C11", "A12:C12", "A13:C13", "A14:C14", "A15:C15", "A16:C16", "A17:C17", "A18:C18", "A19:C19", "A20:C20"],
+      "cells": {
+        "A1": {"style": 1},
+        "A9": {"style": 2, "content": "Top Languages", "border": 1},
+        "A10": {"style": 3, "content": "=_t(\"Language\")", "border": 2},
+        "A11": {"style": 1, "content": "=ODOO.PIVOT.HEADER(3,\"#languages_ids\",1)"},
+        "A12": {"content": "=ODOO.PIVOT.HEADER(3,\"#languages_ids\",2)"},
+        "A13": {"style": 1, "content": "=ODOO.PIVOT.HEADER(3,\"#languages_ids\",3)"},
+        "A14": {"content": "=ODOO.PIVOT.HEADER(3,\"#languages_ids\",4)"},
+        "A15": {"style": 1, "content": "=ODOO.PIVOT.HEADER(3,\"#languages_ids\",5)"},
+        "A16": {"content": "=ODOO.PIVOT.HEADER(3,\"#languages_ids\",6)"},
+        "A17": {"style": 1, "content": "=ODOO.PIVOT.HEADER(3,\"#languages_ids\",7)"},
+        "A18": {"content": "=ODOO.PIVOT.HEADER(3,\"#languages_ids\",8)"},
+        "A19": {"style": 1, "content": "=ODOO.PIVOT.HEADER(3,\"#languages_ids\",9)"},
+        "A20": {"content": "=ODOO.PIVOT.HEADER(3,\"#languages_ids\",10)"},
+        "B9": {"style": 2, "border": 1},
+        "B10": {"style": 3, "border": 2},
+        "B11": {"style": 1},
+        "B13": {"style": 1},
+        "B15": {"style": 1},
+        "B17": {"style": 1},
+        "B19": {"style": 1},
+        "C9": {"style": 2, "border": 1},
+        "C10": {"style": 3, "border": 2},
+        "C11": {"style": 1},
+        "C13": {"style": 1},
+        "C15": {"style": 1},
+        "C17": {"style": 1},
+        "C19": {"style": 1},
+        "D9": {"style": 2, "border": 1},
+        "D10": {"style": 4, "content": "=_t(\"# Contributors\")", "border": 2},
+        "D11": {"style": 5, "content": "=ODOO.PIVOT(3,\"__count\",\"#languages_ids\",1)"},
+        "D12": {"content": "=ODOO.PIVOT(3,\"__count\",\"#languages_ids\",2)"},
+        "D13": {"style": 1, "content": "=ODOO.PIVOT(3,\"__count\",\"#languages_ids\",3)"},
+        "D14": {"content": "=ODOO.PIVOT(3,\"__count\",\"#languages_ids\",4)"},
+        "D15": {"style": 1, "content": "=ODOO.PIVOT(3,\"__count\",\"#languages_ids\",5)"},
+        "D16": {"content": "=ODOO.PIVOT(3,\"__count\",\"#languages_ids\",6)"},
+        "D17": {"style": 1, "content": "=ODOO.PIVOT(3,\"__count\",\"#languages_ids\",7)"},
+        "D18": {"style": 6, "content": "=ODOO.PIVOT(3,\"__count\",\"#languages_ids\",8)"},
+        "D19": {"style": 1, "content": "=ODOO.PIVOT(3,\"__count\",\"#languages_ids\",9)"},
+        "D20": {"content": "=ODOO.PIVOT(3,\"__count\",\"#languages_ids\",10)"},
+        "E9": {"style": 2, "border": 1},
+        "E10": {"style": 4, "border": 2},
+        "E11": {"style": 4},
+        "E12": {"style": 4},
+        "E13": {"style": 4},
+        "E14": {"style": 4},
+        "E15": {"style": 4},
+        "E16": {"style": 4},
+        "E17": {"style": 4},
+        "E18": {"style": 4},
+        "E19": {"style": 4},
+        "E20": {"style": 4},
+        "F9": {"style": 2, "border": 1},
+        "F12": {"style": 3},
+        "G9": {"style": 2, "border": 1},
+        "G12": {"style": 3},
+        "H9": {"style": 2, "border": 1},
+        "I9": {"style": 2, "border": 1},
+        "J9": {"style": 2, "border": 1},
+        "F10": {"border": 2},
+        "G10": {"border": 2},
+        "H10": {"border": 2},
+        "I10": {"border": 2},
+        "J10": {"border": 2}
+      },
+      "conditionalFormats": [],
+      "figures": [
+        {
+          "id": "53c3b151-48c3-4be7-a7e3-8e8a7e33c34a",
+          "x": 0,
+          "y": 0,
+          "width": 201,
+          "height": 117,
+          "tag": "chart",
+          "data": {
+            "baselineColorDown": "#DC6965",
+            "baselineColorUp": "#00A04A",
+            "baselineMode": "difference",
+            "title": "Contributors",
+            "type": "scorecard",
+            "background": "#F8F9FA",
+            "baselineDescr": "is active",
+            "keyValue": "Sheet2!B1"
+          }
+        },
+        {
+          "id": "745c2411-3c0d-4a68-b77a-e1816150cc7f",
+          "x": 299,
+          "y": 0,
+          "width": 200,
+          "height": 117,
+          "tag": "chart",
+          "data": {
+            "baselineColorDown": "#DC6965",
+            "baselineColorUp": "#00A04A",
+            "baselineMode": "difference",
+            "title": "New Contributors",
+            "type": "scorecard",
+            "background": "#F8F9FA",
+            "baselineDescr": "in 30 days",
+            "keyValue": "Sheet2!B2"
+          }
+        },
+        {
+          "id": "0aee8261-8c15-4d5c-9694-e9e165081071",
+          "x": 465,
+          "y": 228.5,
+          "width": 568,
+          "height": 269,
+          "tag": "chart",
+          "data": {
+            "type": "pie",
+            "dataSetsHaveTitle": true,
+            "dataSets": ["D10:D20"],
+            "legendPosition": "left",
+            "labelRange": "A11:A20",
+            "title": ""
+          }
+        }
+      ],
+      "filterTables": [],
+      "areGridLinesVisible": true,
+      "isVisible": true
+    },
+    {
+      "id": "5da4f54a-2555-4d40-bfce-eb77a4538b4f",
+      "name": "Sheet2",
+      "colNumber": 26,
+      "rowNumber": 100,
+      "rows": {},
+      "cols": {
+        "0": {"size": 190},
+        "1": {"size": 125}
+      },
+      "merges": [],
+      "cells": {
+        "A1": {"content": "contributors"},
+        "A2": {"content": "new contributors (30days)"},
+        "B1": {"content": "=ODOO.PIVOT(1,\"__count\",\"contributor\",\"true\")"},
+        "B2": {"content": "=ODOO.PIVOT(2,\"__count\",\"contributor\",\"true\")"}
+      },
+      "conditionalFormats": [],
+      "figures": [],
+      "filterTables": [],
+      "areGridLinesVisible": true,
+      "isVisible": true
+    },
+    {
+      "id": "36461317-a5d5-4ec7-a5c5-1130b87366b6",
+      "name": "Sheet3",
+      "colNumber": 26,
+      "rowNumber": 100,
+      "rows": {},
+      "cols": {},
+      "merges": [],
+      "cells": {
+        "A1": {"content": "[Internal Users](odoo://view/{\"viewType\":\"list\",\"action\":{\"domain\":[\"&\",\"&\",[\"share\",\"=\",false],[\"contributor\",\"=\",true],[\"create_date\",\">\",\"2025-02-23\"]],\"context\":{\"group_by\":[]},\"modelName\":\"res.users\",\"views\":[[false,\"list\"],[false,\"form\"],[false,\"search\"]]},\"threshold\":0,\"name\":\"Internal Users\"})"}
+      },
+      "conditionalFormats": [],
+      "figures": [],
+      "filterTables": [],
+      "areGridLinesVisible": true,
+      "isVisible": true
+    }
+  ],
+  "entities": {},
+  "styles": {
+    "1": {"fillColor": "#F8F9FA"},
+    "2": {"fontSize": 16, "bold": true, "textColor": "#45818E"},
+    "3": {"bold": true, "align": "left"},
+    "4": {"bold": true, "align": "right"},
+    "5": {"bold": true, "align": "right", "fillColor": "#F8F9FA"},
+    "6": {"fillColor": ""}
+  },
+  "formats": {},
+  "borders": {
+    "1": {"bottom": ["thin", "#000"]},
+    "2": {"top": ["thin", "#000"]}
+  },
+  "revisionId": "b18eb3cd-3c1d-40ff-a6ea-ddecd57a5d65",
+  "uniqueFigureIds": true,
+  "odooVersion": 5,
+  "globalFilters": [],
+  "pivots": {
+    "1": {
+      "colGroupBys": [],
+      "context": {},
+      "domain": [["contributor", "=", true], ["active", "=", true]],
+      "id": "1",
+      "measures": [{"field": "__count"}],
+      "model": "res.users",
+      "rowGroupBys": ["contributor"],
+      "name": "Total Contributors",
+      "sortedColumn": null,
+      "fieldMatching": {}
+    },
+    "2": {
+      "colGroupBys": [],
+      "context": {"search_default_ftr_new_contributor_30days": 1},
+      "domain": [["contributor", "=", true], ["active", "=", true]],
+      "id": "2",
+      "measures": [{"field": "__count"}],
+      "model": "res.users",
+      "rowGroupBys": ["contributor"],
+      "name": "New Contributors (in 30 days)",
+      "sortedColumn": null,
+      "fieldMatching": {}
+    },
+    "3": {
+      "colGroupBys": [],
+      "context": {},
+      "domain": [["contributor", "=", true], ["active", "=", true]],
+      "id": "3",
+      "measures": [{"field": "__count"}],
+      "model": "res.users",
+      "rowGroupBys": ["languages_ids"],
+      "name": "Top Languages",
+      "sortedColumn": {"groupId": [[], []], "measure": "__count", "order": "desc"},
+      "fieldMatching": {}
+    }
+  },
+  "pivotNextId": 4,
+  "lists": {},
+  "listNextId": 1,
+  "chartOdooMenusReferences": {
+    "53c3b151-48c3-4be7-a7e3-8e8a7e33c34a": "morons.contributors_menu",
+    "745c2411-3c0d-4a68-b77a-e1816150cc7f": "morons.contributors_menu"
+  }
+}

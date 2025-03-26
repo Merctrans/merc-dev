@@ -3,29 +3,39 @@ from odoo.exceptions import ValidationError
 
 class MoronSaleOrder(models.Model):
     _name = "moron.sale.order"
-    _description = "Moron Sale Order"
+    _description = "Sale Order"
+    _inherit = ["mail.thread", "mail.activity.mixin"]
 
-    name = fields.Char(string='Name', default='New', readonly=True, required=True)
-    project_id = fields.Many2one('project.project', string='Project', required=True)
-    partner_id = fields.Many2one('res.partner', string='Customer', required=True)
+    name = fields.Char(string='Name', default='New', readonly=True, required=True, tracking=True)
+    project_id = fields.Many2one('project.project', string='Project', required=True, tracking=True)
+    partner_id = fields.Many2one('res.partner', string='Customer', required=True,
+        domain=[('type', '=', 'contact'),('customer_rank', '>', 0)], tracking=True)
     partner_invoice_id = fields.Many2one('res.partner', 'Invoice Address',
-                                        compute='_compute_partner_invoice_id', store=True, precompute=True)
+                                        compute='_compute_partner_invoice_id', store=True, precompute=True, tracking=True)
 
-    company_id = fields.Many2one(related='partner_id.company_id', store=True)
+    company_id = fields.Many2one(related='project_id.company_id', store=True)
     currency_id = fields.Many2one('res.currency', string='Currency',
-                                  compute='_compute_currency_id', store=True, readonly=False)
+                                  compute='_compute_currency_id', store=True, readonly=False, tracking=True)
+    tag_report_id = fields.Many2one('project.tags', string='Tag Report',
+                                    compute='_compute_tag_report_id', store=True, readonly=False, tracking=True)
 
-    date_order = fields.Date(string='Order Date', default=fields.Date.context_today)
-    payment_term_id = fields.Many2one('account.payment.term', string='Payment Term')
+    date_order = fields.Date(string='Order Date', default=fields.Date.context_today, tracking=True)
+    payment_term_id = fields.Many2one('account.payment.term', string='Payment Term', tracking=True)
     status = fields.Selection([
         ('draft', 'Draft'),
         ('invoiced', 'Invoiced'),
-        ('cancelled', 'Cancelled'),
-        ('completed', 'Completed')], string='Status', default='draft',
-        compute='_compute_status', store=True, readonly=False)
+        ('completed', 'Completed'),
+        ('cancelled', 'Cancelled')], string='Status', default='draft',
+        compute='_compute_status', store=True, readonly=False, tracking=True)
 
     line_ids = fields.One2many('moron.sale.order.line', 'sale_order_id', string='Lines')
-    client_invoice_id = fields.Many2one('account.move', string='Client Invoice')
+    client_invoice_id = fields.Many2one('account.move', string='Client Invoice', tracking=True)
+
+    amount = fields.Monetary(string='Amount', compute='_compute_amount', store=True, currency_field='currency_id', tracking=True)
+    currency_company_id = fields.Many2one('res.currency', compute='_compute_amount_same_currency_company', store=True)
+    amount_same_currency_company = fields.Monetary(string='Amount (by company currency)',
+                              compute='_compute_amount_same_currency_company', store=True,
+                              currency_field='currency_company_id')
 
     @api.constrains('project_id')
     def _check_project_id(self):
@@ -57,6 +67,33 @@ class MoronSaleOrder(models.Model):
                 r.status = 'cancelled'
             else:
                 r.status = 'draft'
+
+    @api.depends('project_id')
+    def _compute_tag_report_id(self):
+        for r in self:
+            r.tag_report_id = r.project_id.tag_ids[:1]
+
+    @api.depends('line_ids', 'line_ids.project_value')
+    def _compute_amount(self):
+        for r in self:
+            amount = sum(r.line_ids.mapped('project_value'))
+            r.amount = amount
+
+    @api.depends('company_id', 'currency_id', 'amount')
+    def _compute_amount_same_currency_company(self):
+        for r in self:
+            r.currency_company_id = r.company_id.currency_id or self.env.company
+            if r.currency_id == r.currency_company_id:
+                r.amount_same_currency_company = r.amount
+            elif r.currency_id and r.currency_company_id:
+                # đổi tiền tệ từ currency_id sang currency_company_id
+                new_amount = r.currency_id._convert(
+                            r.amount,
+                            r.currency_company_id,
+                            r.company_id,
+                            fields.Date.context_today(r)
+                        )
+                r.amount_same_currency_company = new_amount
 
     @api.onchange('project_id')
     def onchange_project_id(self):
@@ -113,7 +150,7 @@ class MoronSaleOrder(models.Model):
             for so in sale_orders:
                 for line in so.line_ids:
                     invoice_line_data.append((0, 0, {
-                        'name': line.name,
+                        'name': "%s - %s" % (line.name, so.name),
                         'quantity': line.volume,
                         'price_unit': line.sale_rate,
                         'tax_ids': False
@@ -151,3 +188,6 @@ class MoronSaleOrder(models.Model):
 
     def action_cancel(self):
         self.write({'status': 'cancelled'})
+
+    def action_draft(self):
+        self.write({'status': 'draft'})

@@ -7,7 +7,12 @@
             <field name="model">project.project</field>
             <field name="inherit_id" ref="project.edit_project" />
             <field name="arch" type="xml">
-                
+                <field name="stage_id" position="attributes">
+                    <attribute name="invisible">1</attribute>
+                </field>
+                <field name="stage_id" position="attributes">
+                    <attribute name="invisible">1</attribute>
+                </field>
                 <xpath expr="//div[@class='oe_button_box']" position="attributes">
                     <attribute name="invisible">1</attribute>
                 </xpath>
@@ -44,9 +49,14 @@
                     <field name="job_value_usd"/>
                     <field name="po_value"/>
                     <field name="margin" widget="percentage"/>
-                    <field name="payment_status"/>
                     <field name="currency_usd_id" invisible="1"/>
                 </xpath>
+
+                <xpath expr="//div[@name='dates']" position="after">
+                    <field name="project_status"/>
+                    <field name="payment_status"/>
+                </xpath>
+
                 <xpath expr="//field[@name='tag_ids']" position="attributes">
                     <attribute name="options">{'no_quick_create': True, 'no_create_edit': True}</attribute>
                 </xpath>
@@ -90,6 +100,7 @@
                     <attribute name="invisible">1</attribute>
                 </filter>
                 <filter name="status" position="after">
+                    <filter string="Project Status" name="project_status" context="{'group_by': 'project_status'}" />
                     <filter string="Payment Status" name="payment_status" context="{'group_by': 'payment_status'}" />
                 </filter>
             </field>
@@ -124,6 +135,7 @@
                     <field name="job_value" />
                 </xpath>
                 <xpath expr="//field[@name='user_id']" position="after">
+                    <field name="project_status" />
                     <field name="payment_status" />
                 </xpath>
             </field>

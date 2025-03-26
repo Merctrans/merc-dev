@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Tree View -->
+    <record id="view_moron_sale_report_tree" model="ir.ui.view">
+        <field name="name">moron.sale.report.tree</field>
+        <field name="model">moron.sale.report</field>
+        <field name="arch" type="xml">
+            <tree string="Moron Sale Report">
+                <field name="project_id"/>
+                <field name="partner_id"/>
+                <field name="invoice_date"/>
+                <field name="moron_sale_order_id" optional="hide"/>
+                <field name="client_invoice_id" optional="hide"/>
+                <field name="moron_purchase_order_id" optional="hide"/>
+                <field name="contributor_invoice_id" optional="hide"/>
+                <field name="revenue" sum="Total Revenue"/>
+                <field name="project_cost" sum="Total Cost"/>
+                <field name="production_profit" sum="Total Profit"/>
+                <field name="margin" avg="Average Margin"/>
+                <field name="currency_usd_id" invisible="1"/>
+            </tree>
+        </field>
+    </record>
+
+    <record id="view_moron_sale_report_graph" model="ir.ui.view">
+        <field name="name">moron.sale.report.graph</field>
+        <field name="model">moron.sale.report</field>
+        <field name="arch" type="xml">
+            <graph string="Sale Analysis" type="bar" sample="1">
+                <field name="invoice_date" interval="month"/>
+                <field name="revenue" type="measure"/>
+                <field name="project_cost" type="measure"/>
+                <field name="production_profit" type="measure"/>
+            </graph>
+        </field>
+    </record>
+
+    <!-- Search View -->
+    <record id="view_moron_sale_report_search" model="ir.ui.view">
+        <field name="name">moron.sale.report.search</field>
+        <field name="model">moron.sale.report</field>
+        <field name="arch" type="xml">
+            <search>
+                <field name="project_id"/>
+                <field name="partner_id"/>
+                <field name="invoice_date"/>
+                <field name="moron_sale_order_id"/>
+                <field name="client_invoice_id"/>
+                <field name="moron_purchase_order_id"/>
+                <field name="contributor_invoice_id"/>
+                <separator/>
+                <filter string="Has Invoices" name="has_invoices" 
+                    domain="[('project_id', '!=', False)]"/>
+                <separator/>
+                <filter string="Last 6 Months" name="last_6_months" 
+                    domain="[
+                        ('invoice_date', '>=', (context_today() + relativedelta(months=-6, day=1)).strftime('%Y-%m-%d')),
+                        ('invoice_date', '&lt;=', (context_today() + relativedelta(months=0, day=31, normalize=True)).strftime('%Y-%m-%d'))
+                    ]"/>
+                <filter string="Last 12 Months" name="last_12_months" 
+                    domain="[
+                        ('invoice_date', '>=', (context_today() + relativedelta(months=-12, day=1)).strftime('%Y-%m-%d')),
+                        ('invoice_date', '&lt;=', (context_today() + relativedelta(months=0, day=31, normalize=True)).strftime('%Y-%m-%d'))
+                    ]"/>
+                <separator/>
+                <!-- Group by -->
+                <group expand="0" string="Group By">
+                    <filter string="Invoice Date" name="grp_invoice_date" context="{'group_by': 'invoice_date'}"/>
+                    <filter string="Project" name="grp_project" context="{'group_by': 'project_id'}"/>
+                    <filter string="Customer" name="grp_customer" context="{'group_by': 'partner_id'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <!-- Action -->
+    <record id="action_moron_sale_report" model="ir.actions.act_window">
+        <field name="name">Moron Sale Report</field>
+        <field name="res_model">moron.sale.report</field>
+        <field name="view_mode">tree,graph,pivot</field>
+        <field name="context">{
+            'search_default_has_invoices': 1, 
+            'search_default_last_6_months': 1, 
+            'search_default_grp_invoice_date': 1}</field>
+    </record>
+
+</odoo>

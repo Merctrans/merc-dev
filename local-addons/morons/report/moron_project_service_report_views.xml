@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Tree View -->
+    <record id="view_moron_project_lang_report_tree" model="ir.ui.view">
+        <field name="name">moron.project.lang.report.tree</field>
+        <field name="model">moron.project.lang.report</field>
+        <field name="arch" type="xml">
+            <tree string="Moron Project Service Report">
+                <field name="name_display"/>
+                <field name="project_id"/>
+                <field name="revenue"/>
+                <field name="currency_usd_id" invisible="1"/>
+                <field name="source_language" optional="hide"/>
+                <field name="target_language" optional="hide"/>
+            </tree>
+        </field>
+    </record>
+
+    <!-- Search View -->
+    <record id="view_moron_project_lang_report_search" model="ir.ui.view">
+        <field name="name">moron.project.lang.report.search</field>
+        <field name="model">moron.project.lang.report</field>
+        <field name="arch" type="xml">
+            <search>
+                <field name="name_display"/>
+                <field name="source_language"/>
+                <field name="target_language"/>
+                <field name="project_id"/>
+                <separator/>
+                <filter string="Services" name="group_by_name_display" context="{'group_by': 'name_display'}"/>
+            </search>
+        </field>
+    </record>
+
+    <!-- Action -->
+    <record id="action_moron_project_lang_report" model="ir.actions.act_window">
+        <field name="name">Moron Project Language Report</field>
+        <field name="res_model">moron.project.lang.report</field>
+        <field name="view_mode">tree,pivot</field>
+    </record>
+
+    <!-- Menu -->
+    <menuitem id="menu_moron_project_lang_report"
+        name="Project Language Report"
+        action="action_moron_project_lang_report"
+        parent="morons.moron_project_app_menu"
+        sequence="48"/>
+</odoo>

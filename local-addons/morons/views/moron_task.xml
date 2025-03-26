@@ -45,10 +45,23 @@
                 <header>
                     <button name="action_create_invoice" string="Create Invoice"
                         type="object" class="oe_highlight" 
-                        attrs="{'invisible': [('contributor_invoice_id', '!=', False)]}"
+                        attrs="{'invisible': ['|', ('contributor_invoice_id', '!=', False), ('stages_id', '!=', 'completed')]}"
                         groups="morons.group_contributors,morons.group_bod,morons.group_pm"
                         />
-                    <field name="stages_id" widget="statusbar" options="{'clickable': '1'}" />
+                    <button name="action_complete" string="Complete"
+                        type="object" class="oe_highlight"
+                        attrs="{'invisible': [('stages_id', '!=', 'in progress')]}"
+                        groups="morons.group_contributors,morons.group_bod,morons.group_pm"
+                        />
+                    <button name="action_in_progress" string="Set to In Progress" type="object"
+                        attrs="{'invisible': [('stages_id', '!=', 'canceled')]}"
+                        groups="morons.group_contributors,morons.group_bod,morons.group_pm"
+                        />
+                    <button name="action_cancel" string="Cancel" type="object"
+                        attrs="{'invisible': [('stages_id', '=', 'canceled')]}"
+                        groups="morons.group_contributors,morons.group_bod,morons.group_pm"
+                        />
+                    <field name="stages_id" widget="statusbar" statusbar_visible="in progress,completed" readonly="1" />
                 </header>
                 <sheet>
                     <field name="show_warning_deadline" invisible="1"/>
@@ -67,7 +80,6 @@
                         <field name="company_id" invisible="1"/>
                         <group>
                             <field name="project_id" />
-                            <field name="user_ids" />
                             <field name="contributor_id" options="{'no_open': True}"/>
                             <field name="service" options="{'no_create': True}" widget="many2many_tags" />
                             <field name="source_language" force_save="1"/>
@@ -90,6 +102,10 @@
                         </group>
                     </group>
                 </sheet>
+                <div class="oe_chatter">
+                    <field name="activity_ids"/>
+                    <field name="message_ids"/>
+                </div>
             </form>
         </field>
     </record>
@@ -107,6 +123,11 @@
                 <separator />
                 <filter string="Archived" name="inactive" domain="[('active', '=', False)]"/>
                 <separator />
+                <filter name="ftr_last_12_months" string="Last 12 Months"
+                    domain="[
+                        ('create_date', '>=', (context_today() + relativedelta(months=-12, day=1)).strftime('%Y-%m-%d')),
+                        ('create_date', '&lt;=', (context_today() + relativedelta(months=0, day=31, normalize=True)).strftime('%Y-%m-%d'))
+                    ]"/>
                 <group expand="0" string="Group By">
                     <filter string="contributor" name="contributor_id" context="{'group_by': 'contributor_id'}"/>
                     <filter string="Project" name="project_id" context="{'group_by': 'project_id'}"/>

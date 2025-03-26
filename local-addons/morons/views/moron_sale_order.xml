@@ -15,8 +15,11 @@
                 <field name="partner_id" />
                 <field name="date_order" />
                 <field name="payment_term_id" />
+                <field name="amount" string="Amount" />
+                <field name="amount_same_currency_company" string="Amount (by company currency)" optional="hide" />
                 <field name="status" widget="badge" decoration-success="status == 'completed'" decoration-info="status == 'invoiced'" />
                 <field name="currency_id" invisible="1"/>
+                <field name="currency_company_id" invisible="1"/>
                 <field name="company_id" invisible="1"/>
             </tree>
         </field>
@@ -31,10 +34,12 @@
                 <header>
                     <button name="action_create_invoice" string="Create Invoice"
                         type="object" class="oe_highlight" 
-                        attrs="{'invisible': [('client_invoice_id', '!=', False)]}" />
-                    <field name="status" widget="statusbar" />
+                        attrs="{'invisible': ['|', ('client_invoice_id', '!=', False), ('status', 'in', ['invoiced', 'cancelled'])]}" />
                     <button name="action_cancel" type="object" string="Cancel"
                         attrs="{'invisible': ['|', ('status', '=', 'cancelled'), ('client_invoice_id', '!=', False)]}" />
+                    <button name="action_draft" type="object" string="Draft"
+                        attrs="{'invisible': [('status', '!=', 'cancelled')]}" />
+                    <field name="status" widget="statusbar" statusbar_visible="draft,invoiced,completed" readonly="1" />
                 </header>
                 <sheet>
                     <div name="button_box" class="oe_button_box">
@@ -46,17 +51,20 @@
                     </div>
                     <group>
                         <group>
-                            <field name="project_id" />
-                            <field name="partner_id" context="{'form_view_ref': 'morons.moron_customer_view_form'}" />
+                            <field name="project_id" attrs="{'readonly': [('status', '!=', 'draft')]}" />
+                            <field name="tag_report_id" />
+                            <field name="partner_id"
+                                context="{'form_view_ref': 'morons.moron_customer_view_form'}"
+                                attrs="{'readonly': [('status', '!=', 'draft')]}" />
                             <field name="client_invoice_id" readonly="1" context="{'form_view_ref': 'morons.client_invoice_view_form_all'}"/>
                         </group>
                         <group>
-                            <field name="date_order" />
-                            <field name="payment_term_id" />
-                            <field name="currency_id" />
+                            <field name="date_order" attrs="{'readonly': [('status', '!=', 'draft')]}" />
+                            <field name="payment_term_id" attrs="{'readonly': [('status', '!=', 'draft')]}" />
+                            <field name="currency_id" attrs="{'readonly': [('status', '!=', 'draft')]}" />
                             <field name="company_id" invisible="1"/>
                         </group>
-                        <field name="line_ids">
+                        <field name="line_ids" attrs="{'readonly': [('status', '!=', 'draft')]}" >
                             <tree>
                                 <field name="name" />
                                 <field name="volume" />
@@ -68,6 +76,10 @@
                         </field>
                     </group>
                 </sheet>
+                <div class="oe_chatter">
+                    <field name="activity_ids"/>
+                    <field name="message_ids"/>
+                </div>
             </form>
         </field>
     </record>
@@ -83,10 +95,17 @@
                 <separator />
                 <filter name="ftr_date_order" string="Date Order" date="date_order" />
                 <separator />
+                <filter name="ftr_last_12_months" string="Last 12 Months"
+                    domain="[
+                        ('date_order', '>=', (context_today() + relativedelta(months=-12, day=1)).strftime('%Y-%m-%d')),
+                        ('date_order', '&lt;=', (context_today() + relativedelta(months=0, day=31, normalize=True)).strftime('%Y-%m-%d'))
+                    ]"/>
+                <separator />
                 <group expand="0" string="Group By">
                     <filter string="Project" name="project_id" context="{'group_by': 'project_id'}"/>
                     <filter string="Partner" name="partner_id" context="{'group_by': 'partner_id'}"/>
                     <filter string="Status" name="status" context="{'group_by': 'status'}"/>
+                    <filter string="Tag Report" name="tag_report_id" context="{'group_by': 'tag_report_id'}"/>
                 </group>
             </search>
         </field>

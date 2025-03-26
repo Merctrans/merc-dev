@@ -210,15 +210,29 @@
         </field>
     </record>
 
+    <record id="view_users_search" model="ir.ui.view">
+        <field name="name">view.users.search</field>
+        <field name="model">res.users</field>
+        <field name="inherit_id" ref="base.view_users_search"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='share']" position="after">
+                <separator/>
+                <filter name="ftr_new_contributor_30days" string="New Contributors (last 30 days)"
+                    domain="[('create_date','&gt;', (context_today() - datetime.timedelta(days=30)).strftime('%Y-%m-%d'))]"/>
+            </xpath>
+        </field>
+    </record>
+
     <!-- Contributor: Action window -->
     <record id="action_open_contributor_list" model="ir.actions.act_window">
-        <field name="name">Internal Users</field>
+        <field name="name">Contributor</field>
         <field name="res_model">res.users</field>
         <field name="view_mode">tree,form</field>
         <field name="view_ids"
             eval="[(5, 0, 0), (0, 0, {'view_mode': 'tree', 'view_id': ref('view_users_tree_contributor')}), 
                               (0, 0, {'view_mode': 'form', 'view_id': ref('contributor_list_view_form')})]" />
         <field name="domain">[('share', '=', False), ('contributor', '=', True)]</field>
+        <field name="context">{'default_contributor': True}</field>
     </record>
 
 </odoo>

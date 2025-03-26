@@ -15,8 +15,8 @@
                 <field name="invoice_date"/>
                 <field name="invoice_date_due" />
                 <field name="sale_order_ids" widget="many2many_tags" string="Sale Orders"/>
-                <field name="amount_total" string="Invoice Total" sum="Invoice Total" decoration-bf="1"/>
-                <field name="amount_total_signed" string="Total" sum="Total" decoration-bf="1"/>
+                <field name="amount_total" string="Total" sum="Total" decoration-bf="1"/>
+                <field name="amount_total_signed" string="Invoice Total" sum="Invoice Total" decoration-bf="1"/>
                 <field name="paid_on" />
                 <field name="payment_state" widget="badge"
                     decoration-danger="payment_state == 'not_paid'"
@@ -49,6 +49,15 @@
             <xpath expr="//button[@name='action_reverse']" position="attributes">
                 <attribute name="invisible">1</attribute>
             </xpath>
+            <xpath expr="//button[@name='preview_invoice']" position="attributes">
+                <attribute name="invisible">1</attribute>
+            </xpath>
+            <xpath expr="//button[@name='action_invoice_sent'][1]" position="attributes">
+                <attribute name="invisible">1</attribute>
+            </xpath>
+            <xpath expr="//button[@name='action_invoice_sent'][2]" position="attributes">
+                <attribute name="invisible">1</attribute>
+            </xpath>
 
             <!-- Add Group moron -->
             <xpath expr="//button[@name='action_post'][1]" position="attributes">
@@ -63,6 +72,10 @@
             <xpath expr="//button[@name='action_register_payment']" position="attributes">
                 <attribute name="groups">account.group_account_invoice,morons.group_bod,morons.group_pm,morons.group_accountants</attribute>
             </xpath>
+
+            <field name="partner_id" position="attributes">
+                <attribute name="domain">[('type', '=', 'contact'), ('customer_rank', '&gt;', 0)]</attribute>
+            </field>
 
             <field name="partner_id" position="after">
                 <field name="sale_order_ids" widget="many2many_tags" string="Sale Orders"
@@ -81,6 +94,21 @@
             <field name="payment_reference" position="attributes">
                 <attribute name="invisible">1</attribute>
             </field>
+
+            <page name="other_info" position="attributes">
+                <attribute name="invisible">1</attribute>
+            </page>
+
+            <xpath expr="//field[@name='invoice_line_ids']/tree/field[@name='quantity']" position="attributes">
+                <attribute name="string">Volume</attribute>
+            </xpath>
+            <xpath expr="//field[@name='invoice_line_ids']/tree/field[@name='price_unit']" position="attributes">
+                <attribute name="string">Rate</attribute>
+            </xpath>
+            <xpath expr="//field[@name='invoice_line_ids']/tree/field[@name='price_subtotal']" position="attributes">
+                <attribute name="string">SO Value</attribute>
+            </xpath>
+
         </field>
     </record>
 
