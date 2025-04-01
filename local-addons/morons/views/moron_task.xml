@@ -118,8 +118,18 @@
             <search>
                 <field name="name" string="Purchase Order"/>
                 <field name="project_id" />
+                <field name="contributor_id" />
+                <field name="stages_id" />
                 <separator />
                 <filter name="ftr_date_deadline" string="Date Deadline" date="date_deadline" />
+                <separator/>
+                <filter string="states: In progress" name="payment_status_unpaid" domain="[('stages_id', '=', 'in progress.')]"/>
+                <filter string="states: Invoiced" name="payment_status_invoiced" domain="[('payment_status', '=', 'invoiced')]"/>
+                <filter string="states: Paid" name="payment_status_paid" domain="[('payment_status', '=', 'paid')]"/>
+                <separator/>
+                <filter string="Payment: Unpaid" name="payment_status_unpaid" domain="[('payment_status', '=', 'unpaid')]"/>
+                <filter string="Payment: Invoiced" name="payment_status_invoiced" domain="[('payment_status', '=', 'invoiced')]"/>
+                <filter string="Payment: Paid" name="payment_status_paid" domain="[('payment_status', '=', 'paid')]"/>
                 <separator />
                 <filter string="Archived" name="inactive" domain="[('active', '=', False)]"/>
                 <separator />

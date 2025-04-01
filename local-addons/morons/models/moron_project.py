@@ -104,7 +104,7 @@ class MerctransProject(models.Model):
     client_invoice_id = fields.Many2one('account.move', string='Client Invoice',
         compute="_compute_client_invoice_id", store=True)
 
-    project_status = fields.Selection(string="Project Status",
+    moron_project_status = fields.Selection(string="Project Status",
         selection=[("potential", "Potential"),
                    ("confirmed", "Confirmed"),
                    ("in_progress", "In Progress"),

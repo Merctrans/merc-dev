@@ -101,6 +101,11 @@
                         ('date_order', '&lt;=', (context_today() + relativedelta(months=0, day=31, normalize=True)).strftime('%Y-%m-%d'))
                     ]"/>
                 <separator />
+                <filter name="ftr_status_draft" string="Draft" domain="[('status', '=', 'draft')]" />
+                <filter name="ftr_status_invoiced" string="Invoiced" domain="[('status', '=', 'invoiced')]" />
+                <filter name="ftr_status_completed" string="completed" domain="[('status', '=', 'completed')]" />
+                <filter name="ftr_status_cancel" string="Cancelled" domain="[('status', '=', 'cancelled')]" />
+                <separator />
                 <group expand="0" string="Group By">
                     <filter string="Project" name="project_id" context="{'group_by': 'project_id'}"/>
                     <filter string="Partner" name="partner_id" context="{'group_by': 'partner_id'}"/>
