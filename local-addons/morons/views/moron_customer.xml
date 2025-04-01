@@ -104,6 +104,11 @@
         </field>
     </record>
 
+    <record id="account.res_partner_view_search" model="ir.ui.view">
+        <field name="active">0</field>
+    </record>
+
+
     <!-- Customer Action -->
     <record id="moron_customer_action" model="ir.actions.act_window">
         <field name="name">Customers</field>

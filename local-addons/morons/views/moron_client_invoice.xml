@@ -112,11 +112,45 @@
         </field>
     </record>
 
+    <record id="customer_invoice_view_search" model="ir.ui.view">
+        <field name="name">contributor_invoice.tree</field>
+        <field name="model">account.move</field>
+        <field name="priority">1</field>
+        <field name="arch" type="xml">
+            <search>
+                <field name="name" string="Invoice/Number"/>
+                <field name="invoice_partner_display_name" string="Customer"/>
+                <field name="invoice_date" string="Invoice Date"/>
+                <field name="invoice_date_due" string="Due Date"/>
+                <separator/>
+                <filter name="draft" string="State: Draft" domain="[('state','=','draft')]"/>
+                <filter name="posted" string="State: Posted" domain="[('state', '=', 'posted')]"/>
+                <filter name="cancel" string="State: Cancelled" domain="[('state', '=', 'cancel')]"/>
+                <separator/>
+                <filter name="open" string="Unpaid" domain="[('payment_state', '!=', 'paid')]"/>
+                <filter name="closed" string="Paid" domain="[('state', '=', 'posted'), ('payment_state', '=', 'paid')]"/>
+                <separator/>
+                <filter name="invoice_date" string="Invoice Date" date="invoice_date"/>
+                <filter name="due_date" string="Due Date" date="invoice_date_due"/>
+                <group expand="0" string="Group By">
+                    <filter string="Customer" name="groupy_by_customer" domain="[]" context="{'group_by': 'partner_id'}"/>
+                    <filter string="Status" name="groupy_by_status" context="{'group_by':'state'}"/>
+                    <filter string="Payment Status" name="groupy_by_payment_status" context="{'group_by':'payment_state'}"/>
+                    <separator/>
+                    <filter string="Invoice Date" name="groupy_by_invoice_date" context="{'group_by': 'invoice_date'}"/>
+                    <filter string="Due Date" name="groupy_by_due_date" context="{'group_by': 'invoice_date_due'}"/>
+                </group>
+
+            </search>
+        </field>
+    </record>
+
     <!-- Action: Customer Invoices -->
     <record id="client_invoice_action_all" model="ir.actions.act_window">
         <field name="name">Customer Invoices</field>
         <field name="res_model">account.move</field>
         <field name="view_mode">tree,form</field>
+        <field name="search_view_id" ref="morons.customer_invoice_view_search"/>
         <field name="domain">[('move_type', '=', 'out_invoice'), ('is_client_invoice', '=', True)]</field>
         <field name="context">{'default_move_type': 'out_invoice'}</field>
     </record>
