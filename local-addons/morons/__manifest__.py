@@ -42,7 +42,6 @@
         'data/mail_template_data.xml',
         'data/languages.xml',
         'data/currencies.xml',
-        'data/company_data.xml',
         'data/services.xml',
         'data/tags.xml',
         'data/sequence.xml',
