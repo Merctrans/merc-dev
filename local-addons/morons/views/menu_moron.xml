@@ -187,5 +187,7 @@
         parent="morons.configuration_menu"
         groups="morons.group_bod"
         sequence="30"/>
+    <!-- 6.5 Nationalities Menu -->
+    <menuitem id="menu_moron_nationality" name="Nationalities" action="action_moron_nationality" parent="morons.configuration_menu" sequence="40"/>
 
 </odoo>

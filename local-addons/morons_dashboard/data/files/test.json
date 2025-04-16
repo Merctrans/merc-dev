@@ -148,7 +148,7 @@
                     "content": "Last 6 months business report",
                     "border": 1
                 },
-                "A27": {"style": 2, "content": "[Sales Growth Table](odoo://ir_menu_xml_id/morons.menu_moron_sale_report)", "border": 1},
+                "A27": {"style": 2, "content": "[Sales Growth Table](odoo://ir_menu_xml_id/morons.sale_report_menu)", "border": 1},
                 "A28": {"style": 3, "content": "=_t(\"Period\")", "border": 2},
                 "A29": {"style": 4, "content": "=ODOO.PIVOT.HEADER(1,\"#invoice_date\",7)"},
                 "A30": {"style": 5, "content": "=ODOO.PIVOT.HEADER(1,\"#invoice_date\",8)"},
@@ -156,7 +156,7 @@
                 "A32": {"style": 5, "content": "=ODOO.PIVOT.HEADER(1,\"#invoice_date\",10)"},
                 "A33": {"style": 4, "content": "=ODOO.PIVOT.HEADER(1,\"#invoice_date\",11)"},
                 "A34": {"style": 5, "content": "=ODOO.PIVOT.HEADER(1,\"#invoice_date\",12)"},
-                "A38": {"style": 2, "content": "[Sales Growth](odoo://ir_menu_xml_id/morons.menu_moron_sale_report)", "border": 1},
+                "A38": {"style": 2, "content": "[Sales Growth](odoo://ir_menu_xml_id/morons.sale_report_menu)", "border": 1},
                 "A57": {"style": 2, "content": "[Top Customer](odoo://ir_menu_xml_id/morons.sale_order_menu)", "border": 1},
                 "A58": {"style": 6, "content": "=_t(\"Customer\")", "border": 2},
                 "A59": {"style": 4, "content": "=ODOO.PIVOT.HEADER(3,\"#partner_id\",1)"},
@@ -578,144 +578,14 @@
             },
             "conditionalFormats": [],
             "figures": [
-                {
-                    "id": "f1ec103e-2891-4c20-b142-bee8228dfa13",
-                    "x": 0,
-                    "y": 0,
-                    "width": 199,
-                    "height": 94,
-                    "tag": "chart",
-                    "data": {
-                        "baselineColorDown": "#DC6965",
-                        "baselineColorUp": "#00FF00",
-                        "baselineMode": "difference",
-                        "title": "Sale Orders",
-                        "type": "scorecard",
-                        "background": "#F3F3F3",
-                        "keyValue": "Data!B1"
-                    }
-                },
-                {
-                    "id": "de764ead-8c6a-4bca-8a8e-03111997073e",
-                    "x": 250,
-                    "y": 0,
-                    "width": 200,
-                    "height": 94,
-                    "tag": "chart",
-                    "data": {
-                        "baselineColorDown": "#DC6965",
-                        "baselineColorUp": "#00FF00",
-                        "baselineMode": "difference",
-                        "title": "Purchase Orders",
-                        "type": "scorecard",
-                        "background": "#F3F3F3",
-                        "keyValue": "Data!B2"
-                    }
-                },
-                {
-                    "id": "27fa05f5-d7c3-4485-8a3a-1202e47b4f63",
-                    "x": 749,
-                    "y": 0,
-                    "width": 200,
-                    "height": 94,
-                    "tag": "chart",
-                    "data": {
-                        "baselineColorDown": "#DC6965",
-                        "baselineColorUp": "#00FF00",
-                        "baselineMode": "difference",
-                        "title": "Average Order Value",
-                        "type": "scorecard",
-                        "background": "#F3F3F3",
-                        "keyValue": "Data!F4"
-                    }
-                },
-                {
-                    "id": "ba4604ea-ca02-45ed-a643-1bdadba791a8",
-                    "x": 499,
-                    "y": 0,
-                    "width": 200,
-                    "height": 94,
-                    "tag": "chart",
-                    "data": {
-                        "baselineColorDown": "#DC6965",
-                        "baselineColorUp": "#00FF00",
-                        "baselineMode": "difference",
-                        "title": "Revenue",
-                        "type": "scorecard",
-                        "background": "#F3F3F3",
-                        "keyValue": "Data!F3"
-                    }
-                },
-                {
-                    "id": "c17a0864-aba3-4ec9-984e-40eaa50d4a88",
-                    "x": 0,
-                    "y": 166.5,
-                    "width": 950,
-                    "height": 390,
-                    "tag": "chart",
-                    "data": {
-                        "type": "bar",
-                        "dataSetsHaveTitle": true,
-                        "dataSets": ["D28:D34", "G28:G34", "J28:J34"],
-                        "legendPosition": "top",
-                        "verticalAxisPosition": "left",
-                        "labelRange": "A29:C34",
-                        "title": "",
-                        "stacked": false
-                    }
-                },
-                {
-                    "id": "21ddae20-77a8-4365-8091-0459d413f994",
-                    "x": 450,
-                    "y": 1319.5,
-                    "width": 501,
-                    "height": 327,
-                    "tag": "chart",
-                    "data": {
-                        "type": "pie",
-                        "dataSetsHaveTitle": true,
-                        "dataSets": ["F58:F68"],
-                        "legendPosition": "left",
-                        "labelRange": "A59:C68",
-                        "title": ""
-                    }
-                },
-                {
-                    "id": "8c7eea9b-14a3-4dd8-968b-71dcef70e190",
-                    "x": 0,
-                    "y": 906.5,
-                    "width": 951,
-                    "height": 346,
-                    "tag": "chart",
-                    "data": {
-                        "type": "line",
-                        "dataSetsHaveTitle": true,
-                        "dataSets": ["M28:M34"],
-                        "legendPosition": "top",
-                        "verticalAxisPosition": "left",
-                        "labelRange": "A29:C34",
-                        "title": "",
-                        "labelsAsText": false,
-                        "stacked": true,
-                        "cumulative": false
-                    }
-                },
-                {
-                    "id": "7aa260ed-74ef-493e-b8ce-4d9202917727",
-                    "x": 448,
-                    "y": 1751,
-                    "width": 501,
-                    "height": 327,
-                    "tag": "chart",
-                    "data": {
-                        "type": "pie",
-                        "dataSetsHaveTitle": true,
-                        "dataSets": ["F76:F86"],
-                        "legendPosition": "left",
-                        "labelRange": "A77:A86",
-                        "title": ""
-                    }
-                }
+                {"id": "f1ec103e-2891-4c20-b142-bee8228dfa13", "x": 0, "y": 0, "width": 199, "height": 94, "tag": "chart", "data": {"baselineColorDown": "#DC6965", "baselineColorUp": "#00FF00", "baselineMode": "difference", "title": "Sale Orders", "type": "scorecard", "background": "#F3F3F3", "keyValue": "Data!B1"}},
+                {"id": "de764ead-8c6a-4bca-8a8e-03111997073e", "x": 250, "y": 0, "width": 200, "height": 94, "tag": "chart", "data": {"baselineColorDown": "#DC6965", "baselineColorUp": "#00FF00", "baselineMode": "difference", "title": "Purchase Orders", "type": "scorecard", "background": "#F3F3F3", "keyValue": "Data!B2"}},
+                {"id": "27fa05f5-d7c3-4485-8a3a-1202e47b4f63", "x": 749, "y": 0, "width": 200, "height": 94, "tag": "chart", "data": {"baselineColorDown": "#DC6965", "baselineColorUp": "#00FF00", "baselineMode": "difference", "title": "Average Order Value", "type": "scorecard", "background": "#F3F3F3", "keyValue": "Data!F4"}},
+                {"id": "ba4604ea-ca02-45ed-a643-1bdadba791a8", "x": 499, "y": 0, "width": 200, "height": 94, "tag": "chart", "data": {"baselineColorDown": "#DC6965", "baselineColorUp": "#00FF00", "baselineMode": "difference", "title": "Revenue", "type": "scorecard", "background": "#F3F3F3", "keyValue": "Data!F3"}},
+                {"id": "c17a0864-aba3-4ec9-984e-40eaa50d4a88", "x": 0, "y": 166.5, "width": 950, "height": 390, "tag": "chart", "data": {"type": "bar", "dataSetsHaveTitle": true, "dataSets": ["D28:D34", "G28:G34", "J28:J34"], "legendPosition": "top", "verticalAxisPosition": "left", "labelRange": "A29:C34", "title": "", "stacked": false}},
+                {"id": "21ddae20-77a8-4365-8091-0459d413f994", "x": 450, "y": 1319.5, "width": 501, "height": 327, "tag": "chart", "data": {"type": "pie", "dataSetsHaveTitle": true, "dataSets": ["F58:F68"], "legendPosition": "left", "labelRange": "A59:C68", "title": ""}},
+                {"id": "8c7eea9b-14a3-4dd8-968b-71dcef70e190", "x": 0, "y": 906.5, "width": 951, "height": 346, "tag": "chart", "data": {"type": "line", "dataSetsHaveTitle": true, "dataSets": ["M28:M34"], "legendPosition": "top", "verticalAxisPosition": "left", "labelRange": "A29:C34", "title": "", "labelsAsText": false, "stacked": true, "cumulative": false}},
+                {"id": "7aa260ed-74ef-493e-b8ce-4d9202917727", "x": 448, "y": 1751, "width": 501, "height": 327, "tag": "chart", "data": {"type": "pie", "dataSetsHaveTitle": true, "dataSets": ["F76:F86"], "legendPosition": "left", "labelRange": "A77:A86", "title": ""}}
             ],
             "filterTables": [],
             "areGridLinesVisible": true,
@@ -727,38 +597,15 @@
             "colNumber": 26,
             "rowNumber": 100,
             "rows": {},
-            "cols": {
-                "0": {"size": 118}
-            },
+            "cols": {"0": {"size": 118}},
             "merges": [],
-            "cells": {
-                "A1": {"content": "SO count"},
-                "A2": {"content": "PO count"},
-                "A3": {"content": "Revenue"},
-                "A4": {"content": "Average value"},
-                "B1": {"content": "=ODOO.PIVOT(3,\"__count\")"},
-                "B2": {"content": "=ODOO.PIVOT(5,\"__count\")"},
-                "B3": {"format": 1, "content": "=ODOO.PIVOT(1,\"revenue\")"},
-                "B4": {"format": 1, "content": "=B3/B1"},
-                "D3": {"content": "Revenue (format)"},
-                "D4": {"content": "Average value (format)"},
-                "F3": {"content": "=FORMAT.LARGE.NUMBER(B3)"},
-                "F4": {"content": "=FORMAT.LARGE.NUMBER(B4)"}
-            },
-            "conditionalFormats": [],
-            "figures": [],
-            "filterTables": [],
-            "areGridLinesVisible": true,
-            "isVisible": true
+            "cells": {"A1": {"content": "SO count"}, "A2": {"content": "PO count"}, "A3": {"content": "Revenue"}, "A4": {"content": "Average value"}, "B1": {"content": "=ODOO.PIVOT(3,\"__count\")"}, "B2": {"content": "=ODOO.PIVOT(5,\"__count\")"}, "B3": {"format": 1, "content": "=ODOO.PIVOT(1,\"revenue\")"}, "B4": {"format": 1, "content": "=IFERROR(B3/B1, 0)"}, "D3": {"content": "Revenue (format)"}, "D4": {"content": "Average value (format)"}, "F3": {"content": "=FORMAT.LARGE.NUMBER(B3)"}, "F4": {"content": "=FORMAT.LARGE.NUMBER(B4)"}}
         }
     ],
+    "entities": {},
     "styles": {
         "1": {"fillColor": ""},
-        "2": {
-            "fontSize": 16,
-            "bold": true,
-            "textColor": "#01666B"
-        },
+        "2": {"fontSize": 16, "bold": true, "textColor": "#01666B"},
         "3": {"fillColor": "", "textColor": "#000000", "align": "left", "bold": true},
         "4": {"fillColor": "#F8F9FA", "textColor": "#01666B"},
         "5": {"textColor": "#01666B"},
@@ -770,97 +617,19 @@
     },
     "formats": {"1": "[$$]#,##0.0"},
     "borders": {"1": {"bottom": ["thin", "#000"]}, "2": {"top": ["thin", "#000"]}},
-    "revisionId": "b5b3cc48-532a-428a-970e-511f7c3e88b0",
+    "revisionId": "9ce0b16c-6db0-4518-b97d-fb2e642130d2",
     "uniqueFigureIds": true,
     "odooVersion": 5,
     "globalFilters": [],
     "pivots": {
-        "1": {
-            "colGroupBys": [],
-            "context": {"search_default_last_6_months": 1},
-            "domain": [],
-            "id": "1",
-            "measures": [
-                {"field": "revenue"},
-                {"field": "project_cost"},
-                {"field": "production_profit"},
-                {"field": "margin"}
-            ],
-            "model": "moron.sale.report",
-            "rowGroupBys": ["invoice_date"],
-            "name": "Sale Report",
-            "sortedColumn": {"groupId": [[], []], "measure": "invoice_date", "order": "asc"},
-            "fieldMatching": {}
-        },
-        "2": {
-            "colGroupBys": [],
-            "context": {"search_default_group_by_name_display": 1},
-            "domain": [],
-            "id": "2",
-            "measures": [
-                {"field": "__count"},
-                {"field": "revenue"}
-            ],
-            "model": "moron.project.lang.report",
-            "rowGroupBys": ["name_display"],
-            "name": "Language: Source -> Target",
-            "sortedColumn": {"groupId": [[], []], "measure": "__count", "order": "desc"},
-            "fieldMatching": {}
-        },
-        "3": {
-            "colGroupBys": [],
-            "context": {"search_default_ftr_last_12_months": 1},
-            "domain": [["status", "in", ["invoiced", "completed"]]],
-            "id": "3",
-            "measures": [
-                {"field": "amount_same_currency_company"},
-                {"field": "__count"}
-            ],
-            "model": "moron.sale.order",
-            "rowGroupBys": ["partner_id"],
-            "name": "Sale Orders - by Customer",
-            "sortedColumn": {"groupId": [[], []], "measure": "amount_same_currency_company", "order": "desc"},
-            "fieldMatching": {}
-        },
-        "4": {
-            "colGroupBys": [],
-            "context": {"search_default_ftr_last_12_months": 1},
-            "domain": [["tag_report_id", "!=", false], ["status", "in", ["invoiced", "completed"]]],
-            "id": "4",
-            "measures": [
-                {"field": "__count"},
-                {"field": "amount_same_currency_company"}
-            ],
-            "model": "moron.sale.order",
-            "rowGroupBys": ["tag_report_id"],
-            "name": "Sale Orders - by Tag",
-            "sortedColumn": {"groupId": [[], []], "measure": "amount_same_currency_company", "order": "desc"},
-            "fieldMatching": {}
-        },
-        "5": {
-            "colGroupBys": [],
-            "context": {"search_default_ftr_last_12_months": 1},
-            "domain": [["stages_id", "!=", "canceled"], ["contributor_id", "!=", false]],
-            "id": "5",
-            "measures": [
-                {"field": "__count"},
-                {"field": "po_value"}
-            ],
-            "model": "project.task",
-            "rowGroupBys": ["project_id"],
-            "name": "Purchase Orders",
-            "sortedColumn": {"groupId": [[], []], "measure": "create_date", "order": "desc"},
-            "fieldMatching": {}
-        }
+        "1": {"colGroupBys": [], "context": {"search_default_last_6_months": 1}, "domain": [], "id": "1", "measures": [{"field": "revenue"}, {"field": "project_cost"}, {"field": "production_profit"}, {"field": "margin"}], "model": "moron.sale.report", "rowGroupBys": ["invoice_date"], "name": "Sale Report", "sortedColumn": {"groupId": [[], []], "measure": "invoice_date", "order": "asc"}, "fieldMatching": {}},
+        "2": {"colGroupBys": [], "context": {"search_default_last_6_months": 1}, "domain": [], "id": "2", "measures": [{"field": "revenue"}, {"field": "project_cost"}, {"field": "production_profit"}, {"field": "margin"}], "model": "moron.sale.report", "rowGroupBys": ["invoice_date"], "name": "Sale Report - Test", "sortedColumn": {"groupId": [[], []], "measure": "invoice_date", "order": "asc"}, "fieldMatching": {}},
+        "3": {"colGroupBys": [], "context": {"search_default_ftr_last_12_months": 1}, "domain": [["status", "in", ["invoiced", "completed"]]], "id": "3", "measures": [{"field": "amount_same_currency_company"}, {"field": "__count"}], "model": "moron.sale.order", "rowGroupBys": ["partner_id"], "name": "Sale Orders - by Customer", "sortedColumn": {"groupId": [[], []], "measure": "amount_same_currency_company", "order": "desc"}, "fieldMatching": {}},
+        "4": {"colGroupBys": [], "context": {"search_default_ftr_last_12_months": 1}, "domain": [["tag_report_id", "!=", false], ["status", "in", ["invoiced", "completed"]]], "id": "4", "measures": [{"field": "__count"}, {"field": "amount_same_currency_company"}], "model": "moron.sale.order", "rowGroupBys": ["tag_report_id"], "name": "Sale Orders - by Tag", "sortedColumn": {"groupId": [[], []], "measure": "amount_same_currency_company", "order": "desc"}, "fieldMatching": {}},
+        "5": {"colGroupBys": [], "context": {"search_default_ftr_last_12_months": 1}, "domain": [["stages_id", "!=", "canceled"], ["contributor_id", "!=", false]], "id": "5", "measures": [{"field": "__count"}, {"field": "po_value"}], "model": "project.task", "rowGroupBys": ["project_id"], "name": "Purchase Orders", "sortedColumn": {"groupId": [[], []], "measure": "create_date", "order": "desc"}, "fieldMatching": {}}
     },
     "pivotNextId": 6,
     "lists": {},
     "listNextId": 1,
-    "chartOdooMenusReferences": {
-        "f1ec103e-2891-4c20-b142-bee8228dfa13": "morons.sale_order_menu",
-        "7aa260ed-74ef-493e-b8ce-4d9202917727": "morons.sale_order_menu",
-        "21ddae20-77a8-4365-8091-0459d413f994": "morons.sale_order_menu",
-        "ba4604ea-ca02-45ed-a643-1bdadba791a8": "morons.client_invoices_menu",
-        "27fa05f5-d7c3-4485-8a3a-1202e47b4f63": "morons.client_invoices_menu"
-    }
+    "chartOdooMenusReferences": {"f1ec103e-2891-4c20-b142-bee8228dfa13": "morons.sale_order_menu", "7aa260ed-74ef-493e-b8ce-4d9202917727": "morons.sale_order_menu", "21ddae20-77a8-4365-8091-0459d413f994": "morons.sale_order_menu", "ba4604ea-ca02-45ed-a643-1bdadba791a8": "morons.client_invoices_menu", "27fa05f5-d7c3-4485-8a3a-1202e47b4f63": "morons.client_invoices_menu"}
 }

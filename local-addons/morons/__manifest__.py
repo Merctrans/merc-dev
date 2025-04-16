@@ -34,6 +34,7 @@
         'views/moron_client_invoice.xml',
         'views/moron_customer.xml',
         'views/moron_service.xml',
+        'views/moron_nationality_views.xml',
         'report/moron_sale_report_views.xml',
         # 'report/moron_project_service_report_views.xml',  # pending
         'wizard/account_payment_register_views.xml',
@@ -45,7 +46,7 @@
         'data/services.xml',
         'data/tags.xml',
         'data/sequence.xml',
-
+        'data/moron.nationality.csv',
     ],
     "assets": {
         "web.assets_backend": [

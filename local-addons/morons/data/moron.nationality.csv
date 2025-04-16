@@ -1,0 +1,200 @@
+id,name
+moron_afghan,Afghan
+moron_albanian,Albanian
+moron_algerian,Algerian
+moron_american,American
+moron_andorran,Andorran
+moron_angolan,Angolan
+moron_argentine,Argentine
+moron_armenian,Armenian
+moron_australian,Australian
+moron_austrian,Austrian
+moron_azerbaijani,Azerbaijani
+moron_bahamian,Bahamian
+moron_bahraini,Bahraini
+moron_bangladeshi,Bangladeshi
+moron_barbadian,Barbadian
+moron_belarusian,Belarusian
+moron_belgian,Belgian
+moron_belizean,Belizean
+moron_beninese,Beninese
+moron_bhutanese,Bhutanese
+moron_bolivian,Bolivian
+moron_bosnian,Bosnian
+moron_brazilian,Brazilian
+moron_british,British
+moron_bruneian,Bruneian
+moron_bulgarian,Bulgarian
+moron_burkinabe,Burkinabe
+moron_burmese,Burmese
+moron_burundian,Burundian
+moron_cambodian,Cambodian
+moron_cameroonian,Cameroonian
+moron_canadian,Canadian
+moron_cape_verdean,Cape Verdean
+moron_central_african,Central African
+moron_chadian,Chadian
+moron_chilean,Chilean
+moron_chinese,Chinese
+moron_colombian,Colombian
+moron_comoran,Comoran
+moron_congolese,Congolese
+moron_costa_rican,Costa Rican
+moron_croatian,Croatian
+moron_cuban,Cuban
+moron_cypriot,Cypriot
+moron_czech,Czech
+moron_danish,Danish
+moron_djiboutian,Djiboutian
+moron_dominican,Dominican
+moron_dutch,Dutch
+moron_east_timorese,East Timorese
+moron_ecuadorean,Ecuadorean
+moron_egyptian,Egyptian
+moron_emirian,Emirian
+moron_equatorial_guinean,Equatorial Guinean
+moron_eritrean,Eritrean
+moron_estonian,Estonian
+moron_ethiopian,Ethiopian
+moron_fijian,Fijian
+moron_filipino,Filipino
+moron_finnish,Finnish
+moron_french,French
+moron_gabonese,Gabonese
+moron_gambian,Gambian
+moron_georgian,Georgian
+moron_german,German
+moron_ghanaian,Ghanaian
+moron_greek,Greek
+moron_grenadian,Grenadian
+moron_guatemalan,Guatemalan
+moron_guinea_bissauan,Guinea-Bissauan
+moron_guinean,Guinean
+moron_guyanese,Guyanese
+moron_haitian,Haitian
+moron_herzegovinian,Herzegovinian
+moron_honduran,Honduran
+moron_hungarian,Hungarian
+moron_icelander,Icelander
+moron_indian,Indian
+moron_indonesian,Indonesian
+moron_iranian,Iranian
+moron_iraqi,Iraqi
+moron_irish,Irish
+moron_israeli,Israeli
+moron_italian,Italian
+moron_ivorian,Ivorian
+moron_jamaican,Jamaican
+moron_japanese,Japanese
+moron_jordanian,Jordanian
+moron_kazakhstani,Kazakhstani
+moron_kenyan,Kenyan
+moron_kittian_and_nevisian,Kittian and Nevisian
+moron_kuwaiti,Kuwaiti
+moron_kyrgyz,Kyrgyz
+moron_laotian,Laotian
+moron_latvian,Latvian
+moron_lebanese,Lebanese
+moron_liberian,Liberian
+moron_libyan,Libyan
+moron_liechtensteiner,Liechtensteiner
+moron_lithuanian,Lithuanian
+moron_luxembourger,Luxembourger
+moron_macedonian,Macedonian
+moron_malagasy,Malagasy
+moron_malawian,Malawian
+moron_malaysian,Malaysian
+moron_maldivan,Maldivan
+moron_malian,Malian
+moron_maltese,Maltese
+moron_marshallese,Marshallese
+moron_mauritanian,Mauritanian
+moron_mauritian,Mauritian
+moron_mexican,Mexican
+moron_micronesian,Micronesian
+moron_moldovan,Moldovan
+moron_monacan,Monacan
+moron_mongolian,Mongolian
+moron_moroccan,Moroccan
+moron_mosotho,Mosotho
+moron_motswana,Motswana
+moron_mozambican,Mozambican
+moron_namibian,Namibian
+moron_nauruan,Nauruan
+moron_nepalese,Nepalese
+moron_new_zealander,New Zealander
+moron_ni_vanuatu,Ni-Vanuatu
+moron_nicaraguan,Nicaraguan
+moron_nigerian,Nigerian
+moron_nigerien,Nigerien
+moron_north_korean,North Korean
+moron_northern_irish,Northern Irish
+moron_norwegian,Norwegian
+moron_omani,Omani
+moron_pakistani,Pakistani
+moron_palauan,Palauan
+moron_panamanian,Panamanian
+moron_papua_new_guinean,Papua New Guinean
+moron_paraguayan,Paraguayan
+moron_peruvian,Peruvian
+moron_polish,Polish
+moron_portuguese,Portuguese
+moron_qatari,Qatari
+moron_romanian,Romanian
+moron_russian,Russian
+moron_rwandan,Rwandan
+moron_saint_lucian,Saint Lucian
+moron_salvadoran,Salvadoran
+moron_samoan,Samoan
+moron_san_marinese,San Marinese
+moron_sao_tomean,Sao Tomean
+moron_saudi,Saudi
+moron_scottish,Scottish
+moron_senegalese,Senegalese
+moron_serbian,Serbian
+moron_seychellois,Seychellois
+moron_sierra_leonean,Sierra Leonean
+moron_singaporean,Singaporean
+moron_slovakian,Slovakian
+moron_slovenian,Slovenian
+moron_solomon_islander,Solomon Islander
+moron_somali,Somali
+moron_south_african,South African
+moron_south_korean,South Korean
+moron_spanish,Spanish
+moron_sri_lankan,Sri Lankan
+moron_sudanese,Sudanese
+moron_surinamer,Surinamer
+moron_swazi,Swazi
+moron_swedish,Swedish
+moron_swiss,Swiss
+moron_syrian,Syrian
+moron_taiwanese,Taiwanese
+moron_tajik,Tajik
+moron_tanzanian,Tanzanian
+moron_thai,Thai
+moron_togolese,Togolese
+moron_tongan,Tongan
+moron_trinidadian_or_tobagonian,Trinidadian or Tobagonian
+moron_tunisian,Tunisian
+moron_turkish,Turkish
+moron_tuvaluan,Tuvaluan
+moron_ugandan,Ugandan
+moron_ukrainian,Ukrainian
+moron_uruguayan,Uruguayan
+moron_uzbekistani,Uzbekistani
+moron_venezuelan,Venezuelan
+moron_vietnamese,Vietnamese
+moron_welsh,Welsh
+moron_yemenite,Yemenite
+moron_zambian,Zambian
+moron_zimbabwean,Zimbabwean
+moron_antiguan,Antiguan
+moron_dominican_republic,Dominican Republic
+moron_kittitian,Kittitian
+moron_montenegrin,Montenegrin
+moron_north_macedonian,North Macedonian
+moron_south_sudanese,South Sudanese
+moron_st_vincentian,Saint Vincentian
+moron_timorese,Timorese
+moron_vanuatuan,Vanuatuan

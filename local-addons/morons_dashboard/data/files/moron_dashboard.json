@@ -7,77 +7,31 @@
             "colNumber": 19,
             "rowNumber": 92,
             "rows": {
-                "27": {
-                    "size": 42
-                },
-                "57": {
-                    "size": 37
-                },
-                "68": {
-                    "size": 23
-                },
-                "75": {
-                    "size": 39
-                }
+                "27": {"size": 42},
+                "57": {"size": 37},
+                "68": {"size": 23},
+                "75": {"size": 39}
             },
             "cols": {
-                "0": {
-                    "size": 50
-                },
-                "1": {
-                    "size": 50
-                },
-                "2": {
-                    "size": 50
-                },
-                "3": {
-                    "size": 50
-                },
-                "4": {
-                    "size": 50
-                },
-                "5": {
-                    "size": 50
-                },
-                "6": {
-                    "size": 50
-                },
-                "7": {
-                    "size": 50
-                },
-                "8": {
-                    "size": 50
-                },
-                "9": {
-                    "size": 50
-                },
-                "10": {
-                    "size": 50
-                },
-                "11": {
-                    "size": 50
-                },
-                "12": {
-                    "size": 50
-                },
-                "13": {
-                    "size": 50
-                },
-                "14": {
-                    "size": 50
-                },
-                "15": {
-                    "size": 50
-                },
-                "16": {
-                    "size": 50
-                },
-                "17": {
-                    "size": 50
-                },
-                "18": {
-                    "size": 50
-                }
+                "0": {"size": 50},
+                "1": {"size": 50},
+                "2": {"size": 50},
+                "3": {"size": 50},
+                "4": {"size": 50},
+                "5": {"size": 50},
+                "6": {"size": 50},
+                "7": {"size": 50},
+                "8": {"size": 50},
+                "9": {"size": 50},
+                "10": {"size": 50},
+                "11": {"size": 50},
+                "12": {"size": 50},
+                "13": {"size": 50},
+                "14": {"size": 50},
+                "15": {"size": 50},
+                "16": {"size": 50},
+                "17": {"size": 50},
+                "18": {"size": 50}
             },
             "merges": [
                 "A28:C28",
@@ -188,1468 +142,454 @@
                 "A75:H75"
             ],
             "cells": {
-                "A6": {
-                    "style": 1
-                },
+                "A6": {"style": 1},
                 "A7": {
                     "style": 2,
                     "content": "Last 6 months business report",
                     "border": 1
                 },
-                "A27": {
-                    "style": 2,
-                    "content": "[Sales growth table](odoo://ir_menu_xml_id/morons.sale_report_menu)",
-                    "border": 1
-                },
-                "A28": {
-                    "style": 3,
-                    "content": "=_t(\"Period\")",
-                    "border": 2
-                },
-                "A29": {
-                    "style": 4,
-                    "content": "=ODOO.PIVOT.HEADER(1,\"#invoice_date\",7)"
-                },
-                "A30": {
-                    "style": 5,
-                    "content": "=ODOO.PIVOT.HEADER(1,\"#invoice_date\",8)"
-                },
-                "A31": {
-                    "style": 4,
-                    "content": "=ODOO.PIVOT.HEADER(1,\"#invoice_date\",9)"
-                },
-                "A32": {
-                    "style": 5,
-                    "content": "=ODOO.PIVOT.HEADER(1,\"#invoice_date\",10)"
-                },
-                "A33": {
-                    "style": 4,
-                    "content": "=ODOO.PIVOT.HEADER(1,\"#invoice_date\",11)"
-                },
-                "A34": {
-                    "style": 5,
-                    "content": "=ODOO.PIVOT.HEADER(1,\"#invoice_date\",12)"
-                },
-                "A38": {
-                    "style": 2,
-                    "content": "[Sales growth](odoo://ir_menu_xml_id/morons.sale_report_menu)",
-                    "border": 1
-                },
-                "A57": {
-                    "style": 2,
-                    "content": "[Top customer](odoo://ir_menu_xml_id/morons.sale_order_menu)",
-                    "border": 1
-                },
-                "A58": {
-                    "style": 6,
-                    "content": "=_t(\"Customer\")",
-                    "border": 2
-                },
-                "A59": {
-                    "style": 4,
-                    "content": "=ODOO.PIVOT.HEADER(3,\"#partner_id\",1)"
-                },
-                "A60": {
-                    "style": 5,
-                    "content": "=ODOO.PIVOT.HEADER(3,\"#partner_id\",2)"
-                },
-                "A61": {
-                    "style": 4,
-                    "content": "=ODOO.PIVOT.HEADER(3,\"#partner_id\",3)"
-                },
-                "A62": {
-                    "style": 5,
-                    "content": "=ODOO.PIVOT.HEADER(3,\"#partner_id\",4)"
-                },
-                "A63": {
-                    "style": 4,
-                    "content": "=ODOO.PIVOT.HEADER(3,\"#partner_id\",5)"
-                },
-                "A64": {
-                    "style": 5,
-                    "content": "=ODOO.PIVOT.HEADER(3,\"#partner_id\",6)"
-                },
-                "A65": {
-                    "style": 4,
-                    "content": "=ODOO.PIVOT.HEADER(3,\"#partner_id\",7)"
-                },
-                "A66": {
-                    "style": 5,
-                    "content": "=ODOO.PIVOT.HEADER(3,\"#partner_id\",8)"
-                },
-                "A67": {
-                    "style": 4,
-                    "content": "=ODOO.PIVOT.HEADER(3,\"#partner_id\",9)"
-                },
-                "A68": {
-                    "style": 5,
-                    "content": "=ODOO.PIVOT.HEADER(3,\"#partner_id\",10)"
-                },
-                "A75": {
-                    "style": 2,
-                    "content": "[Top tags](odoo://ir_menu_xml_id/morons.sale_order_menu)",
-                    "border": 1
-                },
-                "A76": {
-                    "style": 6,
-                    "content": "=_t(\"Tag\")",
-                    "border": 2
-                },
-                "A77": {
-                    "style": 4,
-                    "content": "=ODOO.PIVOT.HEADER(4,\"#tag_report_id\",1)"
-                },
-                "A78": {
-                    "style": 5,
-                    "content": "=ODOO.PIVOT.HEADER(4,\"#tag_report_id\",2)"
-                },
-                "A79": {
-                    "style": 4,
-                    "content": "=ODOO.PIVOT.HEADER(4,\"#tag_report_id\",3)"
-                },
-                "A80": {
-                    "style": 5,
-                    "content": "=ODOO.PIVOT.HEADER(4,\"#tag_report_id\",4)"
-                },
-                "A81": {
-                    "style": 4,
-                    "content": "=ODOO.PIVOT.HEADER(4,\"#tag_report_id\",5)"
-                },
-                "A82": {
-                    "style": 5,
-                    "content": "=ODOO.PIVOT.HEADER(4,\"#tag_report_id\",6)"
-                },
-                "A83": {
-                    "style": 4,
-                    "content": "=ODOO.PIVOT.HEADER(4,\"#tag_report_id\",7)"
-                },
-                "A84": {
-                    "style": 5,
-                    "content": "=ODOO.PIVOT.HEADER(4,\"#tag_report_id\",8)"
-                },
-                "A85": {
-                    "style": 4,
-                    "content": "=ODOO.PIVOT.HEADER(4,\"#tag_report_id\",9)"
-                },
-                "A86": {
-                    "style": 5,
-                    "content": "=ODOO.PIVOT.HEADER(4,\"#tag_report_id\",10)"
-                },
-                "B6": {
-                    "style": 1
-                },
-                "B7": {
-                    "style": 2,
-                    "border": 1
-                },
-                "B27": {
-                    "style": 2,
-                    "border": 1
-                },
-                "B28": {
-                    "style": 3,
-                    "border": 2
-                },
-                "B29": {
-                    "style": 4
-                },
-                "B30": {
-                    "style": 5
-                },
-                "B31": {
-                    "style": 4
-                },
-                "B32": {
-                    "style": 5
-                },
-                "B33": {
-                    "style": 4
-                },
-                "B34": {
-                    "style": 5
-                },
-                "B38": {
-                    "style": 2,
-                    "border": 1
-                },
-                "B57": {
-                    "style": 2,
-                    "border": 1
-                },
-                "B58": {
-                    "style": 6,
-                    "border": 2
-                },
-                "B59": {
-                    "style": 4
-                },
-                "B60": {
-                    "style": 5
-                },
-                "B61": {
-                    "style": 4
-                },
-                "B62": {
-                    "style": 5
-                },
-                "B63": {
-                    "style": 4
-                },
-                "B64": {
-                    "style": 5
-                },
-                "B65": {
-                    "style": 4
-                },
-                "B66": {
-                    "style": 5
-                },
-                "B67": {
-                    "style": 4
-                },
-                "B68": {
-                    "style": 5
-                },
-                "B75": {
-                    "style": 2,
-                    "border": 1
-                },
-                "B76": {
-                    "style": 6,
-                    "border": 2
-                },
-                "B77": {
-                    "style": 4
-                },
-                "B78": {
-                    "style": 5
-                },
-                "B79": {
-                    "style": 4
-                },
-                "B80": {
-                    "style": 5
-                },
-                "B81": {
-                    "style": 4
-                },
-                "B82": {
-                    "style": 5
-                },
-                "B83": {
-                    "style": 4
-                },
-                "B84": {
-                    "style": 5
-                },
-                "B85": {
-                    "style": 4
-                },
-                "B86": {
-                    "style": 5
-                },
-                "C6": {
-                    "style": 1
-                },
-                "C7": {
-                    "style": 2,
-                    "border": 1
-                },
-                "C27": {
-                    "style": 2,
-                    "border": 1
-                },
-                "C28": {
-                    "style": 3,
-                    "border": 2
-                },
-                "C29": {
-                    "style": 4
-                },
-                "C30": {
-                    "style": 5
-                },
-                "C31": {
-                    "style": 4
-                },
-                "C32": {
-                    "style": 5
-                },
-                "C33": {
-                    "style": 4
-                },
-                "C34": {
-                    "style": 5
-                },
-                "C38": {
-                    "style": 2,
-                    "border": 1
-                },
-                "C57": {
-                    "style": 2,
-                    "border": 1
-                },
-                "C58": {
-                    "style": 6,
-                    "border": 2
-                },
-                "C59": {
-                    "style": 4
-                },
-                "C60": {
-                    "style": 5
-                },
-                "C61": {
-                    "style": 4
-                },
-                "C62": {
-                    "style": 5
-                },
-                "C63": {
-                    "style": 4
-                },
-                "C64": {
-                    "style": 5
-                },
-                "C65": {
-                    "style": 4
-                },
-                "C66": {
-                    "style": 5
-                },
-                "C67": {
-                    "style": 4
-                },
-                "C68": {
-                    "style": 5
-                },
-                "C75": {
-                    "style": 2,
-                    "border": 1
-                },
-                "C76": {
-                    "style": 6,
-                    "border": 2
-                },
-                "C77": {
-                    "style": 4
-                },
-                "C78": {
-                    "style": 5
-                },
-                "C79": {
-                    "style": 4
-                },
-                "C80": {
-                    "style": 5
-                },
-                "C81": {
-                    "style": 4
-                },
-                "C82": {
-                    "style": 5
-                },
-                "C83": {
-                    "style": 4
-                },
-                "C84": {
-                    "style": 5
-                },
-                "C85": {
-                    "style": 4
-                },
-                "C86": {
-                    "style": 5
-                },
-                "D6": {
-                    "style": 1
-                },
-                "D7": {
-                    "style": 2,
-                    "border": 1
-                },
-                "D27": {
-                    "style": 2,
-                    "border": 1
-                },
-                "D28": {
-                    "style": 7,
-                    "content": "=ODOO.PIVOT.HEADER(1,\"measure\",\"revenue\")",
-                    "border": 2
-                },
-                "D29": {
-                    "style": 8,
-                    "content": "=ODOO.PIVOT(1,\"revenue\",\"#invoice_date\",7)"
-                },
-                "D30": {
-                    "content": "=ODOO.PIVOT(1,\"revenue\",\"#invoice_date\",8)"
-                },
-                "D31": {
-                    "style": 8,
-                    "content": "=ODOO.PIVOT(1,\"revenue\",\"#invoice_date\",9)"
-                },
-                "D32": {
-                    "content": "=ODOO.PIVOT(1,\"revenue\",\"#invoice_date\",10)"
-                },
-                "D33": {
-                    "style": 8,
-                    "content": "=ODOO.PIVOT(1,\"revenue\",\"#invoice_date\",11)"
-                },
-                "D34": {
-                    "content": "=ODOO.PIVOT(1,\"revenue\",\"#invoice_date\",12)"
-                },
-                "D38": {
-                    "style": 2,
-                    "border": 1
-                },
-                "D57": {
-                    "style": 2,
-                    "border": 1
-                },
-                "D58": {
-                    "style": 7,
-                    "content": "=_t(\"# Orders\")",
-                    "border": 2
-                },
-                "D59": {
-                    "style": 8,
-                    "content": "=ODOO.PIVOT(3,\"__count\",\"#partner_id\",1)"
-                },
-                "D60": {
-                    "content": "=ODOO.PIVOT(3,\"__count\",\"#partner_id\",2)"
-                },
-                "D61": {
-                    "style": 8,
-                    "content": "=ODOO.PIVOT(3,\"__count\",\"#partner_id\",3)"
-                },
-                "D62": {
-                    "content": "=ODOO.PIVOT(3,\"__count\",\"#partner_id\",4)"
-                },
-                "D63": {
-                    "style": 8,
-                    "content": "=ODOO.PIVOT(3,\"__count\",\"#partner_id\",5)"
-                },
-                "D64": {
-                    "content": "=ODOO.PIVOT(3,\"__count\",\"#partner_id\",6)"
-                },
-                "D65": {
-                    "style": 8,
-                    "content": "=ODOO.PIVOT(3,\"__count\",\"#partner_id\",7)"
-                },
-                "D66": {
-                    "content": "=ODOO.PIVOT(3,\"__count\",\"#partner_id\",8)"
-                },
-                "D67": {
-                    "style": 8,
-                    "content": "=ODOO.PIVOT(3,\"__count\",\"#partner_id\",9)"
-                },
-                "D68": {
-                    "content": "=ODOO.PIVOT(3,\"__count\",\"#partner_id\",10)"
-                },
-                "D75": {
-                    "style": 2,
-                    "border": 1
-                },
-                "D76": {
-                    "style": 7,
-                    "content": "=_t(\"# Orders\")",
-                    "border": 2
-                },
-                "D77": {
-                    "style": 8,
-                    "content": "=ODOO.PIVOT(4,\"__count\",\"#tag_report_id\",1)"
-                },
-                "D78": {
-                    "content": "=ODOO.PIVOT(4,\"__count\",\"#tag_report_id\",2)"
-                },
-                "D79": {
-                    "style": 8,
-                    "content": "=ODOO.PIVOT(4,\"__count\",\"#tag_report_id\",3)"
-                },
-                "D80": {
-                    "content": "=ODOO.PIVOT(4,\"__count\",\"#tag_report_id\",4)"
-                },
-                "D81": {
-                    "style": 8,
-                    "content": "=ODOO.PIVOT(4,\"__count\",\"#tag_report_id\",5)"
-                },
-                "D82": {
-                    "content": "=ODOO.PIVOT(4,\"__count\",\"#tag_report_id\",6)"
-                },
-                "D83": {
-                    "style": 8,
-                    "content": "=ODOO.PIVOT(4,\"__count\",\"#tag_report_id\",7)"
-                },
-                "D84": {
-                    "content": "=ODOO.PIVOT(4,\"__count\",\"#tag_report_id\",8)"
-                },
-                "D85": {
-                    "style": 8,
-                    "content": "=ODOO.PIVOT(4,\"__count\",\"#tag_report_id\",9)"
-                },
-                "D86": {
-                    "content": "=ODOO.PIVOT(4,\"__count\",\"#tag_report_id\",10)"
-                },
-                "E6": {
-                    "style": 1
-                },
-                "E7": {
-                    "style": 2,
-                    "border": 1
-                },
-                "E27": {
-                    "style": 2,
-                    "border": 1
-                },
-                "E28": {
-                    "style": 7,
-                    "border": 2
-                },
-                "E29": {
-                    "style": 8
-                },
-                "E31": {
-                    "style": 8
-                },
-                "E33": {
-                    "style": 8
-                },
-                "E38": {
-                    "style": 2,
-                    "border": 1
-                },
-                "E57": {
-                    "style": 2,
-                    "border": 1
-                },
-                "E58": {
-                    "style": 7,
-                    "border": 2
-                },
-                "E59": {
-                    "style": 8
-                },
-                "E61": {
-                    "style": 8
-                },
-                "E63": {
-                    "style": 8
-                },
-                "E65": {
-                    "style": 8
-                },
-                "E67": {
-                    "style": 8
-                },
-                "E75": {
-                    "style": 2,
-                    "border": 1
-                },
-                "E76": {
-                    "style": 7,
-                    "border": 2
-                },
-                "E77": {
-                    "style": 8
-                },
-                "E79": {
-                    "style": 8
-                },
-                "E81": {
-                    "style": 8
-                },
-                "E83": {
-                    "style": 8
-                },
-                "E85": {
-                    "style": 8
-                },
-                "F6": {
-                    "style": 1
-                },
-                "F7": {
-                    "style": 2,
-                    "border": 1
-                },
-                "F27": {
-                    "style": 2,
-                    "border": 1
-                },
-                "F28": {
-                    "style": 7,
-                    "border": 2
-                },
-                "F29": {
-                    "style": 8
-                },
-                "F31": {
-                    "style": 8
-                },
-                "F33": {
-                    "style": 8
-                },
-                "F38": {
-                    "style": 2,
-                    "border": 1
-                },
-                "F57": {
-                    "style": 2,
-                    "border": 1
-                },
-                "F58": {
-                    "style": 9,
-                    "content": "=_t(\"Revenue\")",
-                    "border": 2
-                },
-                "F59": {
-                    "style": 8,
-                    "content": "=ODOO.PIVOT(3,\"amount_same_currency_company\",\"#partner_id\",1)"
-                },
-                "F60": {
-                    "content": "=ODOO.PIVOT(3,\"amount_same_currency_company\",\"#partner_id\",2)"
-                },
-                "F61": {
-                    "style": 8,
-                    "content": "=ODOO.PIVOT(3,\"amount_same_currency_company\",\"#partner_id\",3)"
-                },
-                "F62": {
-                    "content": "=ODOO.PIVOT(3,\"amount_same_currency_company\",\"#partner_id\",4)"
-                },
-                "F63": {
-                    "style": 8,
-                    "content": "=ODOO.PIVOT(3,\"amount_same_currency_company\",\"#partner_id\",5)"
-                },
-                "F64": {
-                    "content": "=ODOO.PIVOT(3,\"amount_same_currency_company\",\"#partner_id\",6)"
-                },
-                "F65": {
-                    "style": 8,
-                    "content": "=ODOO.PIVOT(3,\"amount_same_currency_company\",\"#partner_id\",7)"
-                },
-                "F66": {
-                    "content": "=ODOO.PIVOT(3,\"amount_same_currency_company\",\"#partner_id\",8)"
-                },
-                "F67": {
-                    "style": 8,
-                    "content": "=ODOO.PIVOT(3,\"amount_same_currency_company\",\"#partner_id\",9)"
-                },
-                "F68": {
-                    "content": "=ODOO.PIVOT(3,\"amount_same_currency_company\",\"#partner_id\",10)"
-                },
-                "F75": {
-                    "style": 2,
-                    "border": 1
-                },
-                "F76": {
-                    "style": 9,
-                    "content": "=_t(\"Revenue\")",
-                    "border": 2
-                },
-                "F77": {
-                    "style": 8,
-                    "content": "=ODOO.PIVOT(3,\"amount_same_currency_company\",\"#partner_id\",1)"
-                },
-                "F78": {
-                    "content": "=ODOO.PIVOT(3,\"amount_same_currency_company\",\"#partner_id\",2)"
-                },
-                "F79": {
-                    "style": 8,
-                    "content": "=ODOO.PIVOT(3,\"amount_same_currency_company\",\"#partner_id\",3)"
-                },
-                "F80": {
-                    "content": "=ODOO.PIVOT(3,\"amount_same_currency_company\",\"#partner_id\",4)"
-                },
-                "F81": {
-                    "style": 8,
-                    "content": "=ODOO.PIVOT(3,\"amount_same_currency_company\",\"#partner_id\",5)"
-                },
-                "F82": {
-                    "content": "=ODOO.PIVOT(3,\"amount_same_currency_company\",\"#partner_id\",6)"
-                },
-                "F83": {
-                    "style": 8,
-                    "content": "=ODOO.PIVOT(3,\"amount_same_currency_company\",\"#partner_id\",7)"
-                },
-                "F84": {
-                    "content": "=ODOO.PIVOT(3,\"amount_same_currency_company\",\"#partner_id\",8)"
-                },
-                "F85": {
-                    "style": 8,
-                    "content": "=ODOO.PIVOT(3,\"amount_same_currency_company\",\"#partner_id\",9)"
-                },
-                "F86": {
-                    "content": "=ODOO.PIVOT(3,\"amount_same_currency_company\",\"#partner_id\",10)"
-                },
-                "G6": {
-                    "style": 1
-                },
-                "G7": {
-                    "style": 2,
-                    "border": 1
-                },
-                "G27": {
-                    "style": 2,
-                    "border": 1
-                },
-                "G28": {
-                    "style": 7,
-                    "content": "=ODOO.PIVOT.HEADER(1,\"measure\",\"project_cost\")",
-                    "border": 2
-                },
-                "G29": {
-                    "style": 8,
-                    "content": "=ODOO.PIVOT(1,\"project_cost\",\"#invoice_date\",7)"
-                },
-                "G30": {
-                    "content": "=ODOO.PIVOT(1,\"project_cost\",\"#invoice_date\",8)"
-                },
-                "G31": {
-                    "style": 8,
-                    "content": "=ODOO.PIVOT(1,\"project_cost\",\"#invoice_date\",9)"
-                },
-                "G32": {
-                    "content": "=ODOO.PIVOT(1,\"project_cost\",\"#invoice_date\",10)"
-                },
-                "G33": {
-                    "style": 8,
-                    "content": "=ODOO.PIVOT(1,\"project_cost\",\"#invoice_date\",11)"
-                },
-                "G34": {
-                    "content": "=ODOO.PIVOT(1,\"project_cost\",\"#invoice_date\",12)"
-                },
-                "G38": {
-                    "style": 2,
-                    "border": 1
-                },
-                "G57": {
-                    "style": 2,
-                    "border": 1
-                },
-                "G58": {
-                    "style": 9,
-                    "border": 2
-                },
-                "G59": {
-                    "style": 8
-                },
-                "G61": {
-                    "style": 8
-                },
-                "G63": {
-                    "style": 8
-                },
-                "G65": {
-                    "style": 8
-                },
-                "G67": {
-                    "style": 8
-                },
-                "G75": {
-                    "style": 2,
-                    "border": 1
-                },
-                "G76": {
-                    "style": 9,
-                    "border": 2
-                },
-                "G77": {
-                    "style": 8
-                },
-                "G79": {
-                    "style": 8
-                },
-                "G81": {
-                    "style": 8
-                },
-                "G83": {
-                    "style": 8
-                },
-                "G85": {
-                    "style": 8
-                },
-                "H6": {
-                    "style": 1
-                },
-                "H7": {
-                    "style": 2,
-                    "border": 1
-                },
-                "H27": {
-                    "style": 2,
-                    "border": 1
-                },
-                "H28": {
-                    "style": 7,
-                    "border": 2
-                },
-                "H29": {
-                    "style": 8
-                },
-                "H31": {
-                    "style": 8
-                },
-                "H33": {
-                    "style": 8
-                },
-                "H38": {
-                    "style": 2,
-                    "border": 1
-                },
-                "H57": {
-                    "style": 2,
-                    "border": 1
-                },
-                "H58": {
-                    "style": 9,
-                    "border": 2
-                },
-                "H59": {
-                    "style": 8
-                },
-                "H61": {
-                    "style": 8
-                },
-                "H63": {
-                    "style": 8
-                },
-                "H65": {
-                    "style": 8
-                },
-                "H67": {
-                    "style": 8
-                },
-                "H75": {
-                    "style": 2,
-                    "border": 1
-                },
-                "H76": {
-                    "style": 9,
-                    "border": 2
-                },
-                "H77": {
-                    "style": 8
-                },
-                "H79": {
-                    "style": 8
-                },
-                "H81": {
-                    "style": 8
-                },
-                "H83": {
-                    "style": 8
-                },
-                "H85": {
-                    "style": 8
-                },
-                "I6": {
-                    "style": 1
-                },
-                "I7": {
-                    "style": 2,
-                    "border": 1
-                },
-                "I27": {
-                    "style": 2,
-                    "border": 1
-                },
-                "I28": {
-                    "style": 7,
-                    "border": 2
-                },
-                "I29": {
-                    "style": 8
-                },
-                "I31": {
-                    "style": 8
-                },
-                "I33": {
-                    "style": 8
-                },
-                "I38": {
-                    "style": 2,
-                    "border": 1
-                },
-                "I57": {
-                    "style": 2
-                },
-                "I58": {
-                    "style": 1
-                },
-                "I75": {
-                    "style": 2
-                },
-                "I76": {
-                    "style": 1
-                },
-                "J6": {
-                    "style": 1
-                },
-                "J7": {
-                    "style": 2,
-                    "border": 1
-                },
-                "J27": {
-                    "style": 2,
-                    "border": 1
-                },
-                "J28": {
-                    "style": 7,
-                    "content": "=ODOO.PIVOT.HEADER(1,\"measure\",\"production_profit\")",
-                    "border": 2
-                },
-                "J29": {
-                    "style": 8,
-                    "content": "=ODOO.PIVOT(1,\"production_profit\",\"#invoice_date\",7)"
-                },
-                "J30": {
-                    "content": "=ODOO.PIVOT(1,\"production_profit\",\"#invoice_date\",8)"
-                },
-                "J31": {
-                    "style": 8,
-                    "content": "=ODOO.PIVOT(1,\"production_profit\",\"#invoice_date\",9)"
-                },
-                "J32": {
-                    "content": "=ODOO.PIVOT(1,\"production_profit\",\"#invoice_date\",10)"
-                },
-                "J33": {
-                    "style": 8,
-                    "content": "=ODOO.PIVOT(1,\"production_profit\",\"#invoice_date\",11)"
-                },
-                "J34": {
-                    "content": "=ODOO.PIVOT(1,\"production_profit\",\"#invoice_date\",12)"
-                },
-                "J38": {
-                    "style": 2,
-                    "border": 1
-                },
-                "J57": {
-                    "style": 2
-                },
-                "J58": {
-                    "style": 1
-                },
-                "J75": {
-                    "style": 2
-                },
-                "J76": {
-                    "style": 1
-                },
-                "K6": {
-                    "style": 1
-                },
-                "K7": {
-                    "style": 2,
-                    "border": 1
-                },
-                "K27": {
-                    "style": 2,
-                    "border": 1
-                },
-                "K28": {
-                    "style": 7,
-                    "border": 2
-                },
-                "K29": {
-                    "style": 8
-                },
-                "K31": {
-                    "style": 8
-                },
-                "K33": {
-                    "style": 8
-                },
-                "K38": {
-                    "style": 2,
-                    "border": 1
-                },
-                "K57": {
-                    "style": 2
-                },
-                "K58": {
-                    "style": 1
-                },
-                "K75": {
-                    "style": 2
-                },
-                "K76": {
-                    "style": 1
-                },
-                "L6": {
-                    "style": 1
-                },
-                "L7": {
-                    "style": 2,
-                    "border": 1
-                },
-                "L27": {
-                    "style": 2,
-                    "border": 1
-                },
-                "L28": {
-                    "style": 7,
-                    "border": 2
-                },
-                "L29": {
-                    "style": 8
-                },
-                "L31": {
-                    "style": 8
-                },
-                "L33": {
-                    "style": 8
-                },
-                "L38": {
-                    "style": 2,
-                    "border": 1
-                },
-                "L57": {
-                    "style": 2
-                },
-                "L58": {
-                    "style": 1
-                },
-                "L75": {
-                    "style": 2
-                },
-                "L76": {
-                    "style": 1
-                },
-                "M6": {
-                    "style": 1
-                },
-                "M7": {
-                    "style": 2,
-                    "border": 1
-                },
-                "M27": {
-                    "style": 2,
-                    "border": 1
-                },
-                "M28": {
-                    "style": 7,
-                    "content": "=_t(\"Margin\")",
-                    "border": 2
-                },
-                "M29": {
-                    "style": 8,
-                    "content": "=ODOO.PIVOT(1,\"margin\",\"#invoice_date\",7)"
-                },
-                "M30": {
-                    "content": "=ODOO.PIVOT(1,\"margin\",\"#invoice_date\",8)"
-                },
-                "M31": {
-                    "style": 8,
-                    "content": "=ODOO.PIVOT(1,\"margin\",\"#invoice_date\",9)"
-                },
-                "M32": {
-                    "content": "=ODOO.PIVOT(1,\"margin\",\"#invoice_date\",10)"
-                },
-                "M33": {
-                    "style": 8,
-                    "content": "=ODOO.PIVOT(1,\"margin\",\"#invoice_date\",11)"
-                },
-                "M34": {
-                    "content": "=ODOO.PIVOT(1,\"margin\",\"#invoice_date\",12)"
-                },
-                "M38": {
-                    "style": 2,
-                    "border": 1
-                },
-                "M57": {
-                    "style": 2
-                },
-                "M58": {
-                    "style": 1
-                },
-                "M75": {
-                    "style": 2
-                },
-                "M76": {
-                    "style": 1
-                },
-                "N6": {
-                    "style": 1
-                },
-                "N7": {
-                    "style": 2,
-                    "border": 1
-                },
-                "N27": {
-                    "style": 2,
-                    "border": 1
-                },
-                "N28": {
-                    "style": 7,
-                    "border": 2
-                },
-                "N29": {
-                    "style": 8
-                },
-                "N31": {
-                    "style": 8
-                },
-                "N33": {
-                    "style": 8
-                },
-                "N38": {
-                    "style": 2,
-                    "border": 1
-                },
-                "N57": {
-                    "style": 2
-                },
-                "N58": {
-                    "style": 1
-                },
-                "N75": {
-                    "style": 2
-                },
-                "N76": {
-                    "style": 1
-                },
-                "O6": {
-                    "style": 1
-                },
-                "O7": {
-                    "style": 2,
-                    "border": 1
-                },
-                "O27": {
-                    "style": 2,
-                    "border": 1
-                },
-                "O28": {
-                    "style": 7,
-                    "border": 2
-                },
-                "O29": {
-                    "style": 8
-                },
-                "O31": {
-                    "style": 8
-                },
-                "O33": {
-                    "style": 8
-                },
-                "O38": {
-                    "style": 2,
-                    "border": 1
-                },
-                "O57": {
-                    "style": 2
-                },
-                "O58": {
-                    "style": 1
-                },
-                "O75": {
-                    "style": 2
-                },
-                "O76": {
-                    "style": 1
-                },
-                "P6": {
-                    "style": 1
-                },
-                "P7": {
-                    "style": 2,
-                    "border": 1
-                },
-                "P27": {
-                    "style": 2
-                },
-                "P28": {
-                    "style": 7
-                },
-                "P29": {
-                    "style": 10
-                },
-                "P30": {
-                    "style": 10
-                },
-                "P31": {
-                    "style": 10
-                },
-                "P32": {
-                    "style": 10
-                },
-                "P33": {
-                    "style": 10
-                },
-                "P34": {
-                    "style": 10
-                },
-                "P38": {
-                    "style": 2,
-                    "border": 1
-                },
-                "P57": {
-                    "style": 2
-                },
-                "P58": {
-                    "style": 1
-                },
-                "P75": {
-                    "style": 2
-                },
-                "P76": {
-                    "style": 1
-                },
-                "Q6": {
-                    "style": 1
-                },
-                "Q7": {
-                    "style": 2,
-                    "border": 1
-                },
-                "Q27": {
-                    "style": 2
-                },
-                "Q28": {
-                    "style": 7
-                },
-                "Q29": {
-                    "style": 10
-                },
-                "Q30": {
-                    "style": 10
-                },
-                "Q31": {
-                    "style": 10
-                },
-                "Q32": {
-                    "style": 10
-                },
-                "Q33": {
-                    "style": 10
-                },
-                "Q34": {
-                    "style": 10
-                },
-                "Q38": {
-                    "style": 2,
-                    "border": 1
-                },
-                "Q57": {
-                    "style": 2
-                },
-                "Q58": {
-                    "style": 1
-                },
-                "Q75": {
-                    "style": 2
-                },
-                "Q76": {
-                    "style": 1
-                },
-                "R6": {
-                    "style": 1
-                },
-                "R7": {
-                    "style": 2,
-                    "border": 1
-                },
-                "R27": {
-                    "style": 2
-                },
-                "R28": {
-                    "style": 7
-                },
-                "R29": {
-                    "style": 10
-                },
-                "R30": {
-                    "style": 10
-                },
-                "R31": {
-                    "style": 10
-                },
-                "R32": {
-                    "style": 10
-                },
-                "R33": {
-                    "style": 10
-                },
-                "R34": {
-                    "style": 10
-                },
-                "R38": {
-                    "style": 2,
-                    "border": 1
-                },
-                "R57": {
-                    "style": 2
-                },
-                "R58": {
-                    "style": 1
-                },
-                "R75": {
-                    "style": 2
-                },
-                "R76": {
-                    "style": 1
-                },
-                "S6": {
-                    "style": 1
-                },
-                "S7": {
-                    "style": 2,
-                    "border": 1
-                },
-                "S27": {
-                    "style": 2
-                },
-                "S28": {
-                    "style": 7
-                },
-                "S29": {
-                    "style": 10
-                },
-                "S30": {
-                    "style": 10
-                },
-                "S31": {
-                    "style": 10
-                },
-                "S32": {
-                    "style": 10
-                },
-                "S33": {
-                    "style": 10
-                },
-                "S34": {
-                    "style": 10
-                },
-                "S38": {
-                    "style": 2,
-                    "border": 1
-                },
-                "S57": {
-                    "style": 2
-                },
-                "S58": {
-                    "style": 1
-                },
-                "S75": {
-                    "style": 2
-                },
-                "S76": {
-                    "style": 1
-                },
-                "A8": {
-                    "border": 2
-                },
-                "A39": {
-                    "border": 2
-                },
-                "B8": {
-                    "border": 2
-                },
-                "B39": {
-                    "border": 2
-                },
-                "C8": {
-                    "border": 2
-                },
-                "C39": {
-                    "border": 2
-                },
-                "D8": {
-                    "border": 2
-                },
-                "D39": {
-                    "border": 2
-                },
-                "E8": {
-                    "border": 2
-                },
-                "E39": {
-                    "border": 2
-                },
-                "F8": {
-                    "border": 2
-                },
-                "F39": {
-                    "border": 2
-                },
-                "G8": {
-                    "border": 2
-                },
-                "G39": {
-                    "border": 2
-                },
-                "H8": {
-                    "border": 2
-                },
-                "H39": {
-                    "border": 2
-                },
-                "I8": {
-                    "border": 2
-                },
-                "I39": {
-                    "border": 2
-                },
-                "J8": {
-                    "border": 2
-                },
-                "J39": {
-                    "border": 2
-                },
-                "K8": {
-                    "border": 2
-                },
-                "K39": {
-                    "border": 2
-                },
-                "L8": {
-                    "border": 2
-                },
-                "L39": {
-                    "border": 2
-                },
-                "M8": {
-                    "border": 2
-                },
-                "M39": {
-                    "border": 2
-                },
-                "N8": {
-                    "border": 2
-                },
-                "N39": {
-                    "border": 2
-                },
-                "O8": {
-                    "border": 2
-                },
-                "O39": {
-                    "border": 2
-                },
-                "P8": {
-                    "border": 2
-                },
-                "P39": {
-                    "border": 2
-                },
-                "Q8": {
-                    "border": 2
-                },
-                "Q39": {
-                    "border": 2
-                },
-                "R8": {
-                    "border": 2
-                },
-                "R39": {
-                    "border": 2
-                },
-                "S8": {
-                    "border": 2
-                },
-                "S39": {
-                    "border": 2
-                }
-            }
+                "A27": {"style": 2, "content": "[Sales Growth Table](odoo://ir_menu_xml_id/morons.sale_report_menu)", "border": 1},
+                "A28": {"style": 3, "content": "=_t(\"Period\")", "border": 2},
+                "A29": {"style": 4, "content": "=ODOO.PIVOT.HEADER(1,\"#invoice_date\",7)"},
+                "A30": {"style": 5, "content": "=ODOO.PIVOT.HEADER(1,\"#invoice_date\",8)"},
+                "A31": {"style": 4, "content": "=ODOO.PIVOT.HEADER(1,\"#invoice_date\",9)"},
+                "A32": {"style": 5, "content": "=ODOO.PIVOT.HEADER(1,\"#invoice_date\",10)"},
+                "A33": {"style": 4, "content": "=ODOO.PIVOT.HEADER(1,\"#invoice_date\",11)"},
+                "A34": {"style": 5, "content": "=ODOO.PIVOT.HEADER(1,\"#invoice_date\",12)"},
+                "A38": {"style": 2, "content": "[Sales Growth](odoo://ir_menu_xml_id/morons.sale_report_menu)", "border": 1},
+                "A57": {"style": 2, "content": "[Top Customer](odoo://ir_menu_xml_id/morons.sale_order_menu)", "border": 1},
+                "A58": {"style": 6, "content": "=_t(\"Customer\")", "border": 2},
+                "A59": {"style": 4, "content": "=ODOO.PIVOT.HEADER(3,\"#partner_id\",1)"},
+                "A60": {"style": 5, "content": "=ODOO.PIVOT.HEADER(3,\"#partner_id\",2)"},
+                "A61": {"style": 4, "content": "=ODOO.PIVOT.HEADER(3,\"#partner_id\",3)"},
+                "A62": {"style": 5, "content": "=ODOO.PIVOT.HEADER(3,\"#partner_id\",4)"},
+                "A63": {"style": 4, "content": "=ODOO.PIVOT.HEADER(3,\"#partner_id\",5)"},
+                "A64": {"style": 5, "content": "=ODOO.PIVOT.HEADER(3,\"#partner_id\",6)"},
+                "A65": {"style": 4, "content": "=ODOO.PIVOT.HEADER(3,\"#partner_id\",7)"},
+                "A66": {"style": 5, "content": "=ODOO.PIVOT.HEADER(3,\"#partner_id\",8)"},
+                "A67": {"style": 4, "content": "=ODOO.PIVOT.HEADER(3,\"#partner_id\",9)"},
+                "A68": {"style": 5, "content": "=ODOO.PIVOT.HEADER(3,\"#partner_id\",10)"},
+                "A75": {"style": 2, "content": "[Top Tags](odoo://ir_menu_xml_id/morons.sale_order_menu)", "border": 1},
+                "A76": {"style": 6, "content": "=_t(\"Tag\")", "border": 2},
+                "A77": {"style": 4, "content": "=ODOO.PIVOT.HEADER(4,\"#tag_report_id\",1)"},
+                "A78": {"style": 5, "content": "=ODOO.PIVOT.HEADER(4,\"#tag_report_id\",2)"},
+                "A79": {"style": 4, "content": "=ODOO.PIVOT.HEADER(4,\"#tag_report_id\",3)"},
+                "A80": {"style": 5, "content": "=ODOO.PIVOT.HEADER(4,\"#tag_report_id\",4)"},
+                "A81": {"style": 4, "content": "=ODOO.PIVOT.HEADER(4,\"#tag_report_id\",5)"},
+                "A82": {"style": 5, "content": "=ODOO.PIVOT.HEADER(4,\"#tag_report_id\",6)"},
+                "A83": {"style": 4, "content": "=ODOO.PIVOT.HEADER(4,\"#tag_report_id\",7)"},
+                "A84": {"style": 5, "content": "=ODOO.PIVOT.HEADER(4,\"#tag_report_id\",8)"},
+                "A85": {"style": 4, "content": "=ODOO.PIVOT.HEADER(4,\"#tag_report_id\",9)"},
+                "A86": {"style": 5, "content": "=ODOO.PIVOT.HEADER(4,\"#tag_report_id\",10)"},
+                "B6": {"style": 1},
+                "B7": {"style": 2, "border": 1},
+                "B27": {"style": 2, "border": 1},
+                "B28": {"style": 3, "border": 2},
+                "B29": {"style": 4},
+                "B30": {"style": 5},
+                "B31": {"style": 4},
+                "B32": {"style": 5},
+                "B33": {"style": 4},
+                "B34": {"style": 5},
+                "B38": {"style": 2, "border": 1},
+                "B57": {"style": 2, "border": 1},
+                "B58": {"style": 6, "border": 2},
+                "B59": {"style": 4},
+                "B60": {"style": 5},
+                "B61": {"style": 4},
+                "B62": {"style": 5},
+                "B63": {"style": 4},
+                "B64": {"style": 5},
+                "B65": {"style": 4},
+                "B66": {"style": 5},
+                "B67": {"style": 4},
+                "B68": {"style": 5},
+                "B75": {"style": 2, "border": 1},
+                "B76": {"style": 6, "border": 2},
+                "B77": {"style": 4},
+                "B78": {"style": 5},
+                "B79": {"style": 4},
+                "B80": {"style": 5},
+                "B81": {"style": 4},
+                "B82": {"style": 5},
+                "B83": {"style": 4},
+                "B84": {"style": 5},
+                "B85": {"style": 4},
+                "B86": {"style": 5},
+                "C6": {"style": 1},
+                "C7": {"style": 2, "border": 1},
+                "C27": {"style": 2, "border": 1},
+                "C28": {"style": 3, "border": 2},
+                "C29": {"style": 4},
+                "C30": {"style": 5},
+                "C31": {"style": 4},
+                "C32": {"style": 5},
+                "C33": {"style": 4},
+                "C34": {"style": 5},
+                "C38": {"style": 2, "border": 1},
+                "C57": {"style": 2, "border": 1},
+                "C58": {"style": 6, "border": 2},
+                "C59": {"style": 4},
+                "C60": {"style": 5},
+                "C61": {"style": 4},
+                "C62": {"style": 5},
+                "C63": {"style": 4},
+                "C64": {"style": 5},
+                "C65": {"style": 4},
+                "C66": {"style": 5},
+                "C67": {"style": 4},
+                "C68": {"style": 5},
+                "C75": {"style": 2, "border": 1},
+                "C76": {"style": 6, "border": 2},
+                "C77": {"style": 4},
+                "C78": {"style": 5},
+                "C79": {"style": 4},
+                "C80": {"style": 5},
+                "C81": {"style": 4},
+                "C82": {"style": 5},
+                "C83": {"style": 4},
+                "C84": {"style": 5},
+                "C85": {"style": 4},
+                "C86": {"style": 5},
+                "D6": {"style": 1},
+                "D7": {"style": 2, "border": 1},
+                "D27": {"style": 2, "border": 1},
+                "D28": {"style": 7, "content": "=ODOO.PIVOT.HEADER(1,\"measure\",\"revenue\")", "border": 2},
+                "D29": {"style": 8, "content": "=ODOO.PIVOT(1,\"revenue\",\"#invoice_date\",7)"},
+                "D30": {"content": "=ODOO.PIVOT(1,\"revenue\",\"#invoice_date\",8)"},
+                "D31": {"style": 8, "content": "=ODOO.PIVOT(1,\"revenue\",\"#invoice_date\",9)"},
+                "D32": {"content": "=ODOO.PIVOT(1,\"revenue\",\"#invoice_date\",10)"},
+                "D33": {"style": 8, "content": "=ODOO.PIVOT(1,\"revenue\",\"#invoice_date\",11)"},
+                "D34": {"content": "=ODOO.PIVOT(1,\"revenue\",\"#invoice_date\",12)"},
+                "D38": {"style": 2, "border": 1},
+                "D57": {"style": 2, "border": 1},
+                "D58": {"style": 7, "content": "=_t(\"# Orders\")", "border": 2},
+                "D59": {"style": 8, "content": "=ODOO.PIVOT(3,\"__count\",\"#partner_id\",1)"},
+                "D60": {"content": "=ODOO.PIVOT(3,\"__count\",\"#partner_id\",2)"},
+                "D61": {"style": 8, "content": "=ODOO.PIVOT(3,\"__count\",\"#partner_id\",3)"},
+                "D62": {"content": "=ODOO.PIVOT(3,\"__count\",\"#partner_id\",4)"},
+                "D63": {"style": 8, "content": "=ODOO.PIVOT(3,\"__count\",\"#partner_id\",5)"},
+                "D64": {"content": "=ODOO.PIVOT(3,\"__count\",\"#partner_id\",6)"},
+                "D65": {"style": 8, "content": "=ODOO.PIVOT(3,\"__count\",\"#partner_id\",7)"},
+                "D66": {"content": "=ODOO.PIVOT(3,\"__count\",\"#partner_id\",8)"},
+                "D67": {"style": 8, "content": "=ODOO.PIVOT(3,\"__count\",\"#partner_id\",9)"},
+                "D68": {"content": "=ODOO.PIVOT(3,\"__count\",\"#partner_id\",10)"},
+                "D75": {"style": 2, "border": 1},
+                "D76": {"style": 7, "content": "=_t(\"# Orders\")", "border": 2},
+                "D77": {"style": 8, "content": "=ODOO.PIVOT(4,\"__count\",\"#tag_report_id\",1)"},
+                "D78": {"content": "=ODOO.PIVOT(4,\"__count\",\"#tag_report_id\",2)"},
+                "D79": {"style": 8, "content": "=ODOO.PIVOT(4,\"__count\",\"#tag_report_id\",3)"},
+                "D80": {"content": "=ODOO.PIVOT(4,\"__count\",\"#tag_report_id\",4)"},
+                "D81": {"style": 8, "content": "=ODOO.PIVOT(4,\"__count\",\"#tag_report_id\",5)"},
+                "D82": {"content": "=ODOO.PIVOT(4,\"__count\",\"#tag_report_id\",6)"},
+                "D83": {"style": 8, "content": "=ODOO.PIVOT(4,\"__count\",\"#tag_report_id\",7)"},
+                "D84": {"content": "=ODOO.PIVOT(4,\"__count\",\"#tag_report_id\",8)"},
+                "D85": {"style": 8, "content": "=ODOO.PIVOT(4,\"__count\",\"#tag_report_id\",9)"},
+                "D86": {"content": "=ODOO.PIVOT(4,\"__count\",\"#tag_report_id\",10)"},
+                "E6": {"style": 1},
+                "E7": {"style": 2, "border": 1},
+                "E27": {"style": 2, "border": 1},
+                "E28": {"style": 7, "border": 2},
+                "E29": {"style": 8},
+                "E31": {"style": 8},
+                "E33": {"style": 8},
+                "E38": {"style": 2, "border": 1},
+                "E57": {"style": 2, "border": 1},
+                "E58": {"style": 7, "border": 2},
+                "E59": {"style": 8},
+                "E61": {"style": 8},
+                "E63": {"style": 8},
+                "E65": {"style": 8},
+                "E67": {"style": 8},
+                "E75": {"style": 2, "border": 1},
+                "E76": {"style": 7, "border": 2},
+                "E77": {"style": 8},
+                "E79": {"style": 8},
+                "E81": {"style": 8},
+                "E83": {"style": 8},
+                "E85": {"style": 8},
+                "F6": {"style": 1},
+                "F7": {"style": 2, "border": 1},
+                "F27": {"style": 2, "border": 1},
+                "F28": {"style": 7, "border": 2},
+                "F29": {"style": 8},
+                "F31": {"style": 8},
+                "F33": {"style": 8},
+                "F38": {"style": 2, "border": 1},
+                "F57": {"style": 2, "border": 1},
+                "F58": {"style": 9, "content": "=_t(\"Revenue\")", "border": 2},
+                "F59": {"style": 8, "content": "=ODOO.PIVOT(3,\"amount_same_currency_company\",\"#partner_id\",1)"},
+                "F60": {"content": "=ODOO.PIVOT(3,\"amount_same_currency_company\",\"#partner_id\",2)"},
+                "F61": {"style": 8, "content": "=ODOO.PIVOT(3,\"amount_same_currency_company\",\"#partner_id\",3)"},
+                "F62": {"content": "=ODOO.PIVOT(3,\"amount_same_currency_company\",\"#partner_id\",4)"},
+                "F63": {"style": 8, "content": "=ODOO.PIVOT(3,\"amount_same_currency_company\",\"#partner_id\",5)"},
+                "F64": {"content": "=ODOO.PIVOT(3,\"amount_same_currency_company\",\"#partner_id\",6)"},
+                "F65": {"style": 8, "content": "=ODOO.PIVOT(3,\"amount_same_currency_company\",\"#partner_id\",7)"},
+                "F66": {"content": "=ODOO.PIVOT(3,\"amount_same_currency_company\",\"#partner_id\",8)"},
+                "F67": {"style": 8, "content": "=ODOO.PIVOT(3,\"amount_same_currency_company\",\"#partner_id\",9)"},
+                "F68": {"content": "=ODOO.PIVOT(3,\"amount_same_currency_company\",\"#partner_id\",10)"},
+                "F75": {"style": 2, "border": 1},
+                "F76": {"style": 9, "content": "=_t(\"Revenue\")", "border": 2},
+                "F77": {"style": 8, "content": "=ODOO.PIVOT(3,\"amount_same_currency_company\",\"#partner_id\",1)"},
+                "F78": {"content": "=ODOO.PIVOT(3,\"amount_same_currency_company\",\"#partner_id\",2)"},
+                "F79": {"style": 8, "content": "=ODOO.PIVOT(3,\"amount_same_currency_company\",\"#partner_id\",3)"},
+                "F80": {"content": "=ODOO.PIVOT(3,\"amount_same_currency_company\",\"#partner_id\",4)"},
+                "F81": {"style": 8, "content": "=ODOO.PIVOT(3,\"amount_same_currency_company\",\"#partner_id\",5)"},
+                "F82": {"content": "=ODOO.PIVOT(3,\"amount_same_currency_company\",\"#partner_id\",6)"},
+                "F83": {"style": 8, "content": "=ODOO.PIVOT(3,\"amount_same_currency_company\",\"#partner_id\",7)"},
+                "F84": {"content": "=ODOO.PIVOT(3,\"amount_same_currency_company\",\"#partner_id\",8)"},
+                "F85": {"style": 8, "content": "=ODOO.PIVOT(3,\"amount_same_currency_company\",\"#partner_id\",9)"},
+                "F86": {"content": "=ODOO.PIVOT(3,\"amount_same_currency_company\",\"#partner_id\",10)"},
+                "G6": {"style": 1},
+                "G7": {"style": 2, "border": 1},
+                "G27": {"style": 2, "border": 1},
+                "G28": {"style": 7, "content": "=ODOO.PIVOT.HEADER(1,\"measure\",\"project_cost\")", "border": 2},
+                "G29": {"style": 8, "content": "=ODOO.PIVOT(1,\"project_cost\",\"#invoice_date\",7)"},
+                "G30": {"content": "=ODOO.PIVOT(1,\"project_cost\",\"#invoice_date\",8)"},
+                "G31": {"style": 8, "content": "=ODOO.PIVOT(1,\"project_cost\",\"#invoice_date\",9)"},
+                "G32": {"content": "=ODOO.PIVOT(1,\"project_cost\",\"#invoice_date\",10)"},
+                "G33": {"style": 8, "content": "=ODOO.PIVOT(1,\"project_cost\",\"#invoice_date\",11)"},
+                "G34": {"content": "=ODOO.PIVOT(1,\"project_cost\",\"#invoice_date\",12)"},
+                "G38": {"style": 2, "border": 1},
+                "G57": {"style": 2, "border": 1},
+                "G58": {"style": 9, "border": 2},
+                "G59": {"style": 8},
+                "G61": {"style": 8},
+                "G63": {"style": 8},
+                "G65": {"style": 8},
+                "G67": {"style": 8},
+                "G75": {"style": 2, "border": 1},
+                "G76": {"style": 9, "border": 2},
+                "G77": {"style": 8},
+                "G79": {"style": 8},
+                "G81": {"style": 8},
+                "G83": {"style": 8},
+                "G85": {"style": 8},
+                "H6": {"style": 1},
+                "H7": {"style": 2, "border": 1},
+                "H27": {"style": 2, "border": 1},
+                "H28": {"style": 7, "border": 2},
+                "H29": {"style": 8},
+                "H31": {"style": 8},
+                "H33": {"style": 8},
+                "H38": {"style": 2, "border": 1},
+                "H57": {"style": 2, "border": 1},
+                "H58": {"style": 9, "border": 2},
+                "H59": {"style": 8},
+                "H61": {"style": 8},
+                "H63": {"style": 8},
+                "H65": {"style": 8},
+                "H67": {"style": 8},
+                "H75": {"style": 2, "border": 1},
+                "H76": {"style": 9, "border": 2},
+                "H77": {"style": 8},
+                "H79": {"style": 8},
+                "H81": {"style": 8},
+                "H83": {"style": 8},
+                "H85": {"style": 8},
+                "I6": {"style": 1},
+                "I7": {"style": 2, "border": 1},
+                "I27": {"style": 2, "border": 1},
+                "I28": {"style": 7, "border": 2},
+                "I29": {"style": 8},
+                "I31": {"style": 8},
+                "I33": {"style": 8},
+                "I38": {"style": 2, "border": 1},
+                "I57": {"style": 2},
+                "I58": {"style": 1},
+                "I75": {"style": 2},
+                "I76": {"style": 1},
+                "J6": {"style": 1},
+                "J7": {"style": 2, "border": 1},
+                "J27": {"style": 2, "border": 1},
+                "J28": {"style": 7, "content": "=ODOO.PIVOT.HEADER(1,\"measure\",\"production_profit\")", "border": 2},
+                "J29": {"style": 8, "content": "=ODOO.PIVOT(1,\"production_profit\",\"#invoice_date\",7)"},
+                "J30": {"content": "=ODOO.PIVOT(1,\"production_profit\",\"#invoice_date\",8)"},
+                "J31": {"style": 8, "content": "=ODOO.PIVOT(1,\"production_profit\",\"#invoice_date\",9)"},
+                "J32": {"content": "=ODOO.PIVOT(1,\"production_profit\",\"#invoice_date\",10)"},
+                "J33": {"style": 8, "content": "=ODOO.PIVOT(1,\"production_profit\",\"#invoice_date\",11)"},
+                "J34": {"content": "=ODOO.PIVOT(1,\"production_profit\",\"#invoice_date\",12)"},
+                "J38": {"style": 2, "border": 1},
+                "J57": {"style": 2},
+                "J58": {"style": 1},
+                "J75": {"style": 2},
+                "J76": {"style": 1},
+                "K6": {"style": 1},
+                "K7": {"style": 2, "border": 1},
+                "K27": {"style": 2, "border": 1},
+                "K28": {"style": 7, "border": 2},
+                "K29": {"style": 8},
+                "K31": {"style": 8},
+                "K33": {"style": 8},
+                "K38": {"style": 2, "border": 1},
+                "K57": {"style": 2},
+                "K58": {"style": 1},
+                "K75": {"style": 2},
+                "K76": {"style": 1},
+                "L6": {"style": 1},
+                "L7": {"style": 2, "border": 1},
+                "L27": {"style": 2, "border": 1},
+                "L28": {"style": 7, "border": 2},
+                "L29": {"style": 8},
+                "L31": {"style": 8},
+                "L33": {"style": 8},
+                "L38": {"style": 2, "border": 1},
+                "L57": {"style": 2},
+                "L58": {"style": 1},
+                "L75": {"style": 2},
+                "L76": {"style": 1},
+                "M6": {"style": 1},
+                "M7": {"style": 2, "border": 1},
+                "M27": {"style": 2, "border": 1},
+                "M28": {"style": 7, "content": "=_t(\"Margin\")", "border": 2},
+                "M29": {"style": 8, "content": "=ODOO.PIVOT(1,\"margin\",\"#invoice_date\",7)"},
+                "M30": {"content": "=ODOO.PIVOT(1,\"margin\",\"#invoice_date\",8)"},
+                "M31": {"style": 8, "content": "=ODOO.PIVOT(1,\"margin\",\"#invoice_date\",9)"},
+                "M32": {"content": "=ODOO.PIVOT(1,\"margin\",\"#invoice_date\",10)"},
+                "M33": {"style": 8, "content": "=ODOO.PIVOT(1,\"margin\",\"#invoice_date\",11)"},
+                "M34": {"content": "=ODOO.PIVOT(1,\"margin\",\"#invoice_date\",12)"},
+                "M38": {"style": 2, "border": 1},
+                "M57": {"style": 2},
+                "M58": {"style": 1},
+                "M75": {"style": 2},
+                "M76": {"style": 1},
+                "N6": {"style": 1},
+                "N7": {"style": 2, "border": 1},
+                "N27": {"style": 2, "border": 1},
+                "N28": {"style": 7, "border": 2},
+                "N29": {"style": 8},
+                "N31": {"style": 8},
+                "N33": {"style": 8},
+                "N38": {"style": 2, "border": 1},
+                "N57": {"style": 2},
+                "N58": {"style": 1},
+                "N75": {"style": 2},
+                "N76": {"style": 1},
+                "O6": {"style": 1},
+                "O7": {"style": 2, "border": 1},
+                "O27": {"style": 2, "border": 1},
+                "O28": {"style": 7, "border": 2},
+                "O29": {"style": 8},
+                "O31": {"style": 8},
+                "O33": {"style": 8},
+                "O38": {"style": 2, "border": 1},
+                "O57": {"style": 2},
+                "O58": {"style": 1},
+                "O75": {"style": 2},
+                "O76": {"style": 1},
+                "P6": {"style": 1},
+                "P7": {"style": 2, "border": 1},
+                "P27": {"style": 2},
+                "P28": {"style": 7},
+                "P29": {"style": 10},
+                "P30": {"style": 10},
+                "P31": {"style": 10},
+                "P32": {"style": 10},
+                "P33": {"style": 10},
+                "P34": {"style": 10},
+                "P38": {"style": 2, "border": 1},
+                "P57": {"style": 2},
+                "P58": {"style": 1},
+                "P75": {"style": 2},
+                "P76": {"style": 1},
+                "Q6": {"style": 1},
+                "Q7": {"style": 2, "border": 1},
+                "Q27": {"style": 2},
+                "Q28": {"style": 7},
+                "Q29": {"style": 10},
+                "Q30": {"style": 10},
+                "Q31": {"style": 10},
+                "Q32": {"style": 10},
+                "Q33": {"style": 10},
+                "Q34": {"style": 10},
+                "Q38": {"style": 2, "border": 1},
+                "Q57": {"style": 2},
+                "Q58": {"style": 1},
+                "Q75": {"style": 2},
+                "Q76": {"style": 1},
+                "R6": {"style": 1},
+                "R7": {"style": 2, "border": 1},
+                "R27": {"style": 2},
+                "R28": {"style": 7},
+                "R29": {"style": 10},
+                "R30": {"style": 10},
+                "R31": {"style": 10},
+                "R32": {"style": 10},
+                "R33": {"style": 10},
+                "R34": {"style": 10},
+                "R38": {"style": 2, "border": 1},
+                "R57": {"style": 2},
+                "R58": {"style": 1},
+                "R75": {"style": 2},
+                "R76": {"style": 1},
+                "S6": {"style": 1},
+                "S7": {"style": 2, "border": 1},
+                "S27": {"style": 2},
+                "S28": {"style": 7},
+                "S29": {"style": 10},
+                "S30": {"style": 10},
+                "S31": {"style": 10},
+                "S32": {"style": 10},
+                "S33": {"style": 10},
+                "S34": {"style": 10},
+                "S38": {"style": 2, "border": 1},
+                "S57": {"style": 2},
+                "S58": {"style": 1},
+                "S75": {"style": 2},
+                "S76": {"style": 1},
+                "A8": {"border": 2},
+                "A39": {"border": 2},
+                "B8": {"border": 2},
+                "B39": {"border": 2},
+                "C8": {"border": 2},
+                "C39": {"border": 2},
+                "D8": {"border": 2},
+                "D39": {"border": 2},
+                "E8": {"border": 2},
+                "E39": {"border": 2},
+                "F8": {"border": 2},
+                "F39": {"border": 2},
+                "G8": {"border": 2},
+                "G39": {"border": 2},
+                "H8": {"border": 2},
+                "H39": {"border": 2},
+                "I8": {"border": 2},
+                "I39": {"border": 2},
+                "J8": {"border": 2},
+                "J39": {"border": 2},
+                "K8": {"border": 2},
+                "K39": {"border": 2},
+                "L8": {"border": 2},
+                "L39": {"border": 2},
+                "M8": {"border": 2},
+                "M39": {"border": 2},
+                "N8": {"border": 2},
+                "N39": {"border": 2},
+                "O8": {"border": 2},
+                "O39": {"border": 2},
+                "P8": {"border": 2},
+                "P39": {"border": 2},
+                "Q8": {"border": 2},
+                "Q39": {"border": 2},
+                "R8": {"border": 2},
+                "R39": {"border": 2},
+                "S8": {"border": 2},
+                "S39": {"border": 2}
+            },
+            "conditionalFormats": [],
+            "figures": [
+                {"id": "f1ec103e-2891-4c20-b142-bee8228dfa13", "x": 0, "y": 0, "width": 199, "height": 94, "tag": "chart", "data": {"baselineColorDown": "#DC6965", "baselineColorUp": "#00FF00", "baselineMode": "difference", "title": "Sale Orders", "type": "scorecard", "background": "#F3F3F3", "keyValue": "Data!B1"}},
+                {"id": "de764ead-8c6a-4bca-8a8e-03111997073e", "x": 250, "y": 0, "width": 200, "height": 94, "tag": "chart", "data": {"baselineColorDown": "#DC6965", "baselineColorUp": "#00FF00", "baselineMode": "difference", "title": "Purchase Orders", "type": "scorecard", "background": "#F3F3F3", "keyValue": "Data!B2"}},
+                {"id": "27fa05f5-d7c3-4485-8a3a-1202e47b4f63", "x": 749, "y": 0, "width": 200, "height": 94, "tag": "chart", "data": {"baselineColorDown": "#DC6965", "baselineColorUp": "#00FF00", "baselineMode": "difference", "title": "Average Order Value", "type": "scorecard", "background": "#F3F3F3", "keyValue": "Data!F4"}},
+                {"id": "ba4604ea-ca02-45ed-a643-1bdadba791a8", "x": 499, "y": 0, "width": 200, "height": 94, "tag": "chart", "data": {"baselineColorDown": "#DC6965", "baselineColorUp": "#00FF00", "baselineMode": "difference", "title": "Revenue", "type": "scorecard", "background": "#F3F3F3", "keyValue": "Data!F3"}},
+                {"id": "c17a0864-aba3-4ec9-984e-40eaa50d4a88", "x": 0, "y": 166.5, "width": 950, "height": 390, "tag": "chart", "data": {"type": "bar", "dataSetsHaveTitle": true, "dataSets": ["D28:D34", "G28:G34", "J28:J34"], "legendPosition": "top", "verticalAxisPosition": "left", "labelRange": "A29:C34", "title": "", "stacked": false}},
+                {"id": "21ddae20-77a8-4365-8091-0459d413f994", "x": 450, "y": 1319.5, "width": 501, "height": 327, "tag": "chart", "data": {"type": "pie", "dataSetsHaveTitle": true, "dataSets": ["F58:F68"], "legendPosition": "left", "labelRange": "A59:C68", "title": ""}},
+                {"id": "8c7eea9b-14a3-4dd8-968b-71dcef70e190", "x": 0, "y": 906.5, "width": 951, "height": 346, "tag": "chart", "data": {"type": "line", "dataSetsHaveTitle": true, "dataSets": ["M28:M34"], "legendPosition": "top", "verticalAxisPosition": "left", "labelRange": "A29:C34", "title": "", "labelsAsText": false, "stacked": true, "cumulative": false}},
+                {"id": "7aa260ed-74ef-493e-b8ce-4d9202917727", "x": 448, "y": 1751, "width": 501, "height": 327, "tag": "chart", "data": {"type": "pie", "dataSetsHaveTitle": true, "dataSets": ["F76:F86"], "legendPosition": "left", "labelRange": "A77:A86", "title": ""}}
+            ],
+            "filterTables": [],
+            "areGridLinesVisible": true,
+            "isVisible": true
         },
         {
             "id": "Sheet2",
@@ -1657,220 +597,39 @@
             "colNumber": 26,
             "rowNumber": 100,
             "rows": {},
-            "cols": {
-                "0": {
-                    "size": 118
-                }
-            },
+            "cols": {"0": {"size": 118}},
             "merges": [],
-            "cells": {
-                "A1": {
-                    "content": "SO count"
-                },
-                "A2": {
-                    "content": "PO count"
-                },
-                "A3": {
-                    "content": "Revenue"
-                },
-                "A4": {
-                    "content": "Average value"
-                },
-                "B1": {
-                    "content": "=ODOO.PIVOT(3,\"__count\")"
-                },
-                "B2": {
-                    "content": "=ODOO.PIVOT(5,\"__count\")"
-                },
-                "B3": {
-                    "format": 1,
-                    "content": "=ODOO.PIVOT(1,\"revenue\")"
-                },
-                "B4": {
-                    "format": 1,
-                    "content": "=IFERROR(B3/B1, 0)"
-                },
-                "D3": {
-                    "content": "Revenue (format)"
-                },
-                "D4": {
-                    "content": "Average value (format)"
-                },
-                "F3": {
-                    "content": "=FORMAT.LARGE.NUMBER(B3)"
-                },
-                "F4": {
-                    "content": "=FORMAT.LARGE.NUMBER(B4)"
-                }
-            },
-            "conditionalFormats": [],
-            "figures": [],
-            "filterTables": [],
-            "areGridLinesVisible": true,
-            "isVisible": true
+            "cells": {"A1": {"content": "SO count"}, "A2": {"content": "PO count"}, "A3": {"content": "Revenue"}, "A4": {"content": "Average value"}, "B1": {"content": "=ODOO.PIVOT(3,\"__count\")"}, "B2": {"content": "=ODOO.PIVOT(5,\"__count\")"}, "B3": {"format": 1, "content": "=ODOO.PIVOT(1,\"revenue\")"}, "B4": {"format": 1, "content": "=IFERROR(B3/B1, 0)"}, "D3": {"content": "Revenue (format)"}, "D4": {"content": "Average value (format)"}, "F3": {"content": "=FORMAT.LARGE.NUMBER(B3)"}, "F4": {"content": "=FORMAT.LARGE.NUMBER(B4)"}}
         }
     ],
     "entities": {},
     "styles": {
-        "1": {
-            "fillColor": ""
-        },
-        "2": {
-            "fontSize": 16,
-            "bold": true,
-            "textColor": "#01666B"
-        },
-        "3": {
-            "fillColor": "",
-            "textColor": "#000000",
-            "align": "left",
-            "bold": true
-        },
-        "4": {
-            "fillColor": "#F8F9FA",
-            "textColor": "#01666B"
-        },
-        "5": {
-            "textColor": "#01666B"
-        },
-        "6": {
-            "bold": true,
-            "fillColor": "",
-            "textColor": "#000000"
-        },
-        "7": {
-            "bold": true,
-            "align": "right",
-            "fillColor": ""
-        },
-        "8": {
-            "fillColor": "#F8F9FA"
-        },
-        "9": {
-            "fillColor": "",
-            "textColor": "#000000",
-            "align": "right",
-            "bold": true
-        },
-        "10": {
-            "bold": true,
-            "align": "right"
-        }
+        "1": {"fillColor": ""},
+        "2": {"fontSize": 16, "bold": true, "textColor": "#01666B"},
+        "3": {"fillColor": "", "textColor": "#000000", "align": "left", "bold": true},
+        "4": {"fillColor": "#F8F9FA", "textColor": "#01666B"},
+        "5": {"textColor": "#01666B"},
+        "6": {"bold": true, "fillColor": "", "textColor": "#000000"},
+        "7": {"bold": true, "align": "right", "fillColor": ""},
+        "8": {"fillColor": "#F8F9FA"},
+        "9": {"fillColor": "", "textColor": "#000000", "align": "right", "bold": true},
+        "10": {"bold": true, "align": "right"}
     },
-    "formats": {
-        "1": "[$$]#,##0.0"
-    },
-    "borders": {
-        "1": {
-            "bottom": ["thin", "#000"]
-        },
-        "2": {
-            "top": ["thin", "#000"]
-        }
-    },
-    "revisionId": "cd7748bf-339b-46eb-bd45-950ad9788e27",
+    "formats": {"1": "[$$]#,##0.0"},
+    "borders": {"1": {"bottom": ["thin", "#000"]}, "2": {"top": ["thin", "#000"]}},
+    "revisionId": "9ce0b16c-6db0-4518-b97d-fb2e642130d2",
     "uniqueFigureIds": true,
     "odooVersion": 5,
     "globalFilters": [],
     "pivots": {
-        "1": {
-            "colGroupBys": [],
-            "context": {
-                "search_default_last_6_months": 1
-            },
-            "domain": [],
-            "id": "1",
-            "measures": [
-                {"field": "revenue"},
-                {"field": "project_cost"},
-                {"field": "production_profit"},
-                {"field": "margin"}
-            ],
-            "model": "moron.sale.report",
-            "rowGroupBys": ["invoice_date"],
-            "name": "Sale Report",
-            "sortedColumn": {"groupId": [[], []], "measure": "invoice_date", "order": "asc"},
-            "fieldMatching": {}
-        },
-        "2": {
-            "colGroupBys": [],
-            "context": {
-                "search_default_last_6_months": 1
-            },
-            "domain": [],
-            "id": "2",
-            "measures": [
-                {"field": "revenue"},
-                {"field": "project_cost"},
-                {"field": "production_profit"},
-                {"field": "margin"}
-            ],
-            "model": "moron.sale.report",
-            "rowGroupBys": ["invoice_date"],
-            "name": "Sale Report - Test",
-            "sortedColumn": {"groupId": [[], []], "measure": "invoice_date", "order": "asc"},
-            "fieldMatching": {}
-        },
-        "3": {
-            "colGroupBys": [],
-            "context": {
-                "search_default_ftr_last_12_months": 1
-            },
-            "domain": [["status", "in", ["invoiced", "completed"]]],
-            "id": "3",
-            "measures": [
-                {"field": "amount_same_currency_company"},
-                {"field": "__count"}
-            ],
-            "model": "moron.sale.order",
-            "rowGroupBys": ["partner_id"],
-            "name": "Sale Orders - by Customer",
-            "sortedColumn": {"groupId": [[], []], "measure": "amount_same_currency_company", "order": "desc"},
-            "fieldMatching": {}
-        },
-        "4": {
-            "colGroupBys": [],
-            "context": {
-                "search_default_ftr_last_12_months": 1
-            },
-            "domain": [["tag_report_id", "!=", false], ["status", "in", ["invoiced", "completed"]]],
-            "id": "4",
-            "measures": [
-                {"field": "__count"},
-                {"field": "amount_same_currency_company"}
-            ],
-            "model": "moron.sale.order",
-            "rowGroupBys": ["tag_report_id"],
-            "name": "Sale Orders - by Tag",
-            "sortedColumn": {"groupId": [[], []], "measure": "amount_same_currency_company", "order": "desc"},
-            "fieldMatching": {}
-        },
-        "5": {
-            "colGroupBys": [],
-            "context": {
-                "search_default_ftr_last_12_months": 1
-            },
-            "domain": [["stages_id", "!=", "canceled"], ["contributor_id", "!=", false]],
-            "id": "5",
-            "measures": [
-                {"field": "__count"},
-                {"field": "po_value"}
-            ],
-            "model": "project.task",
-            "rowGroupBys": ["project_id"],
-            "name": "Purchase Orders",
-            "sortedColumn": {"groupId": [[], []], "measure": "create_date", "order": "desc"},
-            "fieldMatching": {}
-        }
+        "1": {"colGroupBys": [], "context": {"search_default_last_6_months": 1}, "domain": [], "id": "1", "measures": [{"field": "revenue"}, {"field": "project_cost"}, {"field": "production_profit"}, {"field": "margin"}], "model": "moron.sale.report", "rowGroupBys": ["invoice_date"], "name": "Sale Report", "sortedColumn": {"groupId": [[], []], "measure": "invoice_date", "order": "asc"}, "fieldMatching": {}},
+        "2": {"colGroupBys": [], "context": {"search_default_last_6_months": 1}, "domain": [], "id": "2", "measures": [{"field": "revenue"}, {"field": "project_cost"}, {"field": "production_profit"}, {"field": "margin"}], "model": "moron.sale.report", "rowGroupBys": ["invoice_date"], "name": "Sale Report - Test", "sortedColumn": {"groupId": [[], []], "measure": "invoice_date", "order": "asc"}, "fieldMatching": {}},
+        "3": {"colGroupBys": [], "context": {"search_default_ftr_last_12_months": 1}, "domain": [["status", "in", ["invoiced", "completed"]]], "id": "3", "measures": [{"field": "amount_same_currency_company"}, {"field": "__count"}], "model": "moron.sale.order", "rowGroupBys": ["partner_id"], "name": "Sale Orders - by Customer", "sortedColumn": {"groupId": [[], []], "measure": "amount_same_currency_company", "order": "desc"}, "fieldMatching": {}},
+        "4": {"colGroupBys": [], "context": {"search_default_ftr_last_12_months": 1}, "domain": [["tag_report_id", "!=", false], ["status", "in", ["invoiced", "completed"]]], "id": "4", "measures": [{"field": "__count"}, {"field": "amount_same_currency_company"}], "model": "moron.sale.order", "rowGroupBys": ["tag_report_id"], "name": "Sale Orders - by Tag", "sortedColumn": {"groupId": [[], []], "measure": "amount_same_currency_company", "order": "desc"}, "fieldMatching": {}},
+        "5": {"colGroupBys": [], "context": {"search_default_ftr_last_12_months": 1}, "domain": [["stages_id", "!=", "canceled"], ["contributor_id", "!=", false]], "id": "5", "measures": [{"field": "__count"}, {"field": "po_value"}], "model": "project.task", "rowGroupBys": ["project_id"], "name": "Purchase Orders", "sortedColumn": {"groupId": [[], []], "measure": "create_date", "order": "desc"}, "fieldMatching": {}}
     },
     "pivotNextId": 6,
     "lists": {},
     "listNextId": 1,
-    "chartOdooMenusReferences": {
-        "f1ec103e-2891-4c20-b142-bee8228dfa13": "morons.sale_order_menu",
-        "7aa260ed-74ef-493e-b8ce-4d9202917727": "morons.sale_order_menu",
-        "21ddae20-77a8-4365-8091-0459d413f994": "morons.sale_order_menu",
-        "ba4604ea-ca02-45ed-a643-1bdadba791a8": "morons.client_invoices_menu",
-        "27fa05f5-d7c3-4485-8a3a-1202e47b4f63": "morons.client_invoices_menu"
-    }
+    "chartOdooMenusReferences": {"f1ec103e-2891-4c20-b142-bee8228dfa13": "morons.sale_order_menu", "7aa260ed-74ef-493e-b8ce-4d9202917727": "morons.sale_order_menu", "21ddae20-77a8-4365-8091-0459d413f994": "morons.sale_order_menu", "ba4604ea-ca02-45ed-a643-1bdadba791a8": "morons.client_invoices_menu", "27fa05f5-d7c3-4485-8a3a-1202e47b4f63": "morons.client_invoices_menu"}
 }
