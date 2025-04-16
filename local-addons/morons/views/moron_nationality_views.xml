@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_moron_nationality_tree" model="ir.ui.view">
+        <field name="name">moron.nationality.tree</field>
+        <field name="model">moron.nationality</field>
+        <field name="arch" type="xml">
+            <tree editable="bottom">
+                <field name="name"/>
+            </tree>
+        </field>
+    </record>
+
+    <record id="action_moron_nationality" model="ir.actions.act_window">
+        <field name="name">Nationalities</field>
+        <field name="res_model">moron.nationality</field>
+        <field name="view_mode">tree</field>
+    </record>
+
+</odoo>

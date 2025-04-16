@@ -73,7 +73,7 @@ class InternalUser(models.Model):
     contributor = fields.Boolean(string='Contributor', default=False)
     currency = fields.Many2one('res.currency', string='Currency')
     skype = fields.Char(string='Skype')
-    nationality = fields.Many2many('res.country')
+    nationality_ids = fields.Many2many('moron.nationality', string='Nationalities')
     country_of_residence = fields.Many2one('res.country')
     my_pos_count = fields.Integer(string='POs Count', compute='_compute_my_pos_count')
     languages_ids = fields.Many2many('res.lang', string='Languages')

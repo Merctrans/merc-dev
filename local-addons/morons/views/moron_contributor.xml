@@ -50,7 +50,7 @@
                             <field name="tz" attrs="{'required': [('contributor', '=', True)]}"/>
                             <field name="languages_ids" widget="many2many_tags"/>
                             <field name="country_of_residence" attrs="{'required': [('contributor', '=', True)]}"/>
-                            <field name="nationality" widget="many2many_tags" attrs="{'required': [('contributor', '=', True)]}"/>
+                            <field name="nationality_ids" widget="many2many_tags" attrs="{'required': [('contributor', '=', True)]}"/>
                         </group>
                         <group name="educational_qualifications" string="Educational Qualifications">
                             <field name="dates_attended"/>
@@ -188,7 +188,7 @@
                             <field name="skype" string="Skype"/>
                             <field name="languages_ids" widget="many2many_tags"/>
                             <field name="country_of_residence" string="Country of Residence" readonly="1"/>
-                            <field name="nationality" string="Nationality" widget="many2many_tags" readonly="1"/>
+                            <field name="nationality_ids" widget="many2one_tags" readonly="1"/>
                             <field name="tz" string="Timezone" readonly="1"/>
                             <field name="vat" string="VAT/ABN Number"/>
                         </group>
