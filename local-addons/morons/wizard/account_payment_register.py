@@ -18,4 +18,5 @@ class AccountPaymentRegister(models.TransientModel):
             payments.write({"moron_client_invoice_id": self.moron_client_invoice_id.id})
         if self.moron_contributor_invoice_id:
             payments.write({"moron_contributor_invoice_id": self.moron_contributor_invoice_id.id})
+            self.moron_contributor_invoice_id.action_send_email_invoice_paid()
         return payments

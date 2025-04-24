@@ -1,39 +1,11 @@
 from odoo import models, fields, api, _
 from odoo.exceptions import ValidationError
 from odoo.tools.misc import format_date
+import logging
+_logger = logging.getLogger(__name__)
 
 
 class MerctransTask(models.Model):
-    """
-    A model representing tasks within Merctrans projects.
-
-    This class extends the 'project.task' model of Odoo, tailored for the specific needs of
-    Merctrans projects. It includes functionality for managing purchase order statuses, work units,
-    payment statuses, and various other task-related details. Key features include the ability to
-    compute the value of tasks based on volume and rate, and handling the source and target languages
-    for tasks in translation projects.
-
-    Attributes:
-        _inherit (str): Inherited model name in the Odoo framework.
-        po_status_list (list of tuples): A predefined list of possible statuses for purchase orders.
-        work_unit_list (list of tuples): A predefined list of work units applicable to tasks.
-        payment_status_list (list of tuples): A predefined list of payment statuses for tasks.
-        rate (fields.Float): Field for the rate applicable to the task.
-        service (fields.Many2many): Relationship to the 'merctrans.services' model, indicating services involved in the task.
-        source_language (fields.Many2one): Computed field for the source language of the task, derived from the associated project.
-        target_language (fields.Many2many): Field for the target languages of the task.
-        work_unit (fields.Selection): Field for selecting a work unit from the work_unit_list.
-        volume (fields.Integer): Field for the volume of work associated with the task.
-        po_value (fields.Float): Computed field for the Purchase Order value of the task.
-        payment_status (fields.Selection): Field for the payment status of the task.
-        currency (fields.Char): Computed field for the currency used in the task.
-
-    Methods:
-        _compute_po_value(): Computes the Purchase Order value of the task based on volume and rate.
-        _get_source_lang(): Computes the source language of the task based on its associated project.
-        _compute_currency_id(): Computes the currency used in the task based on the users assigned to it.
-    """
-
     _inherit = "project.task"
     _description = "Purchase Order"
 
@@ -42,6 +14,7 @@ class MerctransTask(models.Model):
                                         required=True)
 
     po_status_list = [
+        ("new", "New"),
         ("in progress", "In Progress"),
         ("completed", "Completed"),
         ("canceled", "Canceled"),
@@ -60,7 +33,7 @@ class MerctransTask(models.Model):
         ("paid", "Paid"),
     ]
     stages_id = fields.Selection(
-        string="Completion Status", selection=po_status_list, required=True,tracking= True, default="in progress"
+        string="Completion Status", selection=po_status_list, required=True,tracking= True, default="new"
     )
 
     rate = fields.Monetary(string="Rate*", tracking=True, currency_field="currency_id")
@@ -80,13 +53,13 @@ class MerctransTask(models.Model):
         tracking=True, currency_field="currency_id"
     )
     po_value_by_project_currency = fields.Monetary("PO Value (By Project)",
-        compute="_compute_po_value_by_project_currency", store=True, readonly=True,
+        compute="_compute_po_value_by_project_currency", store=True, readonly=True, compute_sudo=True,
         currency_field="project_currency_id"
     )
     po_value_by_project_currency_string = fields.Char("PO Value (By Project)",
-        compute="_compute_po_value_by_project_currency_string",
+        compute="_compute_po_value_by_project_currency_string", compute_sudo=True,
     )
-    show_po_value_currency_string = fields.Boolean("Show PO Value Currency String", default=False, compute="_compute_show_po_value_currency_string")
+    show_po_value_currency_string = fields.Boolean("Show PO Value Currency String", default=False, compute="_compute_show_po_value_currency_string", compute_sudo=True)
 
     payment_status = fields.Selection(
         string="Payment Status*",
@@ -96,13 +69,13 @@ class MerctransTask(models.Model):
         tracking= True,
         compute="_compute_payment_status", store=True, compute_sudo=True
     )
-    currency_id = fields.Many2one("res.currency", string="Currency", compute="_compute_currency_id", store=True, tracking= True, readonly=False)
-    project_currency_id = fields.Many2one("res.currency", related="project_id.currency_id", store=True, readonly=True)
+    currency_id = fields.Many2one("res.currency", string="Currency", compute="_compute_currency_id", store=True, tracking= True, readonly=False, compute_sudo=True)
+    project_currency_id = fields.Many2one("res.currency", related="project_id.currency_id", store=True, readonly=True, compute_sudo=True)
     name = fields.Char(string="Name", required=True, tracking= True, default="New")
 
     contributor_invoice_id = fields.Many2one("account.move", string="Contributor Invoice")
 
-    show_warning_deadline = fields.Text(string="Show Warning Deadline", default="", compute="_compute_show_warning_deadline")
+    show_warning_deadline = fields.Text(string="Show Warning Deadline", default="", compute="_compute_show_warning_deadline", compute_sudo=True)
 
     @api.constrains("volume","rate")
     def _check_positive_values(self):
@@ -214,6 +187,10 @@ class MerctransTask(models.Model):
     def action_in_progress(self):
         self.sudo().write({"stages_id": "in progress"})
 
+    def action_set_to_new(self):
+        self = self.sudo().filtered(lambda r: r.stages_id == "canceled")
+        self.sudo().write({"stages_id": "new"})
+
     def action_cancel(self):
         is_contributor = self.env.user.has_group("morons.group_contributors")
         for r in self:
@@ -262,7 +239,7 @@ class MerctransTask(models.Model):
             for po in purchase_orders:
                 invoice_line_data.append((0, 0, {
                     'name': "%s - %s - %s: %s" % (
-                        po.project_id.name, 
+                        po.sudo().project_id.name, 
                         po.name,
                         dict(po._fields['work_unit'].selection).get(po.work_unit),
                         ", ".join(po.service.mapped("name"))
@@ -321,30 +298,53 @@ class MerctransTask(models.Model):
 
     def _send_notyfy_assign_contributor(self):
         # Utility method to send assignation notification upon writing/creation.
-        template_id = self.env['ir.model.data']._xmlid_to_res_id('morons.project_message_contributor_assigned', raise_if_not_found=False)
-        if not template_id:
+        email_template = self.env.ref('morons.email_template_po_assignment', raise_if_not_found=False)
+        if not email_template:
             return
         task_model_description = self.env['ir.model']._get(self._name).display_name
+        
+        email_values = {
+            'email_cc': False,
+            'auto_delete': True,
+            'message_type': 'user_notification',
+            'recipient_ids': [],
+            'partner_ids': [],
+            'scheduled_date': False,
+        }
+        
         for task in self.sudo():
             if not task.contributor_id:
                 continue
-            values = {
-                'object': task,
-                'model_description': task_model_description,
-                'assignee_name': task.contributor_id.sudo().name,
-                'access_link': task._notify_get_action_link('view'),
-            }
-            assignation_msg = self.env['ir.qweb']._render('morons.project_message_contributor_assigned', values, minimal_qcontext=True)
-            assignation_msg = self.env['mail.render.mixin']._replace_local_links(assignation_msg)
-            task.message_notify(
-                subject=_('You have been assigned to %s', task.display_name),
-                body=assignation_msg,
-                partner_ids=task.contributor_id.partner_id.ids,
-                record_name=task.display_name,
-                email_layout_xmlid='mail.mail_notification_layout',
-                model_description=task_model_description,
-                mail_auto_delete=False,
-            )
+            email_values['email_to'] = task.contributor_id.email
+            with self.env.cr.savepoint():
+                force_send = not(self.env.context.get('import_file', False))
+                email_template.send_mail(task.id, force_send=force_send, raise_exception=True, email_values=email_values)
+            _logger.info("PO assignment notification sent for user <%s> to <%s>", task.contributor_id.login, task.contributor_id.email)
+
+    def send_email_to_pm(self, send_type=False):
+        self.ensure_one()
+        email_template = False
+        if send_type == 'accepted':
+            email_template = self.env.ref('morons.email_template_po_accepted', raise_if_not_found=False)
+        elif send_type == 'declined':
+            email_template = self.env.ref('morons.email_template_po_declined', raise_if_not_found=False)
+        else:
+            return
+        if not email_template:
+            return
+
+        email_values = {
+            'email_cc': False,
+            'auto_delete': True,
+            'message_type': 'user_notification',
+            'recipient_ids': [],
+            'partner_ids': [],
+            'scheduled_date': False,
+            'email_to': self.project_id.user_id.email,
+        }
+        with self.env.cr.savepoint():
+            force_send = not(self.env.context.get('import_file', False))
+            email_template.send_mail(self.id, force_send=force_send, raise_exception=True, email_values=email_values)
 
     @api.model
     def _task_message_auto_subscribe_notify(self, users_per_task):

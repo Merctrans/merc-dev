@@ -1,8 +1,9 @@
 import datetime
 from odoo import models, fields, api, _
-from odoo.exceptions import ValidationError
+from odoo.exceptions import ValidationError, UserError
 import re
-
+import logging
+_logger = logging.getLogger(__name__)
 
 CONTRIBUTOR_FIELDS = [
     'login',
@@ -25,48 +26,6 @@ CONTRIBUTOR_FIELDS = [
 
 
 class InternalUser(models.Model):
-    """
-    A model for managing internal users at MercTrans.
-
-    This class extends the 'res.users' model from Odoo, specifically tailored for 
-    the needs of MercTrans. It includes additional fields to store information 
-    about the users' roles, contact details, nationality, payment methods, and 
-    educational background. This class is crucial for managing internal users' 
-    data, from basic identification details to more specific information like 
-    payment methods and educational qualifications.
-
-    Attributes:
-        General:
-            _inherit (str): Inherited model name in the Odoo framework.
-            contributor (fields.Boolean): Field to indicate if the user is a contributor.
-            active (fields.Boolean): Field to indicate if the user account is active.
-            currency (fields.Many2one): Relation to 'res.currency' to set the user's preferred currency.
-            skype (fields.Char): Field for the user's Skype ID.
-            nationality (fields.Many2many): Relation to 'res.lang' to represent the user's nationality.
-            country_of_residence (fields.Many2one): Relation to 'res.country' for the user's country of residence.
-            timezone (fields.Selection): Selection field for the user's timezone.
-
-        Payment Methods:
-            paypal (fields.Char): Field for the user's PayPal ID.
-            transferwise_id (fields.Char): Field for the user's Wise ID.
-            bank_account_number (fields.Char): Field for the user's bank account number.
-            bank_name (fields.Char): Field for the name of the user's bank.
-            iban (fields.Char): Field for the user's IBAN.
-            swift (fields.Char): Field for the user's SWIFT code.
-            bank_address (fields.Char): Field for the user's bank address.
-            preferred_payment_method (fields.Selection): Selection field for the user's preferred payment method.
-
-        Education and Experience:
-            dates_attended (fields.Date): Field for the dates the user attended educational institutions.
-            school (fields.Char): Field for the name of the school the user attended.
-            field_of_study (fields.Char): Field for the user's field of study.
-            year_obtained (fields.Selection): Selection field for the year the user obtained their degree.
-            certificate (fields.Char): Field for the name of any certificate obtained by the user.
-
-    Methods:
-        validate_email(): Validates the format of the user's email for PayPal and login.
-    """
-
     _inherit = ["res.users"]
 
     # Contributor Information
@@ -165,3 +124,54 @@ class InternalUser(models.Model):
     @property
     def SELF_WRITEABLE_FIELDS(self):
         return super().SELF_WRITEABLE_FIELDS + CONTRIBUTOR_FIELDS
+
+    def action_reset_password(self):
+        """ create signup token for each user, and send their signup url by email """
+        if self.env.context.get('install_mode', False):
+            return
+        if self.filtered(lambda user: not user.active):
+            raise UserError(_("You cannot perform this action on an archived user."))
+        # prepare reset password signup
+        create_mode = bool(self.env.context.get('create_user'))
+
+        # no time limit for initial invitation, only for reset password
+        expiration = False if create_mode else now(days=+1)
+
+        self.mapped('partner_id').signup_prepare(signup_type="reset", expiration=expiration)
+
+        # send email to users with their signup url
+        user_template = False
+        contributor_template = False
+        if create_mode:
+            try:
+                user_template = self.env.ref('auth_signup.set_password_email', raise_if_not_found=False)
+                contributor_template = self.env.ref('morons.email_template_new_contributor', raise_if_not_found=False)
+            except ValueError:
+                pass
+        if not user_template:
+            user_template = self.env.ref('auth_signup.reset_password_email')
+        if not contributor_template:
+            contributor_template = self.env.ref('auth_signup.reset_password_email')
+        
+        assert user_template._name == 'mail.template'
+        assert contributor_template._name == 'mail.template'
+
+        email_values = {
+            'email_cc': False,
+            'auto_delete': True,
+            'message_type': 'user_notification',
+            'recipient_ids': [],
+            'partner_ids': [],
+            'scheduled_date': False,
+        }
+
+        for user in self:
+            if not user.email:
+                raise UserError(_("Cannot send email: user %s has no email address.", user.name))
+            email_values['email_to'] = user.email
+            # TDE FIXME: make this template technical (qweb)
+            template = user_template if not user.contributor else contributor_template
+            with self.env.cr.savepoint():
+                force_send = not(self.env.context.get('import_file', False))
+                template.send_mail(user.id, force_send=force_send, raise_exception=True, email_values=email_values)
+            _logger.info("Password reset email sent for user <%s> to <%s>", user.login, user.email)
