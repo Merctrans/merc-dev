@@ -19,7 +19,7 @@
     'version': '0.1.0',
 
     # any module necessary for this one to work correctly
-    'depends': ['base', 'project', 'account', 'mail', 'auth_totp', 'l10n_generic_coa'],
+    'depends': ['base', 'project', 'account', 'mail', 'auth_totp', 'l10n_generic_coa', 'auth_signup'],
 
     # always loaded
     'data': [

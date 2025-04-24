@@ -51,17 +51,21 @@
                     <button name="action_complete" string="Complete"
                         type="object" class="oe_highlight"
                         attrs="{'invisible': [('stages_id', '!=', 'in progress')]}"
-                        groups="morons.group_contributors,morons.group_bod,morons.group_pm"
+                        groups="morons.group_bod,morons.group_pm"
                         />
                     <button name="action_in_progress" string="Set to In Progress" type="object"
-                        attrs="{'invisible': [('stages_id', '!=', 'canceled')]}"
-                        groups="morons.group_contributors,morons.group_bod,morons.group_pm"
+                        attrs="{'invisible': [('stages_id', '!=', 'new')]}"
+                        groups="morons.group_bod,morons.group_pm"
                         />
                     <button name="action_cancel" string="Cancel" type="object"
                         attrs="{'invisible': [('stages_id', '=', 'canceled')]}"
-                        groups="morons.group_contributors,morons.group_bod,morons.group_pm"
+                        groups="morons.group_bod,morons.group_pm"
                         />
-                    <field name="stages_id" widget="statusbar" statusbar_visible="in progress,completed" readonly="1" />
+                    <button name="action_set_to_new" string="Set to New" type="object"
+                        attrs="{'invisible': [('stages_id', '!=', 'canceled')]}"
+                        groups="morons.group_bod,morons.group_pm"
+                        />
+                    <field name="stages_id" widget="statusbar" statusbar_visible="new,in progress,completed" readonly="1" />
                 </header>
                 <sheet>
                     <field name="show_warning_deadline" invisible="1"/>

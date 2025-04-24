@@ -129,6 +129,24 @@ class MercTransContributorInvoice(models.Model):
             self_sudo = self.sudo()
         return super(MercTransContributorInvoice, self_sudo).button_draft()
 
+    def action_send_email_invoice_paid(self):
+        email_values = {
+            'email_cc': False,
+            'auto_delete': True,
+            'message_type': 'user_notification',
+            'recipient_ids': [],
+            'partner_ids': [],
+            'scheduled_date': False,
+        }
+        for r in self:
+            if r.payment_state == "paid":
+                email_template = self.env.ref('morons.email_template_invoice_paid', raise_if_not_found=False)
+                if not email_template:
+                    continue
+                email_values['email_to'] = r.partner_id.email
+                email_template.send_mail(r.id, force_send=True)
+
+
     def action_send_invoice_to_contributor(self):
         """ Open a window to compose an email, with the edi invoice template
             message loaded by default

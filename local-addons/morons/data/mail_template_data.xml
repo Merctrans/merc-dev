@@ -1,5 +1,131 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
+
+    <!-- Send email for new contributor -->
+    <record id="email_template_new_contributor" model="mail.template">
+        <field name="name">New Contributor Welcome</field>
+        <field name="model_id" ref="base.model_res_users"/>
+        <field name="subject">MercTrans | Welcome to Moron!</field>
+        <field name="email_from">{{ (object.company_id.email_formatted or user.email_formatted) }}</field>
+        <field name="email_to">{{ object.email_formatted }}</field>
+        <field name="description">Sent to new contributors when their account is created</field>
+        <field name="body_html" type="html">
+<div style="margin: 0px; padding: 0px; font-size: 13px;">
+    <p>Hi <t t-out="object.name or 'Contributor'"/>,</p>
+    <br/>
+    <p>An account associated with this email address has just been created on <strong>Moron</strong>, the project management portal used by <strong>MercTrans</strong>.</p>
+    <br/>
+    <p>As a <strong>Contributor</strong>, Moron lets you:</p>
+    <ul>
+        <li>Keep track of your assigned jobs</li>
+        <li>Review purchase orders (POs) to ensure everything's accurate</li>
+        <li>Create and submit invoices for payment</li>
+        <li>Update your professional details (services, language pairs, rates, bank info, etc.) to streamline the payment process</li>
+    </ul>
+    <br/>
+    <p>You can log in here: <a t-att-href="object.signup_url" style="color: #875A7B;"><t t-out="object.signup_url or ''"/></a></p>
+    <br/>
+    <p>If you didn't request this account or believe this was a mistake, please contact us at <a t-att-href="'mailto:support@merctrans.com'" style="color: #875A7B;">support@merctrans.com</a></p>
+    <br/>
+    <p>Welcome aboard,<br/>The MercTrans Team</p>
+</div>
+        </field>
+        <field name="lang">{{ object.lang }}</field>
+        <field name="auto_delete" eval="True"/>
+    </record>
+
+
+    <!-- Email Template: Send notification when assign PO to Contributor -->
+    <record id="email_template_po_assignment" model="mail.template">
+        <field name="name">PO Assignment Notification</field>
+        <field name="model_id" ref="project.model_project_task"/>
+        <field name="subject">MercTrans | {{ object.project_id.job_id }} - Project {{ object.project_id.display_name }} | {{ object.name }} | {{ object.volume }} {{ object.work_unit }}</field>
+        <field name="email_from">{{ user.email_formatted }}</field>
+        <field name="email_to">{{ object.contributor_id.email }}</field>
+        <field name="body_html" type="html">
+            <div style="margin: 0px; padding: 0px; font-size: 13px;">
+                <p>Dear <t t-out="object.contributor_id.name or ''"/>,</p>
+                <br/>
+                <p>You are assigned to a new task with the following details:</p>
+                <br/>
+                <p>Deadline: <t t-out="object.date_deadline or ''"/></p>
+                <p>Work amount: <t t-out="object.volume or ''"/> <t t-out="object.work_unit or ''"/></p>
+                <p>Rate: <t t-out="object.rate or ''"/> <t t-out="object.currency_id.name or ''"/></p>
+                <p>Total PO: <t t-out="object.po_value or ''"/> <t t-out="object.currency_id.name or ''"/></p>
+                <br/>
+                <div style="margin: 16px 0px 16px 0px; text-align: center;">
+                    <a t-att-href="'/task/accept/%s' % object.id"
+                       style="background-color: #875A7B; padding: 8px 16px 8px 16px; text-decoration: none; color: #fff; border-radius: 5px; font-size:13px;">
+                        Accept
+                    </a>
+                    <a t-att-href="'/task/decline/%s' % object.id"
+                       style="background-color: #808080; padding: 8px 16px 8px 16px; text-decoration: none; color: #fff; border-radius: 5px; font-size:13px; margin-left: 10px;">
+                        Decline
+                    </a>
+                </div>
+                <br/>
+                <p>If you have any questions, please contact us at <a t-att-href="'mailto:support@merctrans.com'" style="color: #875A7B;">support@merctrans.com</a></p>
+                <br/>
+            </div>
+        </field>
+        <field name="lang">en_US</field>
+        <field name="auto_delete" eval="True"/>
+    </record>
+
+    <!-- Email Template: Contributor chấp nhận PO -->
+    <record id="email_template_po_accepted" model="mail.template">
+        <field name="name">PO Accepted Notification</field>
+        <field name="model_id" ref="project.model_project_task"/>
+        <field name="subject">MercTrans | {{ object.project_id.job_id }} - Project {{ object.project_id.display_name }} | {{ object.contributor_id.name }} accepted PO</field>
+        <field name="email_from">{{ object.contributor_id.email_formatted }}</field>
+        <field name="email_to">{{ object.project_id.user_id.email_formatted }}</field>
+        <field name="body_html" type="html">
+            <div style="margin: 0px; padding: 0px; font-size: 13px;">
+                <p>The task <t t-out="object.name or ''"/> has been accepted by <t t-out="object.contributor_id.name or ''"/></p>
+            </div>
+        </field>
+        <field name="lang">en_US</field>
+        <field name="auto_delete" eval="True"/>
+    </record>
+
+    <!-- Email Template: Contributor từ chối PO -->
+    <record id="email_template_po_declined" model="mail.template">
+        <field name="name">PO Declined Notification</field>
+        <field name="model_id" ref="project.model_project_task"/>
+        <field name="subject">MercTrans | {{ object.project_id.job_id }} - Project {{ object.project_id.display_name }} | {{ object.contributor_id.name }} DECLINED PO</field>
+        <field name="email_from">{{ object.contributor_id.email_formatted }}</field>
+        <field name="email_to">{{ object.project_id.user_id.email_formatted }}</field>
+        <field name="body_html" type="html">
+            <div style="margin: 0px; padding: 0px; font-size: 13px;">
+                <p>The task <t t-out="object.name or ''"/> has been declined by <t t-out="object.contributor_id.name or ''"/></p>
+            </div>
+        </field>
+        <field name="lang">en_US</field>
+        <field name="auto_delete" eval="True"/>
+    </record>
+
+    <!-- Email Template: Hóa đơn contributor đã được thanh toán -->
+    <record id="email_template_invoice_paid" model="mail.template">
+        <field name="name">Invoice Payment Notification</field>
+        <field name="model_id" ref="account.model_account_move"/>
+        <field name="subject">MercTrans | Invoice {{ object.name }} has been marked as paid</field>
+        <field name="email_from">{{ user.email_formatted }}</field>
+        <field name="email_to">{{ object.partner_id.email_formatted }}</field>
+        <field name="body_html" type="html">
+            <div style="margin: 0px; padding: 0px; font-size: 13px;">
+                <p>Dear <t t-out="object.partner_id.name or 'Contributor'"/>,</p>
+                <br/>
+                <p>Your submitted invoice <t t-out="object.name or ''"/> has been marked as paid.</p>
+                <br/>
+                <p>If you have any questions, please contact us at <a t-att-href="'mailto:support@merctrans.com'" style="color: #875A7B;">support@merctrans.com</a></p>
+                <br/>
+                <p>Thank you.</p>
+            </div>
+        </field>
+        <field name="lang">en_US</field>
+        <field name="auto_delete" eval="True"/>
+    </record>
+
     <!-- You have been assigned email -->
     <template id="project_message_contributor_assigned">
         <span>Dear <t t-esc="assignee_name"/>,</span>
