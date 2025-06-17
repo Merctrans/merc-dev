@@ -179,7 +179,11 @@ class MerctransTask(models.Model):
     def onchange_project_id(self):
         self.service = self.project_id.service
         self.source_language = self.project_id.source_language
+        self.target_language = self.project_id.target_language[:1]
         self.work_unit = self.project_id.work_unit
+        self.volume = self.project_id.volume
+        self.rate = self.project_id.sale_rate
+        self.date_deadline = self.project_id.date
 
     def action_complete(self):
         self.sudo().write({"stages_id": "completed"})
@@ -318,7 +322,7 @@ class MerctransTask(models.Model):
             email_values['email_to'] = task.contributor_id.email
             with self.env.cr.savepoint():
                 force_send = not(self.env.context.get('import_file', False))
-                email_template.send_mail(task.id, force_send=force_send, raise_exception=True, email_values=email_values)
+                email_template.send_mail(task.id, force_send=force_send, raise_exception=False, email_values=email_values)
             _logger.info("PO assignment notification sent for user <%s> to <%s>", task.contributor_id.login, task.contributor_id.email)
 
     def send_email_to_pm(self, send_type=False):
@@ -344,7 +348,7 @@ class MerctransTask(models.Model):
         }
         with self.env.cr.savepoint():
             force_send = not(self.env.context.get('import_file', False))
-            email_template.send_mail(self.id, force_send=force_send, raise_exception=True, email_values=email_values)
+            email_template.send_mail(self.id, force_send=force_send, raise_exception=False, email_values=email_values)
 
     @api.model
     def _task_message_auto_subscribe_notify(self, users_per_task):
