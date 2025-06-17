@@ -7,43 +7,56 @@
             <field name="model">project.project</field>
             <field name="inherit_id" ref="project.edit_project" />
             <field name="arch" type="xml">
-                <field name="stage_id" position="attributes">
-                    <attribute name="invisible">1</attribute>
-                </field>
-                <field name="stage_id" position="attributes">
-                    <attribute name="invisible">1</attribute>
-                </field>
-                <xpath expr="//div[@class='oe_button_box']" position="attributes">
-                    <attribute name="invisible">1</attribute>
-                </xpath>
 
-                <xpath expr="//field[@name='label_tasks']" position="attributes">
-                    <attribute name="placeholder">Task</attribute>
-                    <attribute name="readonly">True</attribute>
-                    <attribute name="invisible">True</attribute>
-                </xpath>
-
-                <xpath expr="(//field[@name='company_id'])[2]" position="attributes">
-                    <attribute name="required">False</attribute>
-                    <attribute name="invisible">True</attribute>
-                </xpath>
-                <xpath expr="//field[@name='label_tasks']" position="after">
-                    <field name="job_id"/>
-                    <field name="service" widget="many2many_tags" options="{'no_create': True}"/>
-                    <field name="currency_id"/>
-                    <field name="source_language" options="{'no_create': True}" />
-                    <field name="target_language" options="{'no_create': True}"
-                        widget="many2many_tags" />
-                </xpath>
+                <!-- Header: Thêm button Create Sale Order -->
                 <xpath expr="//header/field[@name='stage_id']" position="before">
                     <field name="show_create_so" invisible="1" />
                     <button name="action_create_sale_order" string="Create Sale Order"
                         type="object" class="btn-primary"
                         attrs="{'invisible': [('show_create_so', '=', False)]}" />
                 </xpath>
+
+                <!-- Header: Ẩn trường stage_id -->
+                <field name="stage_id" position="attributes">
+                    <attribute name="invisible">1</attribute>
+                </field>
+
+                <!-- Button Box: Ẩn button box -->
+                <xpath expr="//div[@class='oe_button_box']" position="attributes">
+                    <attribute name="invisible">1</attribute>
+                </xpath>
+
+                <!-- Field: Ẩn trường label_tasks -->
+                <xpath expr="//field[@name='label_tasks']" position="attributes">
+                    <attribute name="placeholder">Task</attribute>
+                    <attribute name="readonly">True</attribute>
+                    <attribute name="invisible">True</attribute>
+                </xpath>
+
+                <!-- Field: Ẩn trường company_id -->
+                <xpath expr="(//field[@name='company_id'])[2]" position="attributes">
+                    <attribute name="required">False</attribute>
+                    <attribute name="invisible">True</attribute>
+                </xpath>
+
+                <!-- Field: Thêm trường: Job ID -->
+                <xpath expr="//field[@name='label_tasks']" position="after">
+                    <field name="job_id"/>
+                </xpath>
+
+                <!-- Field: Thêm trường: Source Language, Target Language, Service -->
+                <xpath expr="//field[@name='partner_id']" position="after">
+                    <field name="source_language" options="{'no_create': True}" />
+                    <field name="target_language" options="{'no_create': True}"
+                        widget="many2many_tags" />
+                    <field name="service" widget="many2many_tags" options="{'no_create': True}"/>
+                </xpath>
+
+                <!-- Field: Thêm trường: Work Unit, Volume, Currency, Sale Rate, Job Value, Job Value USD, PO Value, Margin -->
                 <xpath expr="//field[@name='user_id']" position="after">
                     <field name="work_unit" />
                     <field name="volume"/>
+                    <field name="currency_id" options="{'no_quick_create': True, 'no_create_edit': True}" required="1"/>
                     <field name="sale_rate"/>
                     <field name="job_value"/>
                     <field name="job_value_usd"/>
@@ -52,16 +65,26 @@
                     <field name="currency_usd_id" invisible="1"/>
                 </xpath>
 
+                <!-- Field: Thêm trường: Status, Payment Status -->
                 <xpath expr="//div[@name='dates']" position="after">
                     <field name="moron_project_status"/>
                     <field name="payment_status"/>
                 </xpath>
 
+                <!-- Field Partner_id, Tag_ids, User_id: Không cho tạo mới, sửa -->
+                <xpath expr="//field[@name='partner_id']" position="attributes">
+                    <attribute name="options">{'no_quick_create': True, 'no_create_edit': True}</attribute>
+                </xpath>
                 <xpath expr="//field[@name='tag_ids']" position="attributes">
                     <attribute name="options">{'no_quick_create': True, 'no_create_edit': True}</attribute>
                 </xpath>
+                <xpath expr="//field[@name='user_id']" position="attributes">
+                    <attribute name="options">{'no_quick_create': True, 'no_create_edit': True}</attribute>
+                </xpath>
+
+                <!-- Field: Sale Order: Ẩn trường Sale Order nếu không có Sale Order -->
                 <xpath expr="//field[@name='tag_ids']" position="after">
-                    <field name="display_so_id" />
+                    <field name="display_so_id" attrs="{'invisible': [('display_so_id', '=', False)]}" />
                 </xpath>
 
                 <page name="settings" position="attributes">
@@ -69,7 +92,7 @@
                 </page>
                 <notebook position="inside">
                     <page string="Purchase Order" name="tasks">
-                        <field name="tasks" string="Purchase Order" context="{'form_view_ref': 'morons.merctrans_task_view_form_my_task'}">                           
+                        <field name="tasks" string="Purchase Order" context="{'form_view_ref': 'morons.merctrans_task_view_form_my_task'}">
                             <tree>
                                 <field name="currency_id" invisible="1"/>
                                 <field name="project_currency_id" invisible="1"/>

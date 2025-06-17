@@ -362,6 +362,10 @@ class MerctransProject(models.Model):
         """
         Create a new sale order for the project
         """
+        if not self.partner_id:
+            raise UserError(_("Please select a customer before creating a sale order."))
+        if not self.currency_id:
+            raise UserError(_("Please select a currency before creating a sale order."))
         sale_order = self.env['moron.sale.order'].create({
             'project_id': self.id,
             'partner_id': self.partner_id.id,

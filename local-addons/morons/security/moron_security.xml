@@ -2,32 +2,38 @@
 <odoo>
     <data>
         <!-- Morons Category -->
-        <record model="ir.module.category" id="module_category_morons">
-            <field name="name">Morons</field>
+        <record model="ir.module.category" id="morons.module_category_services_moron">
+            <field name="name">Moron</field>
+            <field name="sequence">4</field>
+            <field name="parent_id" ref="base.module_category_services"/>
         </record>
 
         <!-- Contributors Group: -->
         <record id="group_contributors" model="res.groups">
             <field name="name">Contributors</field>
-            <field name="category_id" ref="module_category_morons" />
-        </record>
-
-        <!-- PM Group -->
-        <record id="group_pm" model="res.groups">
-            <field name="name">PM</field>
-            <field name="category_id" ref="module_category_morons" />
-        </record>
-
-        <!-- BOD Group -->
-        <record id="group_bod" model="res.groups">
-            <field name="name">BOD</field>
-            <field name="category_id" ref="module_category_morons" />
+            <field name="category_id" ref="morons.module_category_services_moron" />
+            <field name="implied_ids" eval="[(4, ref('base.group_user'))]"/>
         </record>
 
         <!-- Accountants Group -->
         <record id="group_accountants" model="res.groups">
             <field name="name">Accountants</field>
-            <field name="category_id" ref="module_category_morons" />
+            <field name="category_id" ref="morons.module_category_services_moron" />
+            <field name="implied_ids" eval="[(4, ref('morons.group_contributors'))]"/>
+        </record>
+
+        <!-- PM Group -->
+        <record id="group_pm" model="res.groups">
+            <field name="name">PM</field>
+            <field name="category_id" ref="morons.module_category_services_moron" />
+            <field name="implied_ids" eval="[(4, ref('morons.group_accountants'))]"/>
+        </record>
+
+        <!-- BOD Group -->
+        <record id="group_bod" model="res.groups">
+            <field name="name">BOD</field>
+            <field name="category_id" ref="morons.module_category_services_moron" />
+            <field name="implied_ids" eval="[(4, ref('morons.group_pm'))]"/>
         </record>
 
     <!-- Phân quyền nhóm quyền Morons
@@ -42,7 +48,7 @@
             - Contributors: Có quyền xem PO của mình -> tùy chỉnh rule
             - PM: Có full quyền với PO, trừ quyền xóa -> tùy chỉnh rule
             - BOD: Có full quyền với PO -> tùy chỉnh rule
-            - Accountants: Xem tất cả POs, phân quyền tại ir.model.access
+            - Accountants: Xem tất cả POs
 
         3. Sale Order: thiết lập tại ir.model.access
             - PM: Có full quyền với SO, trừ quyền xóa
@@ -117,7 +123,6 @@
             <field name="perm_unlink" eval="1" />
         </record>
 
-
         <!-- 2. Phân quyền cho Purchase Order (project.task) -->
         <!-- Purchase Order: Contributors xem đc PO của mình đc assign -->
         <record id="rule_contributor_access_po" model="ir.rule">
@@ -125,6 +130,17 @@
             <field name="model_id" ref="project.model_project_task"/>
             <field name="domain_force">[('contributor_id', '=', user.id)]</field>
             <field name="groups" eval="[(4, ref('morons.group_contributors'))]"/>
+            <field name="perm_read" eval="1" />
+            <field name="perm_write" eval="0" />
+            <field name="perm_create" eval="0" />
+            <field name="perm_unlink" eval="0" />
+        </record>
+        <!-- Purchase Order: Accountants xem tất cả POs -->
+        <record id="rule_accountants_access_po" model="ir.rule">
+            <field name="name">Moron: Accountants read all</field>
+            <field name="model_id" ref="project.model_project_task"/>
+            <field name="domain_force">[(1, '=', 1)]</field>
+            <field name="groups" eval="[(4, ref('morons.group_accountants'))]"/>
             <field name="perm_read" eval="1" />
             <field name="perm_write" eval="0" />
             <field name="perm_create" eval="0" />
@@ -178,6 +194,29 @@
             <field name="perm_unlink" eval="0" />
         </record>
 
+        <!-- Invoice: Accountants tạo, xem, update Invoice -->
+        <record id="rule_accountants_access_invoice" model="ir.rule">
+            <field name="name">Moron: Accountants access to Contributor/Customer Invoices</field>
+            <field name="model_id" ref="account.model_account_move"/>
+            <field name="domain_force">[(1, '=', 1)]</field>
+            <field name="groups" eval="[(4, ref('morons.group_accountants'))]"/>
+            <field name="perm_read" eval="1" />
+            <field name="perm_write" eval="1" />
+            <field name="perm_create" eval="1" />
+            <field name="perm_unlink" eval="0" />
+        </record>
+
+        <record id="rule_accountants_access_invoice_line" model="ir.rule">
+            <field name="name">Moron: Accountants access to Contributor/Client Invoice Lines</field>
+            <field name="model_id" ref="account.model_account_move_line"/>
+            <field name="domain_force">[(1, '=', 1)]</field>
+            <field name="groups" eval="[(4, ref('morons.group_accountants'))]"/>
+            <field name="perm_read" eval="1" />
+            <field name="perm_write" eval="1" />
+            <field name="perm_create" eval="1" />
+            <field name="perm_unlink" eval="0" />
+        </record>
+
         <!-- Invoice: PM full quyền, không được xóa -->
         <record id="rule_pm_access_invoice" model="ir.rule">
             <field name="name">Moron: PM Full Access (except unlink)</field>
@@ -198,45 +237,6 @@
             <field name="perm_read" eval="1" />
             <field name="perm_write" eval="1" />
             <field name="perm_create" eval="1" />
-            <field name="perm_unlink" eval="0" />
-        </record>
-
-        <!-- rule account.invoice.send -->
-        <record id="rule_pm_access_account_invoice_send" model="ir.rule">
-            <field name="name">Moron: PM Full Access (except unlink)</field>
-            <field name="model_id" ref="account.model_account_invoice_send"/>
-            <field name="domain_force">[(1, '=', 1)]</field>
-            <field name="groups" eval="[(4, ref('morons.group_pm'))]"/>
-            <field name="perm_unlink" eval="0" />
-        </record>
-
-        <!-- Invoice: Accountants tạo, xem, update Invoice -->
-        <record id="rule_accountants_access_invoice" model="ir.rule">
-            <field name="name">Moron: Accountants access to Contributor/Customer Invoices</field>
-            <field name="model_id" ref="account.model_account_move"/>
-            <field name="domain_force">[(1, '=', 1)]</field>
-            <field name="groups" eval="[(4, ref('morons.group_accountants'))]"/>
-            <field name="perm_read" eval="1" />
-            <field name="perm_write" eval="1" />
-            <field name="perm_create" eval="1" />
-        </record>
-
-        <record id="rule_accountants_access_invoice_line" model="ir.rule">
-            <field name="name">Moron: Accountants access to Contributor/Client Invoice Lines</field>
-            <field name="model_id" ref="account.model_account_move_line"/>
-            <field name="domain_force">[(1, '=', 1)]</field>
-            <field name="groups" eval="[(4, ref('morons.group_accountants'))]"/>
-            <field name="perm_read" eval="1" />
-            <field name="perm_write" eval="1" />
-            <field name="perm_create" eval="1" />
-        </record>
-
-        <!-- rule account.invoice.send -->
-        <record id="rule_accountants_access_account_invoice_send" model="ir.rule">
-            <field name="name">Moron: Accountants Full Access (except unlink)</field>
-            <field name="model_id" ref="account.model_account_invoice_send"/>
-            <field name="domain_force">[(1, '=', 1)]</field>
-            <field name="groups" eval="[(4, ref('morons.group_accountants'))]"/>
             <field name="perm_unlink" eval="0" />
         </record>
 
@@ -261,6 +261,24 @@
             <field name="perm_write" eval="1" />
             <field name="perm_create" eval="1" />
             <field name="perm_unlink" eval="1" />
+        </record>
+
+        <!-- rule account.invoice.send -->
+        <record id="rule_accountants_access_account_invoice_send" model="ir.rule">
+            <field name="name">Moron: Accountants Full Access (except unlink)</field>
+            <field name="model_id" ref="account.model_account_invoice_send"/>
+            <field name="domain_force">[(1, '=', 1)]</field>
+            <field name="groups" eval="[(4, ref('morons.group_accountants'))]"/>
+            <field name="perm_unlink" eval="0" />
+        </record>
+
+        <!-- rule account.invoice.send -->
+        <record id="rule_pm_access_account_invoice_send" model="ir.rule">
+            <field name="name">Moron: PM Full Access (except unlink)</field>
+            <field name="model_id" ref="account.model_account_invoice_send"/>
+            <field name="domain_force">[(1, '=', 1)]</field>
+            <field name="groups" eval="[(4, ref('morons.group_pm'))]"/>
+            <field name="perm_unlink" eval="0" />
         </record>
 
         <!-- rule account.invoice.send -->

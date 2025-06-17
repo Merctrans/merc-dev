@@ -62,7 +62,7 @@
         sequence="10"/>
     <!-- 2.2 Contributors Invoice Menu-->
     <menuitem 
-        name="Contributors Invoices"
+        name="Contributor Invoices"
         id="contributors_invoices_menu"
         action="morons.contributor_invoice_action_all"
         parent="morons.contributor_group_menu"
@@ -118,9 +118,9 @@
     <menuitem 
         name="My POs"
         id="my_pos_menu"
-        action="morons.merctrans_task_action_my_task"
+        action="morons.merctrans_task_action_for_contributor"
         parent="morons.moron_project_app_menu"
-        groups="morons.group_contributors"
+        groups="morons.group_accountants"
         sequence="35"/>
     <!-- 4.2 My Invoices Menu: Contributors -->
     <menuitem
@@ -130,8 +130,6 @@
         parent="morons.moron_project_app_menu"
         groups="morons.group_contributors"
         sequence="36"/>
-
-
 
     <!-- 5. Reporting Menu: PM, BOD, Accountants -->
     <menuitem 

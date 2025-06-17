@@ -186,14 +186,14 @@
                             <field name="login" string="Email (Login)" readonly="1"/>
                             <field name="phone" string="Phone" readonly="1"/>
                             <field name="skype" string="Skype"/>
-                            <field name="languages_ids" widget="many2many_tags"/>
-                            <field name="country_of_residence" string="Country of Residence" readonly="1"/>
-                            <field name="nationality_ids" widget="many2one_tags" readonly="1"/>
+                            <field name="languages_ids" widget="many2many_tags" readonly="1"/>
+                            <field name="country_of_residence" string="Country of Residence" readonly="1" options="{'no_open': True}"/>
+                            <field name="nationality_ids" widget="many2many_tags" readonly="1"/>
                             <field name="tz" string="Timezone" readonly="1"/>
                             <field name="vat" string="VAT/ABN Number"/>
                         </group>
                         <group>
-                            <field name="currency" string="Currency" readonly="1"/>
+                            <field name="currency" string="Currency" readonly="1" options="{'no_open': True}"/>
                             <field name="preferred_payment_method" string="Preferred Payment Method"/>
                             <field name="paypal" string="PayPal" attrs="{'required': [('preferred_payment_method', '=', 'paypal')]}" />
                             <field name="transferwise_id" string="Wise ID" attrs="{'required': [('preferred_payment_method', '=', 'transferwise')]}" />

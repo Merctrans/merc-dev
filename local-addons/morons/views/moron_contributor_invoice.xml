@@ -222,6 +222,14 @@
             <field name="payment_reference" position="attributes">
                 <attribute name="invisible">1</attribute>
             </field>
+            <!-- Không cho open tiền tệ -->
+            <xpath expr="//group[@id='header_right_group']/field[@name='currency_id']" position="attributes">
+                <attribute name="options">{'no_open': True}</attribute>
+            </xpath>
+            <!-- Không cho open payment_term -->
+            <field name="invoice_payment_term_id" position="attributes">
+                <attribute name="options">{'no_open': True}</attribute>
+            </field>
 
             <!-- Ẩn trường Ref -->
             <xpath expr="//label[@for='ref']" position="attributes">
@@ -243,15 +251,17 @@
                 <attribute name="readonly">1</attribute>
             </field>
 
-            <!-- Đổi string của lines -->
-            <xpath expr="//field[@name='invoice_line_ids']/tree/field[@name='quantity']" position="attributes">
-                <attribute name="string">Volume</attribute>
-            </xpath>
-            <xpath expr="//field[@name='invoice_line_ids']/tree/field[@name='price_unit']" position="attributes">
-                <attribute name="string">Rate</attribute>
-            </xpath>
-            <xpath expr="//field[@name='invoice_line_ids']/tree/field[@name='price_subtotal']" position="attributes">
-                <attribute name="string">PO Value</attribute>
+            <!-- Không cho mở line -->
+            <xpath expr="//field[@name='invoice_line_ids']" position="replace">
+                <field name="invoice_line_ids" readonly="1" mode="tree">
+                    <tree no_open="1">
+                        <field name="name" readonly="1" string="Label"/>
+                        <field name="quantity" readonly="1" string="Volume"/>
+                        <field name="price_unit" readonly="1" string="Rate"/>
+                        <field name="tax_ids" widget="many2many_tags" readonly="1"/>
+                        <field name="price_subtotal" readonly="1" string="PO Value"/>
+                    </tree>
+                </field>
             </xpath>
 
             <xpath expr="//div[@class='oe_chatter']" position="replace">
