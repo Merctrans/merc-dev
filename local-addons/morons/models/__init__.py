@@ -10,3 +10,4 @@ from . import moron_payment
 from . import moron_customer
 from . import contributor_service_rate
 from . import moron_nationality
+from . import ir_ui_menu
