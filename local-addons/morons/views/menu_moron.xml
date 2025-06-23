@@ -120,7 +120,7 @@
         id="my_pos_menu"
         action="morons.merctrans_task_action_for_contributor"
         parent="morons.moron_project_app_menu"
-        groups="morons.group_accountants"
+        groups="morons.group_contributors"
         sequence="35"/>
     <!-- 4.2 My Invoices Menu: Contributors -->
     <menuitem
