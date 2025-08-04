@@ -51,6 +51,9 @@
     "assets": {
         "web.assets_backend": [
             "morons/static/src/webclient/*/*.js",
+            "morons/static/src/webclient/*/*.xml",
+            "morons/static/src/webclient/*.js",
+            "morons/static/src/webclient/*.xml",
             "morons/static/src/components/*/*.js",
             "morons/static/src/components/*/*.xml",
             "morons/static/src/components/*/*.scss",

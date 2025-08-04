@@ -53,6 +53,10 @@
                         attrs="{'invisible': [('stages_id', '!=', 'in progress')]}"
                         groups="morons.group_bod,morons.group_pm"
                         />
+                    <button name="action_send_email_to_contributors" string="Send Email to Contributors" type="object"
+                        attrs="{'invisible': ['|', ('stages_id', '!=', 'new'), ('contributor_id', '!=', False)]}"
+                        groups="morons.group_bod,morons.group_pm"
+                        />
                     <button name="action_in_progress" string="Set to In Progress" type="object"
                         attrs="{'invisible': [('stages_id', '!=', 'new')]}"
                         groups="morons.group_bod,morons.group_pm"
@@ -87,6 +91,11 @@
                                 attrs="{'readonly': [('stages_id', '=', 'completed')]}"
                                 options="{'no_quick_create': True, 'no_create_edit': True}"
                                 force_save="1"/>
+                            <field name="contributor_send_email_ids"
+                                widget="many2many_tags"
+                                attrs="{'readonly': ['|', ('stages_id', '=', 'completed'), ('contributor_id', '!=', False)], 'invisible': [('contributor_id', '!=', False)]}"
+                                options="{'no_quick_create': True, 'no_create_edit': True, 'no_open': True}"
+                                force_save="1"/>
                             <field name="contributor_id"
                                 attrs="{'readonly': [('stages_id', '=', 'completed')]}"
                                 options="{'no_quick_create': True, 'no_create_edit': True, 'no_open': True}"
@@ -115,6 +124,7 @@
                         </group>
                         <group>
                             <field name="currency_id"
+                                force_save="1"
                                 attrs="{'readonly': [('stages_id', '=', 'completed')]}"
                                 options="{'no_quick_create': True, 'no_create_edit': True}" />
                             <field name="po_value"
