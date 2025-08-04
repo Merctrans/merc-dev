@@ -1,5 +1,5 @@
 from odoo import models, fields, api, _
-from odoo.exceptions import ValidationError
+from odoo.exceptions import ValidationError, UserError
 from odoo.tools.misc import format_date
 import logging
 _logger = logging.getLogger(__name__)
@@ -10,8 +10,10 @@ class MerctransTask(models.Model):
     _description = "Purchase Order"
 
     contributor_id = fields.Many2one("res.users", string='Contributor',
-                                        domain="[('share', '=', False), ('active', '=', True), ('contributor', '=', True)]",
-                                        required=True)
+                                        domain="[('share', '=', False), ('active', '=', True), ('contributor', '=', True)]")
+    contributor_send_email_ids = fields.Many2many("res.users", string='Send to contributors',
+                                                 domain="[('share', '=', False), ('active', '=', True), ('contributor', '=', True)]",
+                                                 help="Send job confirmation email to all selected contributors.")
 
     po_status_list = [
         ("new", "New"),
@@ -69,7 +71,7 @@ class MerctransTask(models.Model):
         tracking= True,
         compute="_compute_payment_status", store=True, compute_sudo=True
     )
-    currency_id = fields.Many2one("res.currency", string="Currency", compute="_compute_currency_id", store=True, tracking= True, readonly=False, compute_sudo=True)
+    currency_id = fields.Many2one("res.currency", string="Currency", tracking= True)
     project_currency_id = fields.Many2one("res.currency", related="project_id.currency_id", store=True, readonly=True, compute_sudo=True)
     name = fields.Char(string="Name", required=True, tracking= True, default="New")
 
@@ -157,13 +159,12 @@ class MerctransTask(models.Model):
         for r in self:
             r.target_language_selected = r.project_id.target_language
 
-    @api.depends("contributor_id")
-    def _compute_currency_id(self):
-        for record in self:
-            if record.contributor_id.currency:
-                record.currency_id = record.contributor_id.currency[0]
-            else:
-                record.currency_id = record.project_id.currency_id
+    @api.onchange("contributor_id", "project_id")
+    def _onchange_contributor_id(self):
+        if self.contributor_id.currency:
+            self.currency_id = self.contributor_id.currency[0]
+        else:
+            self.currency_id = self.project_id.currency_id
 
     @api.depends("contributor_invoice_id", 'contributor_invoice_id.payment_state')
     def _compute_payment_status(self):
@@ -186,17 +187,49 @@ class MerctransTask(models.Model):
         self.date_deadline = self.project_id.date
 
     def action_complete(self):
-        self.sudo().write({"stages_id": "completed"})
+        self.write({"stages_id": "completed"})
+
+    def action_send_email_to_contributors(self):
+        for r in self.filtered(lambda c: not c.contributor_id and c.stages_id == 'new'):
+            for contributor in r.contributor_send_email_ids:
+                r._send_email_to_contributor(contributor)
+
+    def _send_email_to_contributor(self, contributor):
+        if not contributor:
+            return
+        # Utility method to send assignation notification upon writing/creation.
+        email_template = self.env.ref('morons.email_template_po_assignment', raise_if_not_found=False)
+        if not email_template:
+            return
+        task_model_description = self.env['ir.model']._get(self._name).display_name
+
+        email_values = {
+            'email_cc': False,
+            'auto_delete': True,
+            'message_type': 'user_notification',
+            'recipient_ids': [],
+            'partner_ids': [],
+            'scheduled_date': False,
+            'email_to': contributor.email
+        }
+
+        with self.env.cr.savepoint():
+            force_send = not(self.env.context.get('import_file', False))
+            email_template.send_mail(self.id, force_send=force_send, raise_exception=False, email_values=email_values)
+        _logger.info("Emailed PO <%s> information to contributor <%s>", self.name, contributor.email)
 
     def action_in_progress(self):
-        self.sudo().write({"stages_id": "in progress"})
+        for r in self:
+            if not r.contributor_id:
+                raise UserError(_("Please select a contributor before proceeding to 'In Progress': %s") % r.name)
+        self.write({"stages_id": "in progress"})
 
     def action_set_to_new(self):
-        self = self.sudo().filtered(lambda r: r.stages_id == "canceled")
-        self.sudo().write({"stages_id": "new"})
+        self = self.filtered(lambda r: r.stages_id == "canceled")
+        self.write({"stages_id": "new"})
 
     def action_cancel(self):
-        is_contributor = self.env.user.has_group("morons.group_contributors")
+        is_contributor = self.env.user.has_group("morons.group_contributors") and not self.env.user.has_group("morons.group_pm")
         for r in self:
             if r.contributor_invoice_id:
                 raise ValidationError("Purchase order '%s' already has a contributor invoice. Please delete the contributor invoice first." % r.name)
@@ -296,7 +329,7 @@ class MerctransTask(models.Model):
 
     def write(self, vals):
         res = super(MerctransTask, self).write(vals)
-        if vals.get("contributor_id", False):
+        if vals.get("contributor_id", False) and self._context.get('from_contributor', False):
             self._send_notyfy_assign_contributor()
         return res
 
