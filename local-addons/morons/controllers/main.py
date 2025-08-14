@@ -84,11 +84,12 @@ class TaskController(http.Controller):
             # Check if the current user is the assigned contributor
             if task.contributor_id and task.contributor_id == user and task.stages_id != 'new':
                 return request.redirect(f'/web#id={task.id}&view_type=form&model=project.task')
-            
-            # Update task status
-            task.sudo().write({
-                'stages_id': 'canceled',
-            })
+
+            if task.contributor_id and task.contributor_id == user and task.stages_id == 'new':
+                # Update task status
+                task.sudo().write({
+                    'stages_id': 'canceled',
+                })
             
             # Create a message in the chatter
             task.sudo().message_post(
@@ -100,8 +101,11 @@ class TaskController(http.Controller):
             task.sudo().send_email_to_pm(send_type='declined')
             
             # Redirect to the form view of the task
-            return request.redirect(f'/web#id={task.id}&view_type=form&model=project.task')
-            
+            if task.contributor_id and task.contributor_id == user:
+                return request.redirect(f'/web#id={task.id}&view_type=form&model=project.task')
+            else:
+                return request.redirect('/web#view_type=list&model=project.task')
+
         except Exception as e:
             return request.redirect(f'/web#id={task.id}&view_type=form&model=project.task')
 
