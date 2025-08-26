@@ -17,6 +17,7 @@
             </xpath>
             <xpath expr="//field[@name='lang']" position="after">
                 <field name="languages_ids" widget="many2many_tags"/>
+                <field name="display_service_rate" groups="morons.group_bod,morons.group_pm"/>
                 <field name="rating" widget="priority" groups="morons.group_bod,morons.group_pm"/>
             </xpath>
         </field>
@@ -84,9 +85,11 @@
                     attrs="{'invisible': [('contributor', '=', False)]}">
                     <field name="contributor_service_rate_ids">
                         <tree editable="bottom">
+                            <field name="sequence" widget="handle"/>
                             <field name="currency_id" invisible="1"/>
                             <field name="service_id" />
                             <field name="rate" />
+                            <field name="work_unit" />
                             <field name="note" />
                         </tree>
                     </field>
@@ -100,7 +103,7 @@
                             <field name="contributor_id" invisible="1" />
                             <field name="source_language" string="Source"/>
                             <field name="target_language" string="Target"/>
-                            <field name="service" widget="many2many_tags" />
+                            <field name="service" />
                             <field name="work_unit" />
                             <field name="volume" />
                             <field name="rate" />

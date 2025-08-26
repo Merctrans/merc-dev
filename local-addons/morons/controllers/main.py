@@ -31,9 +31,12 @@ class TaskController(http.Controller):
 
             # Task chưa có contributor, năm trong danh sách gửi email, trạng thái new
             if not task.contributor_id and user in task.contributor_send_email_ids and task.stages_id == 'new':
+                
                 update_vals.update({
                     'contributor_id': user.id,
-                    'stages_id': 'in progress'
+                    'stages_id': 'in progress',
+                    'rate': user.sudo().get_rate_of_contributor(task.service.id, task.work_unit),
+                    'currency_id': user.sudo().currency.id
                 })
             # Task đã có contributor, và user là contributor được phân công, trạng thái new
             elif task.contributor_id == user and task.stages_id == 'new':

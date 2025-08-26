@@ -72,6 +72,43 @@
         <field name="auto_delete" eval="True"/>
     </record>
 
+    <!-- Email Template: Send notification when invite contributors (for PO) -->
+    <record id="email_template_po_invite" model="mail.template">
+        <field name="name">Template to invite contributors</field>
+        <field name="model_id" ref="project.model_project_task"/>
+        <field name="subject">MercTrans | {{ object.project_id.job_id }} - Project {{ object.project_id.display_name }} | {{ object.name }} | {{ object.volume }} {{ object.work_unit }}</field>
+        <field name="email_from">{{ user.email_formatted }}</field>
+        <field name="email_to">{{ object.contributor_id.email }}</field>
+        <field name="body_html" type="html">
+            <div style="margin: 0px; padding: 0px; font-size: 13px;">
+                <p>Dear <t t-out="ctx.get('contributor_name', '')"/>,</p>
+                <br/>
+                <p>You are invited to accept a new task with the following details:</p>
+                <br/>
+                <p>Deadline: <t t-out="object.date_deadline or ''"/></p>
+                <p>Work amount: <t t-out="object.volume or ''"/> <t t-out="object.work_unit or ''"/></p>
+                <p>Rate: <t t-out="ctx.get('contributor_rate', '')"/> <t t-out="ctx.get('contributor_curency', '')"/></p>
+                <p>Total PO: <t t-out="ctx.get('contributor_po_value', '')"/> <t t-out="ctx.get('contributor_curency', '')"/></p>
+                <br/>
+                <div style="margin: 16px 0px 16px 0px; text-align: center;">
+                    <a t-att-href="'/task/accept/%s' % object.id"
+                       style="background-color: #875A7B; padding: 8px 16px 8px 16px; text-decoration: none; color: #fff; border-radius: 5px; font-size:13px;">
+                        Accept
+                    </a>
+                    <a t-att-href="'/task/decline/%s' % object.id"
+                       style="background-color: #808080; padding: 8px 16px 8px 16px; text-decoration: none; color: #fff; border-radius: 5px; font-size:13px; margin-left: 10px;">
+                        Decline
+                    </a>
+                </div>
+                <br/>
+                <p>If you have any questions, please contact us at <a t-att-href="'mailto:support@merctrans.com'" style="color: #875A7B;">support@merctrans.com</a></p>
+                <br/>
+            </div>
+        </field>
+        <field name="lang">en_US</field>
+        <field name="auto_delete" eval="True"/>
+    </record>
+
     <!-- Email Template: Contributor chấp nhận PO -->
     <record id="email_template_po_accepted" model="mail.template">
         <field name="name">PO Accepted Notification</field>

@@ -66,6 +66,7 @@ class InternalUser(models.Model):
     contributor_invoice_ids = fields.One2many('account.move', 'contributor_id', string='Invoices')
     # Services
     contributor_service_rate_ids = fields.One2many('contributor.service.rate', 'contributor_id', string='Service Rates')
+    display_service_rate = fields.Char(string='Rate', compute='_compute_display_service_rate', compute_sudo=True)
 
     @api.constrains('paypal')
     def validate_paypal(self):
@@ -88,6 +89,17 @@ class InternalUser(models.Model):
     def _compute_my_pos_count(self):
         for r in self:
             r.my_pos_count = len(r.task_ids)
+
+    def _compute_display_service_rate(self):
+        for r in self:
+            r.display_service_rate = r.contributor_service_rate_ids[:1].display_name
+
+    def get_rate_of_contributor(self, service_id, unit):
+        line = self.contributor_service_rate_ids.filtered(lambda r: r.service_id.id == service_id
+                                                          and r.work_unit == unit)[:1]
+        if line:
+            return line.rate
+        return 0
 
     @api.model_create_multi
     def create(self, vals_list):
@@ -116,6 +128,13 @@ class InternalUser(models.Model):
         add_users = contributors - contributor_group_users
         if add_users:
             add_users.write({'groups_id': [(4, contributor_group.id)]})
+
+    def _check_rate_of_contributor(self, service, unit):
+        for r in self:
+            rate_line = r.contributor_service_rate_ids.filtered(lambda r: r.service_id == service
+                                                                and r.work_unit == unit)[:1]
+            if not rate_line:
+                raise UserError(_("Contributor '%s' has not yet been set up for service and work unit rate.") % r.name)
 
     @property
     def SELF_READABLE_FIELDS(self):
