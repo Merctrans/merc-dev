@@ -17,7 +17,7 @@
                 <field name="contributor_id" />
                 <field name="source_language" />
                 <field name="target_language" />
-                <field name="service" options="{'no_create': True}" widget="many2many_tags" />
+                <field name="service" options="{'no_create': True}" />
                 <field name="work_unit" />
                 <field name="volume" />
                 <field name="rate" />
@@ -102,8 +102,7 @@
                                 force_save="1"/>
                             <field name="service"
                                 attrs="{'readonly': [('stages_id', '=', 'completed')]}"
-                                options="{'no_quick_create': True, 'no_create_edit': True}"
-                                widget="many2many_tags" />
+                                options="{'no_quick_create': True, 'no_create_edit': True}" />
                             <field name="source_language"
                                 attrs="{'readonly': [('stages_id', '=', 'completed')]}"
                                 options="{'no_quick_create': True, 'no_create_edit': True}"
@@ -119,7 +118,7 @@
                                 attrs="{'readonly': [('stages_id', '=', 'completed')]}"
                                 force_save="1"/>
                             <field name="rate"
-                                attrs="{'readonly': [('stages_id', '=', 'completed')]}"
+                                attrs="{'readonly': [('stages_id', '=', 'completed')], 'invisible': [('contributor_id', '=', False)]}"
                                 force_save="1"/>
                         </group>
                         <group>
@@ -200,7 +199,7 @@
                         <group>
                             <field name="project_id" options="{'no_open': True}"/>
                             <field name="contributor_id" options="{'no_open': True}"/>
-                            <field name="service" options="{'no_create': True}" widget="many2many_tags" />
+                            <field name="service" options="{'no_create': True}" />
                             <field name="source_language" force_save="1" options="{'no_open': True}"/>
                             <field name="target_language" options="{'no_open': True}"/>
                             <field name="volume" />

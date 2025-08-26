@@ -39,7 +39,7 @@ class MerctransTask(models.Model):
     )
 
     rate = fields.Monetary(string="Rate*", tracking=True, currency_field="currency_id")
-    service = fields.Many2many("merctrans.services",tracking= True)
+    service = fields.Many2one("merctrans.services",tracking= True, required=False)
     source_language = fields.Many2one("res.lang", string="Source Language", tracking= True, readonly=True)
     target_language = fields.Many2one("res.lang", string="Target Language", tracking= True, compute_sudo=True,
                                         domain="[('id', 'in', target_language_selected)]")
@@ -178,19 +178,26 @@ class MerctransTask(models.Model):
 
     @api.onchange("project_id")
     def onchange_project_id(self):
-        self.service = self.project_id.service
         self.source_language = self.project_id.source_language
         self.target_language = self.project_id.target_language[:1]
         self.work_unit = self.project_id.work_unit
         self.volume = self.project_id.volume
-        self.rate = self.project_id.sale_rate
         self.date_deadline = self.project_id.date
+
+    @api.onchange("service", "work_unit", "contributor_id")
+    def onchange_service_work(self):
+        if self.contributor_id and self.service and self.work_unit:
+            rate_line = self.contributor_id.contributor_service_rate_ids.filtered(lambda r: r.service_id == self.service
+                                                                                  and r.work_unit == self.work_unit)[:1]
+            if rate_line:
+                self.rate = rate_line.rate
 
     def action_complete(self):
         self.write({"stages_id": "completed"})
 
     def action_send_email_to_contributors(self):
         for r in self.filtered(lambda c: not c.contributor_id and c.stages_id == 'new'):
+            r.contributor_send_email_ids._check_rate_of_contributor(r.service, r.work_unit)
             for contributor in r.contributor_send_email_ids:
                 r._send_email_to_contributor(contributor)
 
@@ -198,11 +205,19 @@ class MerctransTask(models.Model):
         if not contributor:
             return
         # Utility method to send assignation notification upon writing/creation.
-        email_template = self.env.ref('morons.email_template_po_assignment', raise_if_not_found=False)
+        email_template = self.env.ref('morons.email_template_po_invite', raise_if_not_found=False)
         if not email_template:
             return
         task_model_description = self.env['ir.model']._get(self._name).display_name
 
+        rate = contributor.get_rate_of_contributor(self.service.id, self.work_unit)
+        po_value = rate * self.volume
+        ctx_data = {
+            'contributor_name': contributor.name,
+            'contributor_rate': rate,
+            'contributor_curency': contributor.currency.name,
+            'contributor_po_value': po_value
+        }
         email_values = {
             'email_cc': False,
             'auto_delete': True,
@@ -215,7 +230,7 @@ class MerctransTask(models.Model):
 
         with self.env.cr.savepoint():
             force_send = not(self.env.context.get('import_file', False))
-            email_template.send_mail(self.id, force_send=force_send, raise_exception=False, email_values=email_values)
+            email_template.with_context(**ctx_data).send_mail(self.id, force_send=force_send, raise_exception=False, email_values=email_values)
         _logger.info("Emailed PO <%s> information to contributor <%s>", self.name, contributor.email)
 
     def action_in_progress(self):
@@ -329,7 +344,7 @@ class MerctransTask(models.Model):
 
     def write(self, vals):
         res = super(MerctransTask, self).write(vals)
-        if vals.get("contributor_id", False) and self._context.get('from_contributor', False):
+        if vals.get("contributor_id", False) and not self._context.get('from_contributor', False):
             self._send_notyfy_assign_contributor()
         return res
 
