@@ -6,6 +6,7 @@ from odoo.exceptions import AccessError
 class TaskController(http.Controller):
     @http.route(['/task/accept/<int:task_id>'], type='http', auth='user', website=True)
     def accept_task(self, task_id, **kwargs):
+        contributor_action_id = request.env.ref('morons.merctrans_task_action_for_contributor').sudo().id
         try:
             # contributor login
             user = request.env.user
@@ -14,7 +15,7 @@ class TaskController(http.Controller):
 
             # contributor truy cập lại link trong email sẽ hiện ra form view (nếu đã được phân công)
             if task.contributor_id == user and task.stages_id != 'new':
-                return request.redirect(f'/web#id={task.id}&view_type=form&model=project.task')
+                return request.redirect(f'/web#id={task.id}&view_type=form&model=project.task&action={contributor_action_id}')
 
             # Check if user is in the email list but task is already assigned to someone else
             if task.contributor_id and task.contributor_id != user and user in task.contributor_send_email_ids:
@@ -25,7 +26,7 @@ class TaskController(http.Controller):
                     'title': 'Job Unavailable',
                     'message': 'This job is no longer available.'
                 }
-                return request.redirect('/web#view_type=list&model=project.task')
+                return request.redirect(f'/web#view_type=list&model=project.task&action={contributor_action_id}')
 
             update_vals = {}
 
@@ -58,15 +59,16 @@ class TaskController(http.Controller):
                 task.sudo().send_email_to_pm(send_type='accepted')
 
                 # Redirect to the form view of the task
-                return request.redirect(f'/web#id={task.id}&view_type=form&model=project.task')
+                return request.redirect(f'/web#id={task.id}&view_type=form&model=project.task&action={contributor_action_id}')
             # Redirect to task list for other cases
-            return request.redirect(f'/web#view_type=list&model=project.task')
+            return request.redirect(f'/web#view_type=list&model=project.task&action={contributor_action_id}')
 
         except Exception as e:
-            return request.redirect(f'/web#id={task.id}&view_type=form&model=project.task')
+            return request.redirect(f'/web#id={task.id}&view_type=form&model=project.task&action={contributor_action_id}')
 
     @http.route(['/task/decline/<int:task_id>'], type='http', auth='user', website=True)
     def decline_task(self, task_id, **kwargs):
+        contributor_action_id = request.env.ref('morons.merctrans_task_action_for_contributor').sudo().id
         try:
             # contributor login
             user = request.env.user
@@ -82,11 +84,11 @@ class TaskController(http.Controller):
                     'title': 'Job Unavailable',
                     'message': 'This job is no longer available.'
                 }
-                return request.redirect('/web#view_type=list&model=project.task')
+                return request.redirect(f'/web#view_type=list&model=project.task&action={contributor_action_id}')
 
             # Check if the current user is the assigned contributor
             if task.contributor_id and task.contributor_id == user and task.stages_id != 'new':
-                return request.redirect(f'/web#id={task.id}&view_type=form&model=project.task')
+                return request.redirect(f'/web#id={task.id}&view_type=form&model=project.task&action={contributor_action_id}')
 
             if task.contributor_id and task.contributor_id == user and task.stages_id == 'new':
                 # Update task status
@@ -105,12 +107,12 @@ class TaskController(http.Controller):
             
             # Redirect to the form view of the task
             if task.contributor_id and task.contributor_id == user:
-                return request.redirect(f'/web#id={task.id}&view_type=form&model=project.task')
+                return request.redirect(f'/web#id={task.id}&view_type=form&model=project.task&action={contributor_action_id}')
             else:
-                return request.redirect('/web#view_type=list&model=project.task')
+                return request.redirect(f'/web#view_type=list&model=project.task&action={contributor_action_id}')
 
         except Exception as e:
-            return request.redirect(f'/web#id={task.id}&view_type=form&model=project.task')
+            return request.redirect(f'/web#id={task.id}&view_type=form&model=project.task&action={contributor_action_id}')
 
     @http.route(['/web/session/get_notification'], type='json', auth='user')
     def get_notification(self, **kwargs):
